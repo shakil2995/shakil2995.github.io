@@ -1,0 +1,245 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - navigation [ref=e4]:
+      - link "Home" [ref=e5] [cursor=pointer]:
+        - /url: "#home"
+        - generic [ref=e6]: S
+        - generic [ref=e7]: shakil.dev
+      - list [ref=e8]:
+        - listitem [ref=e9]:
+          - link "Home" [ref=e10] [cursor=pointer]:
+            - /url: "#home"
+        - listitem [ref=e12]:
+          - link "About" [ref=e13] [cursor=pointer]:
+            - /url: "#about"
+        - listitem [ref=e14]:
+          - link "Skills" [ref=e15] [cursor=pointer]:
+            - /url: "#skills"
+        - listitem [ref=e16]:
+          - link "Work" [ref=e17] [cursor=pointer]:
+            - /url: "#work"
+        - listitem [ref=e18]:
+          - link "Journey" [ref=e19] [cursor=pointer]:
+            - /url: "#journey"
+        - listitem [ref=e20]:
+          - link "Contact" [ref=e21] [cursor=pointer]:
+            - /url: "#contact"
+      - link "Let's talk" [ref=e23] [cursor=pointer]:
+        - /url: "#contact"
+  - main [ref=e24]:
+    - generic [ref=e25]:
+      - generic [ref=e28]:
+        - generic [ref=e29]: Available for work
+        - heading "Hi, I'm Shakil." [level=1] [ref=e33]
+        - paragraph [ref=e34]:
+          - text: ">"
+          - generic [ref=e35]: Fullstack Developer
+        - paragraph [ref=e37]: I build fast, polished products end to end — web with the MERN stack & Next.js, mobile with Flutter.
+        - generic [ref=e38]:
+          - link "View my work" [ref=e39] [cursor=pointer]:
+            - /url: "#work"
+          - link "Get in touch" [ref=e42] [cursor=pointer]:
+            - /url: "#contact"
+          - link "GitHub profile" [ref=e43] [cursor=pointer]:
+            - /url: https://github.com/shakil2995
+      - link "Scroll to about" [ref=e46] [cursor=pointer]:
+        - /url: "#about"
+    - generic [ref=e49]:
+      - generic [ref=e51]:
+        - generic [ref=e52]: 01 —
+        - heading "About me" [level=2] [ref=e53]
+      - generic [ref=e54]:
+        - generic [ref=e56]:
+          - img "Shakil, Fullstack Developer" [ref=e58]
+          - generic [ref=e59]:
+            - text: Fullstack Developer
+            - generic [ref=e60]: "@ ATI Limited"
+        - generic [ref=e61]:
+          - paragraph [ref=e63]: I'm a fullstack developer and team lead who likes owning a product from the database to the pixel. On the web I work across the MERN stack and Next.js; on mobile I ship cross-platform apps with Flutter.
+          - paragraph [ref=e65]: Since my first commit in 2017 I've shipped 50+ projects, public and private — from an AI website chatbot (Zinodesk) and a fully offline hospital EMR to shuttle-tracking apps and business sites — always chasing clean architecture and interfaces that feel effortless.
+          - generic [ref=e66]:
+            - generic [ref=e67]:
+              - generic [ref=e68]: 0+
+              - generic [ref=e70]: Years coding
+            - generic [ref=e71]:
+              - generic [ref=e72]: 0+
+              - generic [ref=e74]: Public repos
+            - generic [ref=e75]:
+              - generic [ref=e76]: 0+
+              - generic [ref=e78]: Technologies
+            - generic [ref=e79]:
+              - generic [ref=e80]: 0+
+              - generic [ref=e82]: Projects shipped
+    - generic [ref=e84]:
+      - generic [ref=e86]:
+        - generic [ref=e87]: 02 —
+        - heading "Skills & stack" [level=2] [ref=e88]
+        - paragraph [ref=e89]: The tools I reach for across the frontend, mobile, and backend.
+      - generic [ref=e90]:
+        - generic [ref=e91]:
+          - heading "Frontend" [level=3] [ref=e94]
+          - list [ref=e95]:
+            - listitem [ref=e96]: React
+            - listitem [ref=e97]: Next.js
+            - listitem [ref=e98]: TypeScript
+            - listitem [ref=e99]: JavaScript
+            - listitem [ref=e100]: Tailwind CSS
+            - listitem [ref=e101]: HTML5
+            - listitem [ref=e102]: CSS3
+            - listitem [ref=e103]: Redux
+        - generic [ref=e104]:
+          - heading "Mobile" [level=3] [ref=e107]
+          - list [ref=e108]:
+            - listitem [ref=e109]: Flutter
+            - listitem [ref=e110]: Dart
+            - listitem [ref=e111]: React Native
+            - listitem [ref=e112]: Firebase
+        - generic [ref=e113]:
+          - heading "Backend" [level=3] [ref=e116]
+          - list [ref=e117]:
+            - listitem [ref=e118]: Node.js
+            - listitem [ref=e119]: Express
+            - listitem [ref=e120]: Laravel
+            - listitem [ref=e121]: PHP
+            - listitem [ref=e122]: Python
+            - listitem [ref=e123]: REST APIs
+            - listitem [ref=e124]: MongoDB
+            - listitem [ref=e125]: MySQL
+        - generic [ref=e126]:
+          - heading "Tools & Foundations" [level=3] [ref=e129]
+          - list [ref=e130]:
+            - listitem [ref=e131]: Git
+            - listitem [ref=e132]: GitHub
+            - listitem [ref=e133]: Vite
+            - listitem [ref=e134]: C++
+            - listitem [ref=e135]: Java
+            - listitem [ref=e136]: Data Structures
+    - generic [ref=e137]:
+      - generic [ref=e139]:
+        - generic [ref=e140]: 03 —
+        - heading "Featured work" [level=2] [ref=e141]
+        - paragraph [ref=e142]: A selection of things I've designed, built, and shipped.
+      - generic [ref=e143]:
+        - generic [ref=e145]:
+          - generic [ref=e147]:
+            - heading "Zinodesk" [level=3] [ref=e148]
+            - generic [ref=e149]: "2025"
+          - paragraph [ref=e150]: An AI chatbot you can drop into any website with a single line of code — then customize endlessly to match your brand, voice, and knowledge base.
+          - list [ref=e151]:
+            - listitem [ref=e152]: AI
+            - listitem [ref=e153]: Chatbot
+            - listitem [ref=e154]: SaaS
+            - listitem [ref=e155]: Embed
+          - link "Visit" [ref=e157] [cursor=pointer]:
+            - /url: https://zinodesk.com
+        - generic [ref=e163]:
+          - generic [ref=e165]:
+            - heading "AgentFlow" [level=3] [ref=e166]
+            - generic [ref=e167]: "2025"
+          - paragraph [ref=e168]: Automates customer conversations on Facebook — replying, routing, and handling inbound messages so pages keep up without a human on every chat.
+          - list [ref=e169]:
+            - listitem [ref=e170]: AI
+            - listitem [ref=e171]: Automation
+            - listitem [ref=e172]: Messenger
+            - listitem [ref=e173]: Bots
+          - generic [ref=e174]: Private build
+        - generic [ref=e180]:
+          - generic [ref=e182]:
+            - heading "ATI EMR" [level=3] [ref=e183]
+            - generic [ref=e184]: "2025"
+          - paragraph [ref=e185]: A fully offline, multi-device electronic medical records system for hospitals and clinics — patient records that sync across devices with zero dependence on the internet.
+          - list [ref=e186]:
+            - listitem [ref=e187]: Healthcare
+            - listitem [ref=e188]: Offline-First
+            - listitem [ref=e189]: Multi-device
+            - listitem [ref=e190]: EMR
+          - generic [ref=e191]: Product
+        - generic [ref=e197]:
+          - generic [ref=e199]:
+            - heading "SNS Digital" [level=3] [ref=e200]
+            - generic [ref=e201]: "2024"
+          - paragraph [ref=e202]: My IT agency — where I take products from idea to launch for clients, spanning web, mobile, and everything in between.
+          - list [ref=e203]:
+            - listitem [ref=e204]: Agency
+            - listitem [ref=e205]: Web
+            - listitem [ref=e206]: Mobile
+            - listitem [ref=e207]: Consulting
+          - generic [ref=e208]: Agency
+        - generic [ref=e214]:
+          - generic [ref=e216]:
+            - heading "Ushuttle" [level=3] [ref=e217]
+            - generic [ref=e218]: "2024"
+          - paragraph [ref=e219]: A Flutter app for tracking university shuttle routes and timings — helping students catch the right ride without the guesswork.
+          - list [ref=e220]:
+            - listitem [ref=e221]: Flutter
+            - listitem [ref=e222]: Dart
+            - listitem [ref=e223]: Maps
+            - listitem [ref=e224]: Realtime
+          - link "Code" [ref=e226] [cursor=pointer]:
+            - /url: https://github.com/shakil2995/Ushuttle
+        - generic [ref=e232]:
+          - generic [ref=e234]:
+            - heading "Tent USA" [level=3] [ref=e235]
+            - generic [ref=e236]: "2025"
+          - paragraph [ref=e237]: A JavaScript web build for a business-facing site — marketing pages and interactions wired up front to back.
+          - list [ref=e238]:
+            - listitem [ref=e239]: JavaScript
+            - listitem [ref=e240]: Web
+            - listitem [ref=e241]: Frontend
+          - link "Code" [ref=e243] [cursor=pointer]:
+            - /url: https://github.com/shakil2995/tent-usa-web
+    - generic [ref=e248]:
+      - generic [ref=e250]:
+        - generic [ref=e251]: 04 —
+        - heading "My journey" [level=2] [ref=e252]
+        - paragraph [ref=e253]: From first commit to full-time fullstack.
+      - list [ref=e256]:
+        - listitem [ref=e257]:
+          - text: 2025 — Now
+          - heading "Software Engineer & Team Lead · ATI Limited" [level=3] [ref=e259]:
+            - text: Software Engineer & Team Lead
+            - generic [ref=e260]: · ATI Limited
+          - paragraph [ref=e261]: "Leading a team and shipping production software — while building my own products on the side: Zinodesk, ATI EMR, and SNS Digital."
+        - listitem [ref=e262]:
+          - text: 2024 — 2025
+          - heading "Mobile App Developer · ATI Limited" [level=3] [ref=e264]:
+            - text: Mobile App Developer
+            - generic [ref=e265]: · ATI Limited
+          - paragraph [ref=e266]: Built cross-platform mobile apps with Flutter, taking features from design through to release.
+        - listitem [ref=e267]:
+          - text: 2023 — 2024
+          - heading "Junior Software Engineer · Winning bees" [level=3] [ref=e269]:
+            - text: Junior Software Engineer
+            - generic [ref=e270]: · Winning bees
+          - paragraph [ref=e271]: Worked across the stack on web products, growing from fundamentals into shipping real features for users.
+        - listitem [ref=e272]:
+          - text: "2023"
+          - heading "Intern Software Engineer · Excellent Soft" [level=3] [ref=e274]:
+            - text: Intern Software Engineer
+            - generic [ref=e275]: · Excellent Soft
+          - paragraph [ref=e276]: My first professional role — a three-month internship where classroom theory met a real codebase.
+        - listitem [ref=e277]:
+          - text: Graduation
+          - heading "B.Sc. in Computer Science & Engineering · Independent University, Bangladesh (IUB)" [level=3] [ref=e279]:
+            - text: B.Sc. in Computer Science & Engineering
+            - generic [ref=e280]: · Independent University, Bangladesh (IUB)
+          - paragraph [ref=e281]: Earned my CSE degree, building the foundations in algorithms, systems, and software design that everything since stands on.
+    - generic [ref=e284]:
+      - generic [ref=e285]: Available worldwide · Remote
+      - heading "Let's build something great." [level=2] [ref=e288]
+      - paragraph [ref=e289]: Got a product in mind, a role to fill, or just want to talk shop? My inbox is always open — I'll get back to you.
+      - generic [ref=e290]:
+        - link "Say hello" [ref=e291] [cursor=pointer]:
+          - /url: mailto:hello@example.com
+        - link "GitHub" [ref=e297] [cursor=pointer]:
+          - /url: https://github.com/shakil2995
+  - contentinfo [ref=e300]:
+    - generic [ref=e301]:
+      - paragraph [ref=e302]: © 2026 Shakil. Built with React, Three.js & Tailwind.
+      - generic [ref=e303]:
+        - link "GitHub" [ref=e304] [cursor=pointer]:
+          - /url: https://github.com/shakil2995
+        - link "Email" [ref=e307] [cursor=pointer]:
+          - /url: mailto:hello@example.com
+        - link "Back to top ↑" [ref=e311] [cursor=pointer]:
+          - /url: "#home"

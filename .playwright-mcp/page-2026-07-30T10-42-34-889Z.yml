@@ -1,0 +1,229 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - navigation [ref=e4]:
+      - link "Home" [ref=e5] [cursor=pointer]:
+        - /url: "#home"
+        - generic [ref=e6]: S
+        - generic [ref=e7]: shakil.dev
+      - list [ref=e8]:
+        - listitem [ref=e9]:
+          - link "Home" [ref=e10] [cursor=pointer]:
+            - /url: "#home"
+        - listitem [ref=e12]:
+          - link "About" [ref=e13] [cursor=pointer]:
+            - /url: "#about"
+        - listitem [ref=e14]:
+          - link "Skills" [ref=e15] [cursor=pointer]:
+            - /url: "#skills"
+        - listitem [ref=e16]:
+          - link "Work" [ref=e17] [cursor=pointer]:
+            - /url: "#work"
+        - listitem [ref=e18]:
+          - link "Journey" [ref=e19] [cursor=pointer]:
+            - /url: "#journey"
+        - listitem [ref=e20]:
+          - link "Contact" [ref=e21] [cursor=pointer]:
+            - /url: "#contact"
+      - link "Let's talk" [ref=e23] [cursor=pointer]:
+        - /url: "#contact"
+  - main [ref=e24]:
+    - generic [ref=e25]:
+      - generic [ref=e28]:
+        - generic [ref=e29]: Available for work
+        - heading "Hi, I'm Shakil." [level=1] [ref=e33]
+        - paragraph [ref=e34]:
+          - text: ">"
+          - generic [ref=e35]: MERN Engineer
+        - paragraph [ref=e37]: I build fast, polished products end to end — web with the MERN stack & Next.js, mobile with Flutter.
+        - generic [ref=e38]:
+          - link "View my work" [ref=e39] [cursor=pointer]:
+            - /url: "#work"
+          - link "Get in touch" [ref=e42] [cursor=pointer]:
+            - /url: "#contact"
+          - link "GitHub profile" [ref=e43] [cursor=pointer]:
+            - /url: https://github.com/shakil2995
+      - link "Scroll to about" [ref=e46] [cursor=pointer]:
+        - /url: "#about"
+    - generic [ref=e49]:
+      - generic [ref=e51]:
+        - generic [ref=e52]: 01 —
+        - heading "About me" [level=2] [ref=e53]
+      - generic [ref=e54]:
+        - generic [ref=e56]:
+          - img "Shakil, Fullstack Developer" [ref=e58]
+          - generic [ref=e59]:
+            - text: Fullstack Developer
+            - generic [ref=e60]: "@ Wiining bees LLC"
+        - generic [ref=e61]:
+          - paragraph [ref=e63]: I'm a fullstack developer who likes owning a product from the database to the pixel. On the web I work across the MERN stack and Next.js; on mobile I ship cross-platform apps with Flutter.
+          - paragraph [ref=e65]: Since my first commit in 2017 I have built shuttle-tracking apps, QR tools, help-desk systems, and plenty of web products in between — always chasing clean architecture and interfaces that feel effortless.
+          - generic [ref=e66]:
+            - generic [ref=e67]:
+              - generic [ref=e68]: 9+
+              - generic [ref=e70]: Years coding
+            - generic [ref=e71]:
+              - generic [ref=e72]: 45+
+              - generic [ref=e74]: Public repos
+            - generic [ref=e75]:
+              - generic [ref=e76]: 15+
+              - generic [ref=e78]: Technologies
+            - generic [ref=e79]:
+              - generic [ref=e80]: 20+
+              - generic [ref=e82]: Projects shipped
+    - generic [ref=e84]:
+      - generic [ref=e86]:
+        - generic [ref=e87]: 02 —
+        - heading "Skills & stack" [level=2] [ref=e88]
+        - paragraph [ref=e89]: The tools I reach for across the frontend, mobile, and backend.
+      - generic [ref=e90]:
+        - generic [ref=e91]:
+          - heading "Frontend" [level=3] [ref=e94]
+          - list [ref=e95]:
+            - listitem [ref=e96]: React
+            - listitem [ref=e97]: Next.js
+            - listitem [ref=e98]: TypeScript
+            - listitem [ref=e99]: JavaScript
+            - listitem [ref=e100]: Tailwind CSS
+            - listitem [ref=e101]: HTML5
+            - listitem [ref=e102]: CSS3
+            - listitem [ref=e103]: Redux
+        - generic [ref=e104]:
+          - heading "Mobile" [level=3] [ref=e107]
+          - list [ref=e108]:
+            - listitem [ref=e109]: Flutter
+            - listitem [ref=e110]: Dart
+            - listitem [ref=e111]: React Native
+            - listitem [ref=e112]: Firebase
+        - generic [ref=e113]:
+          - heading "Backend" [level=3] [ref=e116]
+          - list [ref=e117]:
+            - listitem [ref=e118]: Node.js
+            - listitem [ref=e119]: Express
+            - listitem [ref=e120]: Laravel
+            - listitem [ref=e121]: PHP
+            - listitem [ref=e122]: Python
+            - listitem [ref=e123]: REST APIs
+            - listitem [ref=e124]: MongoDB
+            - listitem [ref=e125]: MySQL
+        - generic [ref=e126]:
+          - heading "Tools & Foundations" [level=3] [ref=e129]
+          - list [ref=e130]:
+            - listitem [ref=e131]: Git
+            - listitem [ref=e132]: GitHub
+            - listitem [ref=e133]: Vite
+            - listitem [ref=e134]: C++
+            - listitem [ref=e135]: Java
+            - listitem [ref=e136]: Data Structures
+    - generic [ref=e137]:
+      - generic [ref=e139]:
+        - generic [ref=e140]: 03 —
+        - heading "Featured work" [level=2] [ref=e141]
+        - paragraph [ref=e142]: A selection of things I've designed, built, and shipped.
+      - generic [ref=e143]:
+        - generic [ref=e145]:
+          - generic [ref=e147]:
+            - heading "Ushuttle" [level=3] [ref=e148]
+            - generic [ref=e149]: "2024"
+          - paragraph [ref=e150]: A Flutter app for tracking university shuttle routes and timings — helping students catch the right ride without the guesswork.
+          - list [ref=e151]:
+            - listitem [ref=e152]: Flutter
+            - listitem [ref=e153]: Dart
+            - listitem [ref=e154]: Maps
+            - listitem [ref=e155]: Realtime
+          - link "Code" [ref=e157] [cursor=pointer]:
+            - /url: https://github.com/shakil2995/Ushuttle
+        - generic [ref=e163]:
+          - generic [ref=e165]:
+            - heading "QRMate" [level=3] [ref=e166]
+            - generic [ref=e167]: "2024"
+          - paragraph [ref=e168]: A QR toolkit built in Flutter to generate and scan codes fast, with a clean, focused mobile interface.
+          - list [ref=e169]:
+            - listitem [ref=e170]: Flutter
+            - listitem [ref=e171]: Dart
+            - listitem [ref=e172]: QR
+            - listitem [ref=e173]: Mobile
+          - link "Code" [ref=e175] [cursor=pointer]:
+            - /url: https://github.com/shakil2995/QRMate-public-demo
+        - generic [ref=e181]:
+          - generic [ref=e183]:
+            - heading "IUB Help-Desk System" [level=3] [ref=e184]
+            - generic [ref=e185]: "2024"
+          - paragraph [ref=e186]: A TypeScript help-desk / ticketing platform for a campus support team — raise, assign, and resolve requests in one place.
+          - list [ref=e187]:
+            - listitem [ref=e188]: TypeScript
+            - listitem [ref=e189]: React
+            - listitem [ref=e190]: Node.js
+          - link "Code" [ref=e192] [cursor=pointer]:
+            - /url: https://github.com/shakil2995/IUB-Help-Desk-System
+        - generic [ref=e198]:
+          - generic [ref=e200]:
+            - heading "Weather App" [level=3] [ref=e201]
+            - generic [ref=e202]: "2023"
+          - paragraph [ref=e203]: A React Native app that pulls live weather from a public API and presents conditions and forecasts in a tidy layout.
+          - list [ref=e204]:
+            - listitem [ref=e205]: React Native
+            - listitem [ref=e206]: API
+            - listitem [ref=e207]: JavaScript
+          - link "Code" [ref=e209] [cursor=pointer]:
+            - /url: https://github.com/shakil2995/React-native-weather-app
+        - generic [ref=e215]:
+          - generic [ref=e217]:
+            - heading "Theme Switcher" [level=3] [ref=e218]
+            - generic [ref=e219]: "2025"
+          - paragraph [ref=e220]: A small, reusable Flutter utility for switching between polished dark and light modes — drop-in and dependency-light.
+          - list [ref=e221]:
+            - listitem [ref=e222]: Flutter
+            - listitem [ref=e223]: Dart
+            - listitem [ref=e224]: Open Source
+          - link "Code" [ref=e226] [cursor=pointer]:
+            - /url: https://github.com/shakil2995/simple_theme_switcher
+        - generic [ref=e232]:
+          - generic [ref=e234]:
+            - heading "Tent USA" [level=3] [ref=e235]
+            - generic [ref=e236]: "2025"
+          - paragraph [ref=e237]: A JavaScript web build for a business-facing site — marketing pages and interactions wired up front to back.
+          - list [ref=e238]:
+            - listitem [ref=e239]: JavaScript
+            - listitem [ref=e240]: Web
+            - listitem [ref=e241]: Frontend
+          - link "Code" [ref=e243] [cursor=pointer]:
+            - /url: https://github.com/shakil2995/tent-usa-web
+    - generic [ref=e248]:
+      - generic [ref=e250]:
+        - generic [ref=e251]: 04 —
+        - heading "My journey" [level=2] [ref=e252]
+        - paragraph [ref=e253]: From first commit to full-time fullstack.
+      - list [ref=e256]:
+        - listitem [ref=e257]:
+          - text: Now
+          - heading "Fullstack Developer · Wiining bees LLC" [level=3] [ref=e259]:
+            - text: Fullstack Developer
+            - generic [ref=e260]: · Wiining bees LLC
+          - paragraph [ref=e261]: Building and maintaining production web and mobile products across the MERN stack, Next.js, and Flutter.
+        - listitem [ref=e262]:
+          - text: 2023 — 2025
+          - heading "Mobile & Web Builds" [level=3] [ref=e264]
+          - paragraph [ref=e265]: Shipped Flutter apps like Ushuttle and QRMate, a TypeScript help-desk system, and a range of MERN web projects.
+        - listitem [ref=e266]:
+          - text: 2017 — 2022
+          - heading "Foundations & First Commit" [level=3] [ref=e268]
+          - paragraph [ref=e269]: Started coding and pushed my first GitHub commit, building up computer-science fundamentals across C++, Java, and Python.
+    - generic [ref=e272]:
+      - generic [ref=e273]: Available worldwide · Remote
+      - heading "Let's build something great." [level=2] [ref=e276]
+      - paragraph [ref=e277]: Got a product in mind, a role to fill, or just want to talk shop? My inbox is always open — I'll get back to you.
+      - generic [ref=e278]:
+        - link "Say hello" [ref=e279] [cursor=pointer]:
+          - /url: mailto:hello@example.com
+        - link "GitHub" [ref=e285] [cursor=pointer]:
+          - /url: https://github.com/shakil2995
+  - contentinfo [ref=e288]:
+    - generic [ref=e289]:
+      - paragraph [ref=e290]: © 2026 Shakil. Built with React, Three.js & Tailwind.
+      - generic [ref=e291]:
+        - link "GitHub" [ref=e292] [cursor=pointer]:
+          - /url: https://github.com/shakil2995
+        - link "Email" [ref=e295] [cursor=pointer]:
+          - /url: mailto:hello@example.com
+        - link "Back to top ↑" [ref=e299] [cursor=pointer]:
+          - /url: "#home"
