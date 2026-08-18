@@ -94,127 +94,104 @@ h4 {
   color: transparent;
 }
 
-/* Base Frosted Glass: Balanced 50% translucency for subtle, sophisticated Moon reactivity */
+/* Base Opaque Frosted Glass Suite */
 .glass {
-  background: rgba(10, 14, 28, 0.44);
-  backdrop-filter: blur(10px) saturate(145%);
-  -webkit-backdrop-filter: blur(10px) saturate(145%);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  background: rgba(11, 15, 29, 0.82);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 32px -4px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
   transform: translateZ(0);
 }
 
 /* Frosted Navigation Bar */
 .glass-nav {
-  background: rgba(10, 13, 24, 0.76);
-  backdrop-filter: blur(14px) saturate(160%);
-  -webkit-backdrop-filter: blur(14px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 10px 32px -4px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  background: rgba(8, 11, 22, 0.88);
+  backdrop-filter: blur(18px) saturate(190%);
+  -webkit-backdrop-filter: blur(18px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 10px 32px -4px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
   transform: translateZ(0);
 }
 
 /* High-Contrast Frosted Drawer for Mobile Menu */
 .glass-menu {
-  background: rgba(8, 10, 22, 0.92);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background: rgba(7, 9, 20, 0.96);
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
   border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.85), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.9), inset 0 1px 0 0 rgba(255, 255, 255, 0.14);
   transform: translateZ(0);
 }
 
-/* Multi-layer Frosted Card (Projects, Skills, Stats, Timeline) */
+/* Opaque Frosted Card (Projects, Skills, Stats, Timeline) */
 .glass-card {
   position: relative;
-  background: rgba(10, 14, 28, 0.48);
-  backdrop-filter: blur(10px) saturate(145%);
-  -webkit-backdrop-filter: blur(10px) saturate(145%);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 10px 32px -4px rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  background: rgba(11, 15, 29, 0.82);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 32px -4px rgba(0, 0, 0, 0.55), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
   transform: translateZ(0);
   transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .glass-card:hover {
   border-color: rgba(255, 255, 255, 0.28);
-  background: rgba(16, 22, 44, 0.54);
-  box-shadow: 0 14px 40px -4px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.18);
+  background: rgba(18, 24, 46, 0.92);
+  box-shadow: 0 16px 44px -4px rgba(0, 0, 0, 0.65), 0 0 24px rgba(56, 189, 248, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
 }
 
-/* Frosted Micro-badge / Pill (Balanced 50% strength) */
+/* Opaque Frosted Micro-badge / Pill */
 .glass-pill {
   position: relative;
-  background: rgba(12, 16, 30, 0.44);
-  backdrop-filter: blur(8px) saturate(145%);
-  -webkit-backdrop-filter: blur(8px) saturate(145%);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  background: rgba(13, 18, 36, 0.78);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   transform: translateZ(0);
   transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .glass-pill:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  background: rgba(18, 24, 46, 0.52);
+  border-color: rgba(255, 255, 255, 0.32);
+  background: rgba(22, 30, 58, 0.90);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
-/* Frosted Chip (Tech stack tags, topic starters) */
+/* Opaque Frosted Chip */
 .glass-chip {
-  background: rgba(12, 16, 30, 0.42);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(13, 18, 36, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   transform: translateZ(0);
+  transition: all 0.2s ease;
+}
+
+.glass-chip:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(20, 28, 54, 0.88);
 }
 
 /* Frosted Interactive Button */
 .glass-button {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.03) 100%), rgba(15, 18, 32, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(14, 18, 36, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.14);
   color: var(--color-ink);
   transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   transform: translateZ(0);
 }
 
 .glass-button:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.05) 100%), rgba(20, 24, 42, 0.9);
-  border-color: rgba(255, 255, 255, 0.28);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45), 0 0 20px rgba(34, 211, 238, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
-
-/* Enhanced Mobile Frosted Blur & Rich Contrast (Prevents cards from feeling transparent on mobile) */
-@media (max-width: 768px) {
-  .glass-card {
-    background: rgba(10, 14, 28, 0.78);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border-color: rgba(255, 255, 255, 0.18);
-    box-shadow: 0 10px 32px -4px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
-  }
-
-  .glass-pill {
-    background: rgba(12, 16, 32, 0.72);
-    backdrop-filter: blur(14px) saturate(160%);
-    -webkit-backdrop-filter: blur(14px) saturate(160%);
-    border-color: rgba(255, 255, 255, 0.2);
-  }
-
-  .glass-chip {
-    background: rgba(12, 16, 32, 0.70);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-
-  .glass {
-    background: rgba(10, 14, 28, 0.75);
-    backdrop-filter: blur(16px) saturate(170%);
-    -webkit-backdrop-filter: blur(16px) saturate(170%);
-  }
+  background: rgba(24, 32, 60, 0.95);
+  border-color: rgba(255, 255, 255, 0.32);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5), 0 0 20px rgba(34, 211, 238, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 
 /* Animated gradient border used on featured cards / CTAs */
