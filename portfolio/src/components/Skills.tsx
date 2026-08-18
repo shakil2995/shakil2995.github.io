@@ -42,19 +42,19 @@ export default function Skills() {
               transition={{ delay: gi * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="h-full"
             >
-              <div className={`flex h-full flex-col justify-start rounded-2xl border border-white/15 bg-[rgba(12,16,32,0.85)] p-5 shadow-md backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-[rgba(18,24,46,0.95)] ${GLOW_ACCENT[group.accent]}`}>
+              <div className={`glass-card flex h-full flex-col justify-start rounded-2xl p-5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-white/[0.09] ${GLOW_ACCENT[group.accent]}`}>
                 <div className="mb-4 flex items-center gap-2.5">
                   <span className={`h-2.5 w-2.5 rounded-full ${DOT[group.accent]}`} />
-                  <h3 className="text-lg font-bold tracking-tight text-white">{group.title}</h3>
+                  <h3 className="text-lg font-bold tracking-tight text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">{group.title}</h3>
                 </div>
                 <ul className="flex flex-wrap gap-2">
                   {group.items.map((item) => (
                     <li
                       key={item.name}
-                      className={`inline-flex h-8 items-center gap-2 rounded-lg border border-white/15 bg-white/[0.05] px-3 font-[var(--font-mono)] text-[12px] font-semibold transition-all hover:scale-105 hover:border-white/35 ${TEXT[group.accent]}`}
+                      className={`glass-pill inline-flex h-8 items-center gap-2 rounded-lg px-3 font-[var(--font-mono)] text-[12px] font-semibold transition-all hover:scale-105 hover:border-white/35 ${TEXT[group.accent]}`}
                     >
                       <TechIcon iconKey={item.iconKey} className="opacity-90 transition-opacity group-hover:opacity-100" />
-                      <span>{item.name}</span>
+                      <span className="drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">{item.name}</span>
                     </li>
                   ))}
                 </ul>

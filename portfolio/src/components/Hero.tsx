@@ -54,28 +54,52 @@ export default function Hero() {
         >
           {/* Status badge */}
           <div className="mb-6">
-            <span className="glass-pill inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold text-[color:var(--color-ink)] shadow-md bg-[rgba(9,12,24,0.88)] border border-white/20 backdrop-blur-md">
+            <span className="glass-pill inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
               </span>
-              Available for new opportunities
+              <span>Available for new opportunities</span>
             </span>
           </div>
 
           {/* Heading */}
-          <h1 className="text-4xl font-bold leading-[1.08] tracking-tight sm:text-6xl lg:text-7xl">
+          <h1 className="font-[var(--font-display)] text-5xl font-bold tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] sm:text-7xl lg:text-8xl">
             Hi, I&apos;m <span className="gradient-text">{profile.firstName}</span>.
           </h1>
 
-          {/* Dynamic Role Subtitle (Without > symbol) */}
-          <p className="mt-4 text-xl font-medium text-[color:var(--color-ink)] sm:text-2xl lg:text-3xl">
+          {/* Dynamic rotating subtitle */}
+          <div className="mt-4 text-xl font-medium tracking-tight text-slate-100 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] sm:text-2xl lg:text-3xl">
             <RotatingRole />
-          </p>
-          {/* Concise Value Statement */}
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-[#d1d5db] sm:text-lg lg:text-xl">
+          </div>
+
+          {/* Tagline */}
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-200 drop-shadow-[0_1px_6px_rgba(0,0,0,0.85)] sm:text-lg">
             {profile.tagline}
           </p>
+
+          {/* Highlights */}
+          <div className="mt-8 grid w-full max-w-3xl grid-cols-2 gap-3 sm:grid-cols-4">
+            {HIGHLIGHTS.map((item, idx) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + idx * 0.06, duration: 0.5 }}
+                className="h-full"
+              >
+                <div className="glass-card group flex h-full flex-col justify-center rounded-2xl p-3.5 text-left transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-white/[0.09] sm:p-4">
+                  <div className="text-xl">{item.icon}</div>
+                  <div className="mt-2 text-sm font-bold text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">
+                    {item.label}
+                  </div>
+                  <div className="text-xs font-semibold text-slate-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
+                    {item.sub}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
 
           {/* Action CTAs */}
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">

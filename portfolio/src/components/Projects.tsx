@@ -28,19 +28,19 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       transition={{ delay: (index % 3) * 0.05, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       className="h-full"
     >
-      <div className="group flex h-full flex-col rounded-2xl border border-white/15 bg-[rgba(12,16,32,0.85)] p-5 sm:p-6 shadow-md backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-[rgba(18,24,46,0.95)]">
+      <div className="glass-card group flex h-full flex-col rounded-2xl p-5 sm:p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-white/[0.09]">
 
         {/* Card Header: Accent bar & Badge */}
         <div className="mb-4 flex items-center justify-between gap-2">
           <div className={`h-1.5 w-12 rounded-full bg-gradient-to-r ${BAR[project.accent]}`} />
-          <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-bold tracking-wide ${BADGE_STYLE(project.badge)}`}>
+          <span className={`glass-pill inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold tracking-wide ${BADGE_STYLE(project.badge)}`}>
             {project.badge || project.categoryLabel}
           </span>
         </div>
 
         {/* Project Screenshot / Visual Container (Properly fitted, not edge-to-edge) */}
         {project.image && (
-          <div className="relative mb-4 w-full overflow-hidden rounded-xl border border-white/15 bg-[#090b14] aspect-[16/9]">
+          <div className="relative mb-4 w-full overflow-hidden rounded-xl border border-white/15 bg-[#090b14]/70 aspect-[16/9]">
             <img
               src={project.image}
               alt={`${project.title} screenshot`}
@@ -52,12 +52,12 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         )}
 
         <div className="flex items-baseline justify-between gap-3">
-          <h3 className="text-xl font-bold tracking-tight text-white transition-colors group-hover:text-cyan-200">
+          <h3 className="text-xl font-bold tracking-tight text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)] transition-colors group-hover:text-cyan-200">
             {project.title}
           </h3>
         </div>
 
-        <p className="mt-2 text-sm leading-relaxed text-[#cbd5e1]">
+        <p className="mt-2 text-sm leading-relaxed text-[#cbd5e1] drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
           {project.blurb}
         </p>
 
@@ -67,7 +67,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             {project.highlights.map((h) => (
               <li key={h} className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-cyan-400" />
-                <span>{h}</span>
+                <span className="drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">{h}</span>
               </li>
             ))}
           </ul>
@@ -78,7 +78,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           {project.tags.map((t) => (
             <li
               key={t}
-              className="rounded-md border border-white/15 bg-white/[0.06] px-2.5 py-0.5 font-[var(--font-mono)] text-[11px] font-semibold text-slate-200"
+              className="glass-pill rounded-md px-2.5 py-0.5 font-[var(--font-mono)] text-[11px] font-semibold text-slate-200"
             >
               {t}
             </li>
