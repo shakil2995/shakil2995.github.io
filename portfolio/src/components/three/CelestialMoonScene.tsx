@@ -3,12 +3,51 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { Float, Stars } from '@react-three/drei'
 import * as THREE from 'three'
 
-/**
- * Generates an aesthetic, stylized celestial lunar texture
- * designed specifically for a futuristic, dark-mode portfolio.
- * Silky pearlescent tones, glowing lunar maria, and neon crater rims.
- */
-function createAestheticMoonTexture(): THREE.CanvasTexture {
+/** Section-based Dynamic Color Themes for Smart Atmospheric Shifting */
+interface SectionTheme {
+  p: number
+  primary: THREE.Color   // Dominant rim & halo light
+  secondary: THREE.Color // Ambient depth tint
+  emissive: THREE.Color  // Subtle inner core glow
+}
+
+const SECTION_THEMES: SectionTheme[] = [
+  // 0.00: Hero — Electric Cyan & Starlight Ice (AI & Fullstack)
+  { p: 0.00, primary: new THREE.Color('#38bdf8'), secondary: new THREE.Color('#818cf8'), emissive: new THREE.Color('#0c192e') },
+  // 0.20: About — Royal Violet & Indigo (Founder Story & Milestones)
+  { p: 0.20, primary: new THREE.Color('#a855f7'), secondary: new THREE.Color('#6366f1'), emissive: new THREE.Color('#1e1035') },
+  // 0.45: Skills — Neon Teal & Mint Green (Performance & Tech Matrix)
+  { p: 0.45, primary: new THREE.Color('#2dd4bf'), secondary: new THREE.Color('#06b6d4'), emissive: new THREE.Color('#062420') },
+  // 0.68: Projects — Radiant Magenta & Electric Violet (Zinodesk & ATI EMR)
+  { p: 0.68, primary: new THREE.Color('#ec4899'), secondary: new THREE.Color('#a855f7'), emissive: new THREE.Color('#290c2b') },
+  // 0.85: Timeline — Cyber Amber & Warm Gold (7+ Years Track Record)
+  { p: 0.85, primary: new THREE.Color('#f59e0b'), secondary: new THREE.Color('#fb923c'), emissive: new THREE.Color('#261706') },
+  // 1.00: Contact — Electric Cyan & Ultra Violet Beacon (Uplink & Reach Out)
+  { p: 1.00, primary: new THREE.Color('#06b6d4'), secondary: new THREE.Color('#c084fc'), emissive: new THREE.Color('#0d182b') },
+]
+
+/** Interpolate between two theme colors based on scroll progress */
+function getInterpolatedTheme(progress: number, curPrim: THREE.Color, curSec: THREE.Color, curEmis: THREE.Color) {
+  for (let i = 0; i < SECTION_THEMES.length - 1; i++) {
+    const a = SECTION_THEMES[i]
+    const b = SECTION_THEMES[i + 1]
+    if (progress >= a.p && progress <= b.p) {
+      const t = (progress - a.p) / (b.p - a.p)
+      const ease = 0.5 - Math.cos(t * Math.PI) * 0.5
+      curPrim.copy(a.primary).lerp(b.primary, ease)
+      curSec.copy(a.secondary).lerp(b.secondary, ease)
+      curEmis.copy(a.emissive).lerp(b.emissive, ease)
+      return
+    }
+  }
+  const last = SECTION_THEMES[SECTION_THEMES.length - 1]
+  curPrim.copy(last.primary)
+  curSec.copy(last.secondary)
+  curEmis.copy(last.emissive)
+}
+
+/** Generates clean, aesthetic pearlescent lunar texture with soft glowing maria */
+function createSmartAestheticMoonTexture(): THREE.CanvasTexture {
   const width = 2048
   const height = 1024
 
@@ -17,32 +56,30 @@ function createAestheticMoonTexture(): THREE.CanvasTexture {
   canvas.height = height
   const ctx = canvas.getContext('2d')!
 
-  // 1. Base Pearlescent Cosmic Gradient (Silky Silver-White to Deep Indigo-Violet)
+  // Pearlescent silver-white gradient base
   const baseGrad = ctx.createLinearGradient(0, 0, width, height)
   baseGrad.addColorStop(0, '#ffffff')
-  baseGrad.addColorStop(0.25, '#f1f5f9')
-  baseGrad.addColorStop(0.55, '#cbd5e1')
-  baseGrad.addColorStop(0.8, '#94a3b8')
-  baseGrad.addColorStop(1, '#64748b')
+  baseGrad.addColorStop(0.3, '#f8fafc')
+  baseGrad.addColorStop(0.65, '#e2e8f0')
+  baseGrad.addColorStop(1, '#94a3b8')
   ctx.fillStyle = baseGrad
   ctx.fillRect(0, 0, width, height)
 
-  // Seeded helper for deterministic aesthetic layout
-  let seed = 123
+  let seed = 99
   function rand() {
     seed = (seed * 9301 + 49297) % 233280
     return seed / 233280
   }
 
-  // 2. Soft, Stylized Luminous Maria Basins (Cosmic Blue/Violet tints)
-  for (let i = 0; i < 10; i++) {
+  // Soft lunar maria basins (semi-transparent for dynamic light transmission)
+  for (let i = 0; i < 12; i++) {
     const cx = (rand() * 0.8 + 0.1) * width
     const cy = (rand() * 0.7 + 0.15) * height
-    const r = 120 + rand() * 220
+    const r = 100 + rand() * 200
 
     const rg = ctx.createRadialGradient(cx, cy, 0, cx, cy, r)
-    rg.addColorStop(0, 'rgba(99, 102, 241, 0.22)')   // Soft Indigo
-    rg.addColorStop(0.5, 'rgba(56, 189, 248, 0.14)') // Electric Cyan
+    rg.addColorStop(0, 'rgba(71, 85, 105, 0.28)')
+    rg.addColorStop(0.6, 'rgba(100, 116, 139, 0.14)')
     rg.addColorStop(1, 'transparent')
 
     ctx.fillStyle = rg
@@ -51,70 +88,29 @@ function createAestheticMoonTexture(): THREE.CanvasTexture {
     ctx.fill()
   }
 
-  // 3. Stylized Elegant Craters (Spherical-mapped, soft glass-like depth + glowing neon rims)
-  interface AestheticCrater {
-    u: number
-    v: number
-    r: number
-    depth: number
-    accent: string
-  }
+  // Stylized crater rings with soft highlights
+  for (let i = 0; i < 45; i++) {
+    const cx = rand() * width
+    const cy = (rand() * 0.8 + 0.1) * height
+    const r = 12 + rand() * 38
 
-  const craters: AestheticCrater[] = []
-
-  // Main featured craters
-  for (let i = 0; i < 38; i++) {
-    craters.push({
-      u: rand(),
-      v: rand() * 0.8 + 0.1,
-      r: 16 + rand() * 45,
-      depth: 0.18 + rand() * 0.25,
-      accent: rand() > 0.5 ? 'rgba(56, 189, 248, 0.45)' : 'rgba(168, 85, 247, 0.4)',
-    })
-  }
-
-  // Smaller micro-craters
-  for (let i = 0; i < 90; i++) {
-    craters.push({
-      u: rand(),
-      v: rand() * 0.9 + 0.05,
-      r: 6 + rand() * 14,
-      depth: 0.12 + rand() * 0.18,
-      accent: 'rgba(255, 255, 255, 0.35)',
-    })
-  }
-
-  craters.forEach((cr) => {
-    const cx = cr.u * width
-    const cy = cr.v * height
-
-    // Soft inner depression gradient
-    const craterGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, cr.r)
-    craterGrad.addColorStop(0, `rgba(30, 41, 59, ${cr.depth * 1.2})`)
-    craterGrad.addColorStop(0.7, `rgba(51, 65, 85, ${cr.depth * 0.6})`)
-    craterGrad.addColorStop(0.95, 'rgba(255, 255, 255, 0.1)')
+    const craterGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r)
+    craterGrad.addColorStop(0, 'rgba(30, 41, 59, 0.35)')
+    craterGrad.addColorStop(0.7, 'rgba(71, 85, 105, 0.18)')
     craterGrad.addColorStop(1, 'transparent')
 
     ctx.fillStyle = craterGrad
     ctx.beginPath()
-    ctx.arc(cx, cy, cr.r, 0, Math.PI * 2)
+    ctx.arc(cx, cy, r, 0, Math.PI * 2)
     ctx.fill()
 
-    // Glowing crescent rim highlight (simulating aesthetic top-right light catch)
-    ctx.strokeStyle = cr.accent
-    ctx.lineWidth = Math.max(cr.r * 0.08, 1.2)
+    // Luminous crater edge highlight
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'
+    ctx.lineWidth = Math.max(r * 0.08, 1.4)
     ctx.beginPath()
-    ctx.arc(cx - cr.r * 0.1, cy - cr.r * 0.1, cr.r * 0.96, Math.PI * 0.7, Math.PI * 1.8)
+    ctx.arc(cx - r * 0.12, cy - r * 0.12, r * 0.94, Math.PI * 0.65, Math.PI * 1.85)
     ctx.stroke()
-  })
-
-  // 4. Subtle Luminous Ethereal Shimmer Wave
-  const waveGrad = ctx.createLinearGradient(0, 0, width, height)
-  waveGrad.addColorStop(0, 'rgba(56, 189, 248, 0.08)')
-  waveGrad.addColorStop(0.5, 'rgba(168, 85, 247, 0.06)')
-  waveGrad.addColorStop(1, 'rgba(236, 72, 153, 0.05)')
-  ctx.fillStyle = waveGrad
-  ctx.fillRect(0, 0, width, height)
+  }
 
   const texture = new THREE.CanvasTexture(canvas)
   texture.wrapS = THREE.RepeatWrapping
@@ -123,17 +119,13 @@ function createAestheticMoonTexture(): THREE.CanvasTexture {
   return texture
 }
 
-/** Ethereal orbital star particles surrounding the moon */
-function AestheticStarDust({ count }: { count: number }) {
+/** Swirling Orbital Star Particles that dynamically shift colors with the theme */
+function DynamicOrbitStars({ count, primaryColor, secondaryColor }: { count: number; primaryColor: THREE.Color; secondaryColor: THREE.Color }) {
   const pointsRef = useRef<THREE.Points>(null)
 
   const { geometry } = useMemo(() => {
     const positions = new Float32Array(count * 3)
     const colors = new Float32Array(count * 3)
-    const cyan = new THREE.Color('#38bdf8')
-    const violet = new THREE.Color('#c084fc')
-    const white = new THREE.Color('#ffffff')
-    const tmp = new THREE.Color()
 
     for (let i = 0; i < count; i++) {
       const angle = (i / count) * Math.PI * 2 + Math.random() * 0.15
@@ -143,13 +135,7 @@ function AestheticStarDust({ count }: { count: number }) {
       const z = Math.sin(angle) * (radius * 0.85)
 
       positions.set([x, y, z], i * 3)
-
-      const rand = Math.random()
-      if (rand < 0.45) tmp.copy(cyan)
-      else if (rand < 0.8) tmp.copy(violet)
-      else tmp.copy(white)
-
-      colors.set([tmp.r, tmp.g, tmp.b], i * 3)
+      colors.set([1, 1, 1], i * 3)
     }
 
     const g = new THREE.BufferGeometry()
@@ -158,17 +144,27 @@ function AestheticStarDust({ count }: { count: number }) {
     return { geometry: g }
   }, [count])
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     if (pointsRef.current) {
       pointsRef.current.rotation.y += delta * 0.22
       pointsRef.current.rotation.x += delta * 0.08
+
+      // Update particle colors based on current theme
+      const colAttr = pointsRef.current.geometry.attributes.color as THREE.BufferAttribute
+      const tmp = new THREE.Color()
+      for (let i = 0; i < count; i++) {
+        const mix = (Math.sin(state.clock.elapsedTime * 2 + i * 0.1) + 1) * 0.5
+        tmp.copy(primaryColor).lerp(secondaryColor, mix)
+        colAttr.setXYZ(i, tmp.r, tmp.g, tmp.b)
+      }
+      colAttr.needsUpdate = true
     }
   })
 
   return (
     <points ref={pointsRef} geometry={geometry}>
       <pointsMaterial
-        size={0.034}
+        size={0.035}
         vertexColors
         transparent
         opacity={0.85}
@@ -180,13 +176,25 @@ function AestheticStarDust({ count }: { count: number }) {
   )
 }
 
-/** The Aesthetic Stylized 3D Moon */
-function StylizedMoon({ isMobile }: { isMobile: boolean }) {
+/** The Smart Dynamic 3D Celestial Moon Guide */
+function SmartCelestialMoon({
+  isMobile,
+  primaryColor,
+  secondaryColor,
+  emissiveColor,
+}: {
+  isMobile: boolean
+  primaryColor: THREE.Color
+  secondaryColor: THREE.Color
+  emissiveColor: THREE.Color
+}) {
   const moonMeshRef = useRef<THREE.Mesh>(null)
+  const halo1Ref = useRef<THREE.Mesh>(null)
+  const halo2Ref = useRef<THREE.Mesh>(null)
   const groupRef = useRef<THREE.Group>(null)
   const scrollProgressRef = useRef(0)
 
-  const moonTexture = useMemo(() => createAestheticMoonTexture(), [])
+  const moonTexture = useMemo(() => createSmartAestheticMoonTexture(), [])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -200,11 +208,11 @@ function StylizedMoon({ isMobile }: { isMobile: boolean }) {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Position waypoints across the sections
+  // Position waypoints across the sections (Mobile placed safely in corner sky in Hero)
   const waypoints = useMemo(() => {
     if (isMobile) {
       return [
-        { p: 0.0, x: 0.92, y: 1.65, z: -1.0, s: 0.62 },  // Corner sky placement in Hero
+        { p: 0.0, x: 0.92, y: 1.65, z: -1.0, s: 0.62 }, // Corner sky in Hero
         { p: 0.2, x: -0.92, y: 0.65, z: -0.9, s: 0.58 },
         { p: 0.45, x: 0.92, y: 0.35, z: -0.9, s: 0.58 },
         { p: 0.68, x: -0.92, y: 0.05, z: -0.9, s: 0.62 },
@@ -242,7 +250,11 @@ function StylizedMoon({ isMobile }: { isMobile: boolean }) {
   }
 
   useFrame((state, delta) => {
-    const target = getTargetTransform(scrollProgressRef.current)
+    const progress = scrollProgressRef.current
+    const target = getTargetTransform(progress)
+
+    // Update dynamic theme colors smoothly
+    getInterpolatedTheme(progress, primaryColor, secondaryColor, emissiveColor)
 
     if (groupRef.current) {
       groupRef.current.position.x = THREE.MathUtils.damp(
@@ -269,61 +281,92 @@ function StylizedMoon({ isMobile }: { isMobile: boolean }) {
     }
 
     if (moonMeshRef.current) {
-      // Gentle cinematic axial rotation
-      moonMeshRef.current.rotation.y += delta * 0.05 + scrollProgressRef.current * 0.015
+      moonMeshRef.current.rotation.y += delta * 0.05 + progress * 0.015
       moonMeshRef.current.rotation.x = 0.08
+
+      // Update material emissive color dynamically
+      const mat = moonMeshRef.current.material as THREE.MeshStandardMaterial
+      if (mat) {
+        mat.emissive.lerp(emissiveColor, delta * 3)
+      }
+    }
+
+    // Dynamic atmospheric halo colors
+    if (halo1Ref.current) {
+      const hMat1 = halo1Ref.current.material as THREE.MeshBasicMaterial
+      if (hMat1) hMat1.color.lerp(primaryColor, delta * 3)
+    }
+    if (halo2Ref.current) {
+      const hMat2 = halo2Ref.current.material as THREE.MeshBasicMaterial
+      if (hMat2) hMat2.color.lerp(secondaryColor, delta * 3)
     }
   })
 
   return (
     <group ref={groupRef} position={[waypoints[0].x, waypoints[0].y, waypoints[0].z]}>
       <Float speed={1.6} rotationIntensity={0.25} floatIntensity={0.4}>
-        {/* Soft, glowing Cyan Atmospheric Halo */}
-        <mesh scale={1.16}>
+        {/* Dynamic Primary Atmospheric Halo (Matches Section Accent) */}
+        <mesh ref={halo1Ref} scale={1.16}>
           <sphereGeometry args={[1, 32, 32]} />
           <meshBasicMaterial
             color="#38bdf8"
             transparent
-            opacity={0.07}
+            opacity={0.085}
             blending={THREE.AdditiveBlending}
             depthWrite={false}
           />
         </mesh>
 
-        {/* Outer Radiant Violet Atmospheric Halo */}
-        <mesh scale={1.32}>
+        {/* Dynamic Secondary Atmospheric Halo */}
+        <mesh ref={halo2Ref} scale={1.34}>
           <sphereGeometry args={[1, 32, 32]} />
           <meshBasicMaterial
             color="#a855f7"
             transparent
-            opacity={0.04}
+            opacity={0.045}
             blending={THREE.AdditiveBlending}
             depthWrite={false}
           />
         </mesh>
 
-        {/* Stylized Luminous 3D Moon Sphere */}
+        {/* The 3D Aesthetic Moon Sphere */}
         <mesh ref={moonMeshRef} castShadow receiveShadow>
           <sphereGeometry args={[1, 64, 64]} />
           <meshStandardMaterial
             map={moonTexture}
             bumpMap={moonTexture}
             bumpScale={0.035}
-            roughness={0.45}
-            metalness={0.05}
-            emissive="#1e1b4b"
-            emissiveIntensity={0.25}
+            roughness={0.42}
+            metalness={0.06}
+            emissive="#0c192e"
+            emissiveIntensity={0.35}
           />
         </mesh>
 
-        {/* Orbiting Stardust Particles */}
-        <AestheticStarDust count={isMobile ? 40 : 85} />
+        {/* Dynamic Color Shifting Star Dust */}
+        <DynamicOrbitStars count={isMobile ? 40 : 85} primaryColor={primaryColor} secondaryColor={secondaryColor} />
       </Float>
     </group>
   )
 }
 
 export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) {
+  const primaryColor = useMemo(() => new THREE.Color('#38bdf8'), [])
+  const secondaryColor = useMemo(() => new THREE.Color('#818cf8'), [])
+  const emissiveColor = useMemo(() => new THREE.Color('#0c192e'), [])
+
+  const light1Ref = useRef<THREE.PointLight>(null)
+  const light2Ref = useRef<THREE.PointLight>(null)
+
+  useFrame((_, delta) => {
+    if (light1Ref.current) {
+      light1Ref.current.color.lerp(primaryColor, delta * 3)
+    }
+    if (light2Ref.current) {
+      light2Ref.current.color.lerp(secondaryColor, delta * 3)
+    }
+  })
+
   return (
     <Canvas
       dpr={[1, isMobile ? 1.5 : 2]}
@@ -331,15 +374,12 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       style={{ pointerEvents: 'none' }}
     >
-      {/* Soft Ethereal Ambient Glow */}
-      <ambientLight intensity={0.65} color="#e0e7ff" />
-
-      {/* Main Stylized Light Source */}
+      <ambientLight intensity={0.6} color="#e0e7ff" />
       <directionalLight position={[6, 4, 5]} intensity={2.8} color="#ffffff" />
 
-      {/* Cyan & Violet Atmospheric Rim Lights */}
-      <pointLight position={[-6, -4, -3]} intensity={26} color="#38bdf8" distance={22} />
-      <pointLight position={[3, -5, 2]} intensity={20} color="#a855f7" distance={20} />
+      {/* Dynamic Section Lighting that casts smart atmospheric glow */}
+      <pointLight ref={light1Ref} position={[-6, -4, -3]} intensity={28} color="#38bdf8" distance={22} />
+      <pointLight ref={light2Ref} position={[3, -5, 2]} intensity={22} color="#a855f7" distance={20} />
 
       {/* Background Starfield */}
       <Stars
@@ -352,7 +392,12 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
         speed={0.3}
       />
 
-      <StylizedMoon isMobile={isMobile} />
+      <SmartCelestialMoon
+        isMobile={isMobile}
+        primaryColor={primaryColor}
+        secondaryColor={secondaryColor}
+        emissiveColor={emissiveColor}
+      />
     </Canvas>
   )
 }
