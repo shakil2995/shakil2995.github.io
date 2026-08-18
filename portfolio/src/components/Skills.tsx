@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import { skills } from '../data/portfolio'
 import { SectionHeading } from './ui/SectionHeading'
-import { TechIcon } from './ui/icons'
 
 const DOT: Record<string, string> = {
   cyan: 'bg-cyan-400',
@@ -51,9 +50,8 @@ export default function Skills() {
                   {group.items.map((item) => (
                     <li
                       key={item.name}
-                      className={`glass-pill inline-flex h-8 items-center gap-2 rounded-lg px-3 font-[var(--font-mono)] text-[12px] font-semibold transition-all hover:scale-105 hover:border-white/35 ${TEXT[group.accent]}`}
+                      className={`glass-pill inline-flex items-center justify-center whitespace-nowrap rounded-lg px-3 py-1.5 font-[var(--font-mono)] text-[12px] font-semibold tracking-wide transition-all duration-200 hover:-translate-y-0.5 hover:scale-105 hover:border-white/40 ${TEXT[group.accent]}`}
                     >
-                      <TechIcon iconKey={item.iconKey} className="opacity-90 transition-opacity group-hover:opacity-100" />
                       <span className="drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">{item.name}</span>
                     </li>
                   ))}
