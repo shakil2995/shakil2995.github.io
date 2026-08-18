@@ -177,10 +177,6 @@ function DynamicOrbitStars({ count, primaryColor, secondaryColor }: { count: num
 }
 
 /** The Smart Dynamic 3D Celestial Moon Guide */
-const tempVec = new THREE.Vector3()
-let lastScreenX = -9999
-let lastScreenY = -9999
-
 function SmartCelestialMoon({
   isMobile,
   primaryColor,
@@ -192,10 +188,8 @@ function SmartCelestialMoon({
   secondaryColor: THREE.Color
   emissiveColor: THREE.Color
 }) {
-  const moonMeshRef = useRef<THREE.Mesh>(null)
-  const halo1Ref = useRef<THREE.Mesh>(null)
-  const halo2Ref = useRef<THREE.Mesh>(null)
   const groupRef = useRef<THREE.Group>(null)
+  const moonMeshRef = useRef<THREE.Mesh>(null)
   const scrollProgressRef = useRef(0)
 
   const moonTexture = useMemo(() => createSmartAestheticMoonTexture(), [])
@@ -262,13 +256,13 @@ function SmartCelestialMoon({
     if (groupRef.current) {
       groupRef.current.position.x = THREE.MathUtils.damp(
         groupRef.current.position.x,
-        target.x + state.pointer.x * 0.15,
+        target.x + state.pointer.x * 0.12,
         4,
         delta
       )
       groupRef.current.position.y = THREE.MathUtils.damp(
         groupRef.current.position.y,
-        target.y + state.pointer.y * 0.15,
+        target.y + state.pointer.y * 0.12,
         4,
         delta
       )
@@ -281,19 +275,6 @@ function SmartCelestialMoon({
 
       const curScale = THREE.MathUtils.damp(groupRef.current.scale.x, target.s, 4, delta)
       groupRef.current.scale.set(curScale, curScale, curScale)
-
-      // Project 3D Moon position into 2D viewport coordinates with deadzone throttling to avoid layout thrashing
-      groupRef.current.getWorldPosition(tempVec)
-      tempVec.project(state.camera)
-      const screenX = (tempVec.x * 0.5 + 0.5) * window.innerWidth
-      const screenY = (-(tempVec.y * 0.5) + 0.5) * window.innerHeight
-
-      if (Math.abs(screenX - lastScreenX) > 3 || Math.abs(screenY - lastScreenY) > 3) {
-        lastScreenX = screenX
-        lastScreenY = screenY
-        document.documentElement.style.setProperty('--moon-screen-x', `${screenX.toFixed(0)}px`)
-        document.documentElement.style.setProperty('--moon-screen-y', `${screenY.toFixed(0)}px`)
-      }
     }
 
     if (moonMeshRef.current) {
@@ -306,48 +287,14 @@ function SmartCelestialMoon({
         mat.emissive.lerp(emissiveColor, delta * 3)
       }
     }
-
-    // Dynamic atmospheric halo colors
-    if (halo1Ref.current) {
-      const hMat1 = halo1Ref.current.material as THREE.MeshBasicMaterial
-      if (hMat1) hMat1.color.lerp(primaryColor, delta * 3)
-    }
-    if (halo2Ref.current) {
-      const hMat2 = halo2Ref.current.material as THREE.MeshBasicMaterial
-      if (hMat2) hMat2.color.lerp(secondaryColor, delta * 3)
-    }
   })
 
   return (
     <group ref={groupRef} position={[waypoints[0].x, waypoints[0].y, waypoints[0].z]}>
       <Float speed={1.6} rotationIntensity={0.25} floatIntensity={0.4}>
-        {/* Dynamic Primary Atmospheric Halo (Matches Section Accent - Reduced 20% on Desktop) */}
-        <mesh ref={halo1Ref} scale={isMobile ? 1.16 : 1.12}>
-          <sphereGeometry args={[1, 24, 24]} />
-          <meshBasicMaterial
-            color="#38bdf8"
-            transparent
-            opacity={isMobile ? 0.085 : 0.068}
-            blending={THREE.AdditiveBlending}
-            depthWrite={false}
-          />
-        </mesh>
-
-        {/* Dynamic Secondary Atmospheric Halo (Reduced 20% on Desktop) */}
-        <mesh ref={halo2Ref} scale={isMobile ? 1.34 : 1.25}>
-          <sphereGeometry args={[1, 24, 24]} />
-          <meshBasicMaterial
-            color="#a855f7"
-            transparent
-            opacity={isMobile ? 0.045 : 0.036}
-            blending={THREE.AdditiveBlending}
-            depthWrite={false}
-          />
-        </mesh>
-
         {/* The 3D Aesthetic Moon Sphere */}
-        <mesh ref={moonMeshRef} castShadow receiveShadow>
-          <sphereGeometry args={[1, 40, 40]} />
+        <mesh ref={moonMeshRef}>
+          <sphereGeometry args={[1, 36, 36]} />
           <meshStandardMaterial
             map={moonTexture}
             bumpMap={moonTexture}
@@ -355,12 +302,12 @@ function SmartCelestialMoon({
             roughness={0.44}
             metalness={0.06}
             emissive="#08101e"
-            emissiveIntensity={isMobile ? 0.35 : 0.28}
+            emissiveIntensity={isMobile ? 0.32 : 0.25}
           />
         </mesh>
 
         {/* Dynamic Color Shifting Star Dust */}
-        <DynamicOrbitStars count={isMobile ? 25 : 45} primaryColor={primaryColor} secondaryColor={secondaryColor} />
+        <DynamicOrbitStars count={isMobile ? 20 : 35} primaryColor={primaryColor} secondaryColor={secondaryColor} />
       </Float>
     </group>
   )
@@ -368,31 +315,24 @@ function SmartCelestialMoon({
 
 function DynamicSceneLighting({
   primaryColor,
-  secondaryColor,
   isMobile,
 }: {
   primaryColor: THREE.Color
-  secondaryColor: THREE.Color
   isMobile: boolean
 }) {
-  const light1Ref = useRef<THREE.PointLight>(null)
-  const light2Ref = useRef<THREE.PointLight>(null)
+  const fillLightRef = useRef<THREE.DirectionalLight>(null)
 
   useFrame((_, delta) => {
-    if (light1Ref.current) {
-      light1Ref.current.color.lerp(primaryColor, delta * 3)
-    }
-    if (light2Ref.current) {
-      light2Ref.current.color.lerp(secondaryColor, delta * 3)
+    if (fillLightRef.current) {
+      fillLightRef.current.color.lerp(primaryColor, delta * 3)
     }
   })
 
   return (
     <>
-      <ambientLight intensity={isMobile ? 0.6 : 0.52} color="#e0e7ff" />
-      <directionalLight position={[6, 4, 5]} intensity={isMobile ? 2.8 : 2.3} color="#ffffff" />
-      <pointLight ref={light1Ref} position={[-6, -4, -3]} intensity={isMobile ? 28 : 22} color="#38bdf8" distance={20} />
-      <pointLight ref={light2Ref} position={[3, -5, 2]} intensity={isMobile ? 22 : 17} color="#a855f7" distance={18} />
+      <ambientLight intensity={isMobile ? 0.65 : 0.55} color="#e0e7ff" />
+      <directionalLight position={[5, 4, 4]} intensity={isMobile ? 2.5 : 2.1} color="#ffffff" />
+      <directionalLight ref={fillLightRef} position={[-4, -3, 2]} intensity={isMobile ? 1.0 : 0.8} color="#38bdf8" />
     </>
   )
 }
@@ -409,7 +349,7 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       style={{ pointerEvents: 'none' }}
     >
-      <DynamicSceneLighting primaryColor={primaryColor} secondaryColor={secondaryColor} isMobile={isMobile} />
+      <DynamicSceneLighting primaryColor={primaryColor} isMobile={isMobile} />
 
       {/* Background Starfield */}
       <Stars
