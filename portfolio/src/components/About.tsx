@@ -50,9 +50,9 @@ export default function About() {
                 className="aspect-square w-full rounded-2xl object-cover object-[center_20%] shadow-2xl"
               />
             </div>
-            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-xl border border-white/20 bg-[rgba(10,13,26,0.92)] px-4 py-2 text-sm shadow-xl backdrop-blur-md">
+            <div className="glass-pill absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-xl px-4 py-2 text-sm shadow-xl">
               <span className="gradient-text font-bold">{profile.role}</span>
-              <span className="text-slate-300 font-medium"> @ {profile.company}</span>
+              <span className="font-medium text-slate-200"> @ {profile.company}</span>
             </div>
           </div>
         </Reveal>
@@ -82,11 +82,11 @@ export default function About() {
                   transition={{ delay: i * 0.07, duration: 0.5 }}
                   className="h-full"
                 >
-                  <div className="h-full rounded-2xl border border-white/15 bg-[rgba(12,16,32,0.85)] p-4 text-center shadow-md backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/40 hover:bg-[rgba(18,24,46,0.95)]">
-                    <div className="font-[var(--font-display)] text-2xl font-bold text-white sm:text-3xl">
+                  <div className="glass-card h-full rounded-2xl p-4 text-center shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/40 hover:bg-white/[0.09]">
+                    <div className="font-[var(--font-display)] text-2xl font-bold text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)] sm:text-3xl">
                       <Counter target={value} suffix={s.suffix} />
                     </div>
-                    <div className="mt-1 text-xs font-semibold tracking-wide text-slate-300">{s.label}</div>
+                    <div className="mt-1 text-xs font-semibold tracking-wide text-slate-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">{s.label}</div>
                   </div>
                 </motion.div>
               )

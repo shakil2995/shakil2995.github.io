@@ -44,9 +44,9 @@ export default function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="rounded-3xl border border-white/15 bg-[rgba(10,13,26,0.85)] p-7 text-center shadow-2xl backdrop-blur-xl sm:p-12"
+          className="glass-card rounded-3xl p-7 text-center shadow-2xl sm:p-12"
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3.5 py-1.5 text-xs font-semibold text-slate-200">
+          <span className="glass-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold text-slate-200">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
@@ -54,13 +54,13 @@ export default function Contact() {
             Available for new projects &amp; roles
           </span>
 
-          <h2 className="mt-7 text-4xl font-bold leading-[1.08] text-white sm:text-5xl lg:text-6xl">
+          <h2 className="mt-7 text-4xl font-bold leading-[1.08] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] sm:text-5xl lg:text-6xl">
             Have an idea?
             <br />
             Let&apos;s <span className="gradient-text">make it real.</span>
           </h2>
 
-          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-slate-200 sm:text-lg">
+          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-slate-200 drop-shadow-[0_1px_6px_rgba(0,0,0,0.85)] sm:text-lg">
             A product to launch, a role to fill, or just a quick chat — message me directly on WhatsApp
             or give me a call anytime.
           </p>
@@ -69,13 +69,13 @@ export default function Contact() {
           <button
             type="button"
             onClick={copyPhone}
-            className="glass lift glow mx-auto mt-9 flex items-center gap-3 rounded-xl px-4 py-3 font-[var(--font-mono)] text-sm text-[color:var(--color-ink)]"
+            className="glass-pill mx-auto mt-9 flex items-center gap-3 rounded-xl px-4 py-3 font-[var(--font-mono)] text-sm text-white shadow-md transition-all hover:scale-105"
             aria-label="Copy WhatsApp phone number"
           >
             <PhoneIcon width={16} height={16} className="text-emerald-400" />
             <span>{socials.phoneDisplay}</span>
             <span
-              className={`inline-flex items-center gap-1 text-xs transition-colors ${copied ? 'text-emerald-400 font-medium' : 'text-[color:var(--color-faint)]'
+              className={`inline-flex items-center gap-1 text-xs transition-colors ${copied ? 'text-emerald-400 font-medium' : 'text-slate-300'
                 }`}
             >
               {copied ? (
@@ -92,7 +92,7 @@ export default function Contact() {
 
           {/* Quick WhatsApp Topic Starters */}
           <div className="mt-7 flex flex-wrap items-center justify-center gap-2">
-            <span className="w-full text-xs font-medium uppercase tracking-wider text-[color:var(--color-faint)]">
+            <span className="w-full text-xs font-medium uppercase tracking-wider text-slate-300">
               Quick WhatsApp Starters
             </span>
             {QUICK_TOPICS.map((topic) => (
@@ -101,7 +101,7 @@ export default function Contact() {
                 href={getWhatsAppLink(topic.message)}
                 target="_blank"
                 rel="noreferrer"
-                className="glass glow inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs text-[color:var(--color-muted)] transition-all hover:scale-105 hover:text-[color:var(--color-ink)] hover:border-emerald-400/40"
+                className="glass-pill inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs text-slate-200 transition-all hover:scale-105 hover:border-emerald-400/40 hover:text-white"
               >
                 {topic.label}
                 <ArrowUpRight width={12} height={12} className="opacity-70" />
