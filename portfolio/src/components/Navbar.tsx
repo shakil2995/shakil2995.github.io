@@ -91,7 +91,7 @@ export default function Navbar() {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className="glass mx-auto mt-2 max-w-6xl overflow-hidden rounded-2xl p-2 md:hidden"
+            className="glass mx-auto mt-2 max-w-6xl overflow-hidden rounded-2xl border border-white/15 bg-[rgba(10,13,26,0.95)] p-3 shadow-2xl backdrop-blur-xl md:hidden"
           >
             <ul className="flex flex-col">
               {SECTIONS.map((s) => (
@@ -99,9 +99,9 @@ export default function Navbar() {
                   <a
                     href={`#${s.id}`}
                     onClick={() => setOpen(false)}
-                    className={`block rounded-lg px-4 py-3 text-sm ${active === s.id
-                        ? 'gradient-text font-semibold'
-                        : 'text-[color:var(--color-muted)]'
+                    className={`block rounded-xl px-4 py-3 text-sm font-medium transition-colors ${active === s.id
+                        ? 'gradient-text bg-white/5 font-bold'
+                        : 'text-slate-200 hover:bg-white/5 hover:text-white'
                       }`}
                   >
                     {s.label}
@@ -109,6 +109,28 @@ export default function Navbar() {
                 </li>
               ))}
             </ul>
+
+            {/* Mobile Action Buttons (WhatsApp Chat + Let's Talk) */}
+            <div className="mt-2 flex flex-col gap-2 border-t border-white/10 pt-3">
+              <a
+                href={socials.whatsapp}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-center gap-2 rounded-xl border border-emerald-400/40 bg-emerald-500/15 py-2.5 text-sm font-semibold text-emerald-300 shadow-md transition-all active:scale-95"
+              >
+                <WhatsAppIcon width={17} height={17} />
+                <span>Chat on WhatsApp</span>
+              </a>
+
+              <a
+                href="#contact"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-center rounded-xl bg-gradient-to-r from-cyan-400 to-violet-500 py-2.5 text-sm font-bold text-[#05060c] shadow-md transition-all active:scale-95"
+              >
+                Let&apos;s talk
+              </a>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
