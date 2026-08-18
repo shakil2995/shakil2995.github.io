@@ -208,25 +208,25 @@ function SmartCelestialMoon({
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Position waypoints across the sections with grand celestial scale
+  // Dynamic Section-Aware Sizing & Positioning based on content density and empty negative space
   const waypoints = useMemo(() => {
     if (isMobile) {
       return [
-        { p: 0.0, x: 0.9, y: 1.55, z: -1.0, s: 1.35 }, // Large corner sky in Hero
-        { p: 0.2, x: -0.9, y: 0.65, z: -0.9, s: 1.2 },
-        { p: 0.45, x: 0.9, y: 0.35, z: -0.9, s: 1.2 },
-        { p: 0.68, x: -0.9, y: 0.05, z: -0.9, s: 1.25 },
-        { p: 0.85, x: 0.9, y: -0.1, z: -0.9, s: 1.2 },
-        { p: 1.0, x: 0.0, y: 1.6, z: -0.9, s: 1.45 },
+        { p: 0.0, x: 0.92, y: 1.6, z: -1.0, s: 1.25 },  // Hero: Corner sky accent
+        { p: 0.2, x: -0.92, y: 0.65, z: -0.9, s: 0.85 }, // About: Compact margin
+        { p: 0.45, x: 0.92, y: 0.35, z: -0.9, s: 0.8 },  // Skills: Compact margin
+        { p: 0.68, x: -0.92, y: 0.05, z: -0.9, s: 0.9 },  // Projects: Medium margin
+        { p: 0.85, x: 0.92, y: -0.1, z: -0.9, s: 0.85 }, // Timeline: Compact margin
+        { p: 1.0, x: 0.0, y: 1.65, z: -0.9, s: 1.45 },  // Contact: Grand finale beacon
       ]
     }
     return [
-      { p: 0.0, x: 2.3, y: 0.1, z: 0.0, s: 2.15 }, // Grand majestic scale in Hero
-      { p: 0.2, x: -2.35, y: 0.35, z: 0.2, s: 1.85 },
-      { p: 0.45, x: 2.4, y: 0.2, z: 0.1, s: 1.8 },
-      { p: 0.68, x: -2.35, y: -0.1, z: 0.3, s: 1.95 },
-      { p: 0.85, x: 2.35, y: 0.05, z: 0.2, s: 1.8 },
-      { p: 1.0, x: 0.0, y: 1.5, z: -0.2, s: 2.2 },
+      { p: 0.0, x: 2.3, y: 0.1, z: 0.0, s: 2.15 },    // Hero: Grand celestial entrance
+      { p: 0.2, x: -2.38, y: 0.35, z: 0.2, s: 1.45 }, // About: Medium-compact, leaves room for cards
+      { p: 0.45, x: 2.45, y: 0.2, z: 0.1, s: 1.35 },  // Skills: Compact, tucked in right margin
+      { p: 0.68, x: -2.4, y: -0.1, z: 0.3, s: 1.65 }, // Projects: Medium-large glowing alongside showcases
+      { p: 0.85, x: 2.4, y: 0.05, z: 0.2, s: 1.4 },   // Timeline: Medium, balances timeline tree
+      { p: 1.0, x: 0.0, y: 1.45, z: -0.2, s: 2.35 },   // Contact: Majestic Full Moon overhead
     ]
   }, [isMobile])
 
