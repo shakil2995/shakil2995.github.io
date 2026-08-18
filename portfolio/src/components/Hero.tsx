@@ -6,20 +6,20 @@ import { ArrowDown, ArrowUpRight, DocumentIcon, GitHubIcon, LinkedInIcon } from 
 function RotatingRole() {
   const [i, setI] = useState(0)
   useEffect(() => {
-    const t = setInterval(() => setI((v) => (v + 1) % profile.roles.length), 2400)
+    const t = setInterval(() => setI((v) => (v + 1) % profile.roles.length), 2600)
     return () => clearInterval(t)
   }, [])
 
   return (
-    <span className="inline-flex h-[1.4em] items-center overflow-hidden align-bottom">
+    <span className="relative inline-flex h-[1.35em] items-center justify-center overflow-hidden align-bottom">
       <AnimatePresence mode="wait">
         <motion.span
           key={i}
-          initial={{ y: '100%', opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: '-100%', opacity: 0 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="gradient-text font-[var(--font-mono)] font-semibold"
+          initial={{ y: 24, opacity: 0, filter: 'blur(4px)' }}
+          animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
+          exit={{ y: -24, opacity: 0, filter: 'blur(4px)' }}
+          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          className="bg-gradient-to-r from-cyan-300 via-sky-200 to-indigo-300 bg-clip-text font-[var(--font-display)] text-2xl font-bold tracking-tight text-transparent drop-shadow-[0_0_24px_rgba(56,189,248,0.3)] sm:text-3xl lg:text-4xl"
         >
           {profile.roles[i]}
         </motion.span>
@@ -56,18 +56,22 @@ export default function Hero() {
             </span>
           </div>
 
-          {/* Heading */}
-          <h1 className="font-[var(--font-display)] text-5xl font-bold tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] sm:text-7xl lg:text-8xl">
-            Hi, I&apos;m <span className="gradient-text">{profile.firstName}</span>.
+          {/* Premium Headline */}
+          <h1 className="font-[var(--font-display)] text-5xl font-extrabold tracking-[-0.035em] text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.85)] sm:text-7xl lg:text-8xl">
+            <span className="font-light text-slate-100">Hi, I&apos;m </span>
+            <span className="bg-gradient-to-r from-cyan-300 via-sky-300 to-violet-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(56,189,248,0.35)]">
+              {profile.firstName}
+            </span>
+            <span className="text-cyan-400">.</span>
           </h1>
 
           {/* Dynamic rotating subtitle */}
-          <div className="mt-4 text-xl font-medium tracking-tight text-slate-100 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] sm:text-2xl lg:text-3xl">
+          <div className="mt-4 flex items-center justify-center">
             <RotatingRole />
           </div>
 
           {/* Tagline */}
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-200 drop-shadow-[0_1px_6px_rgba(0,0,0,0.85)] sm:text-lg">
+          <p className="mx-auto mt-6 max-w-2xl text-base font-normal leading-relaxed text-slate-300 drop-shadow-[0_1px_8px_rgba(0,0,0,0.9)] sm:text-lg lg:text-xl">
             {profile.tagline}
           </p>
 
