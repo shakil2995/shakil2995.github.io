@@ -57,16 +57,14 @@ export default function About() {
           </div>
         </Reveal>
 
-        <div className="order-1 lg:order-2 flex flex-col justify-between">
-          <div className="rounded-2xl border border-white/20 bg-[rgba(9,12,24,0.88)] p-5 shadow-xl backdrop-blur-md sm:p-7">
-            {about.paragraphs.map((p, i) => (
-              <p key={i} className="mb-3.5 text-base leading-relaxed text-slate-200 last:mb-0 sm:text-lg">
-                {p}
-              </p>
-            ))}
-          </div>
+        <div className="order-1 lg:order-2">
+          {about.paragraphs.map((p, i) => (
+            <Reveal key={i} delay={i * 0.08}>
+              <p className="mb-4 text-base leading-relaxed text-slate-200 sm:text-lg">{p}</p>
+            </Reveal>
+          ))}
 
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {stats.map((s, i) => {
               const value = s.key === 'years' ? years : (s.value ?? 0)
               return (
@@ -78,7 +76,7 @@ export default function About() {
                   transition={{ delay: i * 0.07, duration: 0.5 }}
                   className="h-full"
                 >
-                  <div className="h-full rounded-2xl border border-white/20 bg-[rgba(9,12,24,0.88)] p-4 text-center shadow-md backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/40 hover:bg-[rgba(14,18,36,0.95)]">
+                  <div className="h-full rounded-2xl border border-white/15 bg-[rgba(12,16,32,0.85)] p-4 text-center shadow-md backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/40 hover:bg-[rgba(18,24,46,0.95)]">
                     <div className="font-[var(--font-display)] text-2xl font-bold text-white sm:text-3xl">
                       <Counter target={value} suffix={s.suffix} />
                     </div>

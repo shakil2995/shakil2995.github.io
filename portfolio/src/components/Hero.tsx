@@ -138,7 +138,7 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 + i * 0.08, duration: 0.5 }}
-                className="flex items-center gap-2.5 rounded-xl border border-white/20 bg-[rgba(9,12,24,0.88)] p-3 text-left shadow-md backdrop-blur-md transition-all hover:border-white/35 hover:bg-[rgba(14,18,36,0.95)]"
+                className="flex items-center gap-2.5 rounded-xl border border-white/15 bg-[rgba(12,16,32,0.85)] p-3 text-left shadow-sm backdrop-blur-md transition-all hover:border-white/30 hover:bg-[rgba(18,24,46,0.9)]"
               >
                 <span className="text-lg">{h.icon}</span>
                 <div className="min-w-0">
