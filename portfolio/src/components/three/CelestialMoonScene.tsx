@@ -208,25 +208,25 @@ function SmartCelestialMoon({
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Position waypoints across the sections (Mobile placed safely in corner sky in Hero)
+  // Position waypoints across the sections with grand celestial scale
   const waypoints = useMemo(() => {
     if (isMobile) {
       return [
-        { p: 0.0, x: 0.92, y: 1.65, z: -1.0, s: 0.62 }, // Corner sky in Hero
-        { p: 0.2, x: -0.92, y: 0.65, z: -0.9, s: 0.58 },
-        { p: 0.45, x: 0.92, y: 0.35, z: -0.9, s: 0.58 },
-        { p: 0.68, x: -0.92, y: 0.05, z: -0.9, s: 0.62 },
-        { p: 0.85, x: 0.92, y: -0.1, z: -0.9, s: 0.58 },
-        { p: 1.0, x: 0.0, y: 1.65, z: -0.9, s: 0.72 },
+        { p: 0.0, x: 0.9, y: 1.55, z: -1.0, s: 1.35 }, // Large corner sky in Hero
+        { p: 0.2, x: -0.9, y: 0.65, z: -0.9, s: 1.2 },
+        { p: 0.45, x: 0.9, y: 0.35, z: -0.9, s: 1.2 },
+        { p: 0.68, x: -0.9, y: 0.05, z: -0.9, s: 1.25 },
+        { p: 0.85, x: 0.9, y: -0.1, z: -0.9, s: 1.2 },
+        { p: 1.0, x: 0.0, y: 1.6, z: -0.9, s: 1.45 },
       ]
     }
     return [
-      { p: 0.0, x: 2.35, y: 0.15, z: 0.0, s: 1.3 },
-      { p: 0.2, x: -2.35, y: 0.35, z: 0.2, s: 1.12 },
-      { p: 0.45, x: 2.4, y: 0.2, z: 0.1, s: 1.08 },
-      { p: 0.68, x: -2.35, y: -0.1, z: 0.3, s: 1.18 },
-      { p: 0.85, x: 2.35, y: 0.05, z: 0.2, s: 1.08 },
-      { p: 1.0, x: 0.0, y: 1.45, z: -0.2, s: 1.35 },
+      { p: 0.0, x: 2.3, y: 0.1, z: 0.0, s: 2.15 }, // Grand majestic scale in Hero
+      { p: 0.2, x: -2.35, y: 0.35, z: 0.2, s: 1.85 },
+      { p: 0.45, x: 2.4, y: 0.2, z: 0.1, s: 1.8 },
+      { p: 0.68, x: -2.35, y: -0.1, z: 0.3, s: 1.95 },
+      { p: 0.85, x: 2.35, y: 0.05, z: 0.2, s: 1.8 },
+      { p: 1.0, x: 0.0, y: 1.5, z: -0.2, s: 2.2 },
     ]
   }, [isMobile])
 
