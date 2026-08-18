@@ -71,7 +71,7 @@ export default function Timeline() {
 
                 {/* Sleek Subtle Frosted Glass Card */}
                 <div
-                  className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-[rgba(11,15,28,0.58)] p-5 backdrop-blur-md transition-all duration-300 sm:p-6 ${styles.border} ${styles.glow} hover:-translate-y-0.5 hover:bg-[rgba(16,22,42,0.72)]`}
+                  className={`group relative overflow-hidden rounded-2xl border border-white/14 bg-[rgba(10,14,28,0.65)] p-5 backdrop-blur-md transition-all duration-300 sm:p-6 ${styles.border} ${styles.glow} hover:-translate-y-0.5 hover:bg-[rgba(16,22,42,0.78)]`}
                 >
                   {/* Subtle top inner gradient highlight */}
                   <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />

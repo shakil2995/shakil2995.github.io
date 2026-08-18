@@ -28,7 +28,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       transition={{ delay: (index % 3) * 0.05, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       className="h-full"
     >
-      <div className="group flex h-full flex-col rounded-2xl border border-white/15 bg-[rgba(12,16,32,0.85)] p-5 sm:p-6 shadow-md backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-[rgba(18,24,46,0.95)]">
+      <div className="group flex h-full flex-col rounded-2xl border border-white/14 bg-[rgba(10,14,28,0.65)] p-5 sm:p-6 shadow-md backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-[rgba(16,22,42,0.78)]">
 
         {/* Card Header: Accent bar & Badge */}
         <div className="mb-4 flex items-center justify-between gap-2">
