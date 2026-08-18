@@ -278,6 +278,15 @@ function SmartCelestialMoon({
 
       const curScale = THREE.MathUtils.damp(groupRef.current.scale.x, target.s, 4, delta)
       groupRef.current.scale.set(curScale, curScale, curScale)
+
+      // Project 3D Moon position into 2D viewport coordinates for real-time edge border proximity lighting
+      const worldPos = new THREE.Vector3()
+      groupRef.current.getWorldPosition(worldPos)
+      worldPos.project(state.camera)
+      const screenX = (worldPos.x * 0.5 + 0.5) * window.innerWidth
+      const screenY = (-(worldPos.y * 0.5) + 0.5) * window.innerHeight
+      document.documentElement.style.setProperty('--moon-screen-x', `${screenX.toFixed(1)}px`)
+      document.documentElement.style.setProperty('--moon-screen-y', `${screenY.toFixed(1)}px`)
     }
 
     if (moonMeshRef.current) {

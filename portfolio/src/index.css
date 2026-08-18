@@ -123,6 +123,7 @@ h4 {
 
 /* Multi-layer Frosted Card (Projects, Skills, Stats, Timeline) */
 .glass-card {
+  position: relative;
   background: rgba(10, 14, 28, 0.40);
   backdrop-filter: blur(14px) saturate(150%);
   -webkit-backdrop-filter: blur(14px) saturate(150%);
@@ -130,13 +131,54 @@ h4 {
   box-shadow: 0 10px 32px -4px rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
 }
 
+/* Dynamic Moon Proximity Edge Border Lighting (+50% border luminescence when Moon touches / approaches) */
+.glass-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(
+    700px circle at var(--moon-screen-x, 80vw) var(--moon-screen-y, 20vh),
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(56, 189, 248, 0.35) 25%,
+    rgba(168, 85, 247, 0.15) 50%,
+    transparent 75%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.95;
+  transition: opacity 0.25s ease;
+}
+
 /* Frosted Micro-badge / Pill (Balanced 50% strength) */
 .glass-pill {
+  position: relative;
   background: rgba(12, 16, 30, 0.36);
   backdrop-filter: blur(10px) saturate(150%);
   -webkit-backdrop-filter: blur(10px) saturate(150%);
   border: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.glass-pill::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(
+    550px circle at var(--moon-screen-x, 80vw) var(--moon-screen-y, 20vh),
+    rgba(255, 255, 255, 0.48) 0%,
+    rgba(56, 189, 248, 0.3) 30%,
+    transparent 70%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 /* Frosted Chip (Tech stack tags, topic starters) */
