@@ -47,7 +47,7 @@ export default function About() {
                 src={profile.avatar}
                 alt={`${profile.name}, ${profile.role}`}
                 loading="lazy"
-                className="aspect-square w-full rounded-2xl object-cover"
+                className="aspect-square w-full rounded-2xl object-cover object-[center_20%] shadow-2xl"
               />
             </div>
             <div className="glass absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-xl px-4 py-2 text-sm">

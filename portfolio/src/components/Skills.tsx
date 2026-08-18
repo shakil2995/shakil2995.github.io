@@ -1,16 +1,24 @@
 import { motion } from 'framer-motion'
 import { skills } from '../data/portfolio'
 import { SectionHeading } from './ui/SectionHeading'
+import { TechIcon } from './ui/icons'
 
 const DOT: Record<string, string> = {
   cyan: 'bg-cyan-400',
   violet: 'bg-violet-400',
-  magenta: 'bg-indigo-400',
+  magenta: 'bg-fuchsia-400',
 }
+
 const TEXT: Record<string, string> = {
-  cyan: 'text-cyan-300',
-  violet: 'text-violet-300',
-  magenta: 'text-indigo-300',
+  cyan: 'text-cyan-300 group-hover:border-cyan-400/30 group-hover:bg-cyan-400/5',
+  violet: 'text-violet-300 group-hover:border-violet-400/30 group-hover:bg-violet-400/5',
+  magenta: 'text-fuchsia-300 group-hover:border-fuchsia-400/30 group-hover:bg-fuchsia-400/5',
+}
+
+const GLOW_ACCENT: Record<string, string> = {
+  cyan: 'hover:shadow-[0_0_20px_rgba(34,211,238,0.15)] hover:border-cyan-400/30',
+  violet: 'hover:shadow-[0_0_20px_rgba(167,139,250,0.15)] hover:border-violet-400/30',
+  magenta: 'hover:shadow-[0_0_20px_rgba(232,121,249,0.15)] hover:border-fuchsia-400/30',
 }
 
 export default function Skills() {
@@ -21,7 +29,7 @@ export default function Skills() {
         <SectionHeading
           index="02"
           title="Skills & stack"
-          kicker="The tools I reach for across the frontend, mobile, and backend."
+          kicker="The proven frameworks, languages, and tools I reach for daily across web, mobile, and backend."
         />
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -34,18 +42,19 @@ export default function Skills() {
               transition={{ delay: gi * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="h-full"
             >
-              <div className="glass lift glow h-full rounded-2xl p-5">
+              <div className={`glass lift glow group h-full rounded-2xl p-5 transition-all duration-300 ${GLOW_ACCENT[group.accent]}`}>
                 <div className="mb-4 flex items-center gap-2.5">
                   <span className={`h-2.5 w-2.5 rounded-full ${DOT[group.accent]}`} />
-                  <h3 className="text-lg">{group.title}</h3>
+                  <h3 className="text-lg font-semibold">{group.title}</h3>
                 </div>
                 <ul className="flex flex-wrap gap-2">
                   {group.items.map((item) => (
                     <li
-                      key={item}
-                      className={`rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-1 font-[var(--font-mono)] text-[13px] transition-colors hover:border-white/20 hover:text-[color:var(--color-ink)] ${TEXT[group.accent]}`}
+                      key={item.name}
+                      className={`inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-1.5 font-[var(--font-mono)] text-[12px] transition-all hover:scale-105 hover:border-white/30 hover:text-[color:var(--color-ink)] ${TEXT[group.accent]}`}
                     >
-                      {item}
+                      <TechIcon iconKey={item.iconKey} className="opacity-80 transition-opacity group-hover:opacity-100" />
+                      <span>{item.name}</span>
                     </li>
                   ))}
                 </ul>

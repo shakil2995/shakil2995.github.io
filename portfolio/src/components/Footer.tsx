@@ -1,5 +1,5 @@
 import { profile, socials } from '../data/portfolio'
-import { GitHubIcon, PhoneIcon, WhatsAppIcon } from './ui/icons'
+import { GitHubIcon, LinkedInIcon, PhoneIcon, WhatsAppIcon } from './ui/icons'
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -19,6 +19,17 @@ export default function Footer() {
           >
             <GitHubIcon width={17} height={17} />
           </a>
+          {socials.linkedin && (
+            <a
+              href={socials.linkedin}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="LinkedIn"
+              className="grid h-9 w-9 place-items-center rounded-lg text-[color:var(--color-muted)] ring-1 ring-white/10 transition-colors hover:text-sky-400"
+            >
+              <LinkedInIcon width={17} height={17} />
+            </a>
+          )}
           <a
             href={socials.whatsapp}
             target="_blank"

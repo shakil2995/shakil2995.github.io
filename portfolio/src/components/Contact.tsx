@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { socials } from '../data/portfolio'
-import { ArrowUpRight, CheckIcon, CopyIcon, GitHubIcon, PhoneIcon, WhatsAppIcon } from './ui/icons'
+import { ArrowUpRight, CheckIcon, CopyIcon, GitHubIcon, LinkedInIcon, PhoneIcon, WhatsAppIcon } from './ui/icons'
 
 const QUICK_TOPICS = [
   {
@@ -143,6 +143,18 @@ export default function Contact() {
               <GitHubIcon width={18} height={18} />
               GitHub
             </a>
+
+            {socials.linkedin && (
+              <a
+                href={socials.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                className="glass glow inline-flex items-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold text-[color:var(--color-ink)] transition-all duration-300 hover:-translate-y-0.5 hover:text-sky-400"
+              >
+                <LinkedInIcon width={18} height={18} />
+                LinkedIn
+              </a>
+            )}
           </div>
         </motion.div>
       </div>

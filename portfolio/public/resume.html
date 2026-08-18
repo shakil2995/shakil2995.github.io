@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shakil — Resume / Curriculum Vitae</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --text-main: #1e293b;
+      --text-muted: #475569;
+      --text-light: #64748b;
+      --primary: #0284c7;
+      --border: #e2e8f0;
+      --bg: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--text-main);
+      background: #f8fafc;
+      line-height: 1.5;
+      font-size: 14px;
+      padding: 32px 16px;
+    }
+
+    .resume-container {
+      max-width: 820px;
+      margin: 0 auto;
+      background: var(--bg);
+      padding: 48px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--border);
+    }
+
+    /* Print / Action Bar */
+    .action-bar {
+      max-width: 820px;
+      margin: 0 auto 16px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #0f172a;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: #334155;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    /* Header */
+    header {
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-top: 2px;
+    }
+
+    .contact-info {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      text-align: right;
+      line-height: 1.6;
+    }
+
+    .contact-info a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .contact-info a:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 22px;
+    }
+
+    h2 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #0f172a;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 4px;
+      margin-bottom: 12px;
+    }
+
+    /* Experience & Projects Items */
+    .item {
+      margin-bottom: 16px;
+    }
+
+    .item:last-child {
+      margin-bottom: 0;
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 2px;
+    }
+
+    .item-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .item-subtitle {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--primary);
+    }
+
+    .item-date {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-light);
+      font-family: var(--font-mono);
+    }
+
+    .item-bullets {
+      list-style-type: disc;
+      margin-left: 18px;
+      margin-top: 4px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .item-bullets li {
+      margin-bottom: 3px;
+    }
+
+    /* Skills Grid */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px 24px;
+      font-size: 13px;
+    }
+
+    .skill-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .skill-category {
+      font-weight: 600;
+      color: #0f172a;
+      min-width: 110px;
+    }
+
+    .skill-list {
+      color: var(--text-muted);
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        background: #fff;
+      }
+      .action-bar {
+        display: none;
+      }
+      .resume-container {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="action-bar">
+    <a href="./" class="btn btn-secondary">← Back to Portfolio</a>
+    <button onclick="window.print()" class="btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+        <rect x="6" y="14" width="12" height="8"></rect>
+      </svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <main class="resume-container">
+    <header>
+      <div>
+        <h1>Shakil</h1>
+        <div class="title">Fullstack Software Engineer &amp; AI SaaS Founder</div>
+      </div>
+      <div class="contact-info">
+        <div><strong>Phone / WhatsApp:</strong> <a href="https://wa.me/8801837138305">+880 1837-138305</a></div>
+        <div><strong>GitHub:</strong> <a href="https://github.com/shakil2995" target="_blank">github.com/shakil2995</a></div>
+        <div><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/shakil2995/" target="_blank">linkedin.com/in/shakil2995</a></div>
+        <div><strong>Portfolio:</strong> <a href="https://shakil2995.github.io/" target="_blank">shakil2995.github.io</a></div>
+      </div>
+    </header>
+
+    <!-- Summary -->
+    <section>
+      <h2>Professional Summary</h2>
+      <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">
+        Fullstack developer, team lead, and AI product founder with 7+ years of programming experience across web, mobile, and offline-first distributed systems. Founder of <strong>Zinodesk</strong> (embeddable AI receptionist SaaS) and <strong>SmartPilot</strong>; architect of <strong>ATI EMR</strong> (multi-device offline electronic medical records). Expert in TypeScript, React, Next.js, Node.js, Flutter, and scalable API architecture.
+      </p>
+    </section>
+
+    <!-- Technical Skills -->
+    <section>
+      <h2>Technical Skills</h2>
+      <div class="skills-grid">
+        <div class="skill-row">
+          <span class="skill-category">Frontend:</span>
+          <span class="skill-list">React, Next.js, TypeScript, JavaScript, Tailwind CSS, Redux, HTML5/CSS3</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-category">Mobile:</span>
+          <span class="skill-list">Flutter, Dart, React Native, Firebase, Google Play Deployment</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-category">Backend &amp; AI:</span>
+          <span class="skill-list">Node.js, Express, Python, LLM Integration, Laravel, PHP, RESTful APIs</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-category">Database &amp; Tools:</span>
+          <span class="skill-list">MongoDB, MySQL, Offline-First Sync, Git, GitHub, Vite, C++, Java</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section>
+      <h2>Work Experience</h2>
+      
+      <div class="item">
+        <div class="item-header">
+          <div>
+            <span class="item-title">Software Engineer &amp; Team Lead</span> — <span class="item-subtitle">ATI Limited</span>
+          </div>
+          <span class="item-date">2025 — Present</span>
+        </div>
+        <ul class="item-bullets">
+          <li>Lead engineering teams delivering production web, desktop, and mobile systems for enterprise clients.</li>
+          <li>Architected <strong>ATI EMR</strong>: an offline-first hospital management &amp; electronic medical records system supporting multi-device local area network synchronization without internet dependency.</li>
+          <li>Oversee architectural reviews, code quality, deployment pipelines, and team sprint deliverables.</li>
+        </ul>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div>
+            <span class="item-title">Mobile App Developer</span> — <span class="item-subtitle">ATI Limited</span>
+          </div>
+          <span class="item-date">2024 — 2025</span>
+        </div>
+        <ul class="item-bullets">
+          <li>Developed fluid cross-platform mobile applications using Flutter and Dart from UI/UX design to production store release.</li>
+          <li>Engineered real-time features, state management, REST API integrations, and offline caching layers.</li>
+        </ul>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div>
+            <span class="item-title">Junior Software Engineer</span> — <span class="item-subtitle">Winning bees</span>
+          </div>
+          <span class="item-date">2023 — 2024</span>
+        </div>
+        <ul class="item-bullets">
+          <li>Developed fullstack features across client-facing web applications using modern JavaScript/MERN stack.</li>
+          <li>Implemented reusable UI components, responsive layouts, and backend API endpoints.</li>
+        </ul>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div>
+            <span class="item-title">Intern Software Engineer</span> — <span class="item-subtitle">Excellent Soft</span>
+          </div>
+          <span class="item-date">2023</span>
+        </div>
+        <ul class="item-bullets">
+          <li>Completed intensive software engineering internship applying core algorithms and system design to client projects.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Key Products & Projects -->
+    <section>
+      <h2>Products &amp; Selected Projects</h2>
+
+      <div class="item">
+        <div class="item-header">
+          <div>
+            <span class="item-title">Zinodesk</span> — <span class="item-subtitle">Founder · AI SaaS (zinodesk.com)</span>
+          </div>
+          <span class="item-date">Next.js, LLMs, Vector Search</span>
+        </div>
+        <ul class="item-bullets">
+          <li>Built an embeddable AI receptionist widget allowing businesses to ingest custom documentation and automate customer inquiries with 24/7 lead capture.</li>
+        </ul>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div>
+            <span class="item-title">SmartPilot</span> — <span class="item-subtitle">Founder · AI Automation SaaS (smartpilot.site)</span>
+          </div>
+          <span class="item-date">AI Automation, Node.js</span>
+        </div>
+        <ul class="item-bullets">
+          <li>Developed an AI-powered social commerce automation platform handling Facebook page automated responses and 24/7 order management.</li>
+        </ul>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div>
+            <span class="item-title">Livora (My SG)</span> — <span class="item-subtitle">Mobile App &amp; SaaS Admin (my-sg.com)</span>
+          </div>
+          <span class="item-date">Flutter, SaaS Dashboard</span>
+        </div>
+        <ul class="item-bullets">
+          <li>Shipped cross-platform mobile community application to Google Play Store alongside a complete Admin Control Center dashboard.</li>
+        </ul>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div>
+            <span class="item-title">Tent Design USA</span> — <span class="item-subtitle">Commercial Web Storefront (tentdesignusa.com)</span>
+          </div>
+          <span class="item-date">JavaScript, Tailwind CSS</span>
+        </div>
+        <ul class="item-bullets">
+          <li>Developed high-conversion commercial storefront and interactive product showcase for custom canopy tent manufacturing.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Education -->
+    <section>
+      <h2>Education</h2>
+      <div class="item">
+        <div class="item-header">
+          <div>
+            <span class="item-title">B.Sc. in Computer Science &amp; Engineering</span> — <span class="item-subtitle">Independent University, Bangladesh (IUB)</span>
+          </div>
+        </div>
+        <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">
+          Comprehensive coursework in Data Structures, Algorithms, Software Engineering, Database Systems, Computer Networks, and Distributed Systems.
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

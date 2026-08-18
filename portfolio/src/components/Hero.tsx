@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { profile, socials } from '../data/portfolio'
-import { ArrowDown, ArrowUpRight, GitHubIcon } from './ui/icons'
+import { ArrowDown, ArrowUpRight, DocumentIcon, GitHubIcon, LinkedInIcon } from './ui/icons'
 import { useIsMobile, usePrefersReducedMotion } from '../hooks/useMediaQuery'
 
 // Code-split the Three.js scene so the ~1MB 3D bundle loads after first paint.
@@ -67,10 +67,10 @@ export default function Hero() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
             </span>
-            Available for work
+            Available for new opportunities
           </span>
 
-          <h1 className="mt-6 text-[2.6rem] leading-[1.05] sm:text-6xl lg:text-7xl">
+          <h1 className="mt-6 text-[2.6rem] font-bold leading-[1.05] sm:text-6xl lg:text-7xl">
             Hi, I&apos;m <span className="gradient-text">{profile.firstName}</span>.
           </h1>
 
@@ -79,7 +79,7 @@ export default function Hero() {
             <RotatingRole />
           </p>
 
-          <p className="mt-5 max-w-xl text-base text-[color:var(--color-muted)] sm:text-lg">
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-[color:var(--color-muted)] sm:text-lg">
             {profile.tagline}
           </p>
 
@@ -88,24 +88,52 @@ export default function Hero() {
               href="#work"
               className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-violet-500 px-5 py-3 text-sm font-semibold text-[#05060c] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_30px_-10px_rgba(139,92,246,0.6)]"
             >
-              View my work
+              Explore Projects
               <ArrowUpRight className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </a>
+
             <a
               href="#contact"
               className="glass glow inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-[color:var(--color-ink)] transition-all duration-300 hover:-translate-y-0.5"
             >
               Get in touch
             </a>
-            <a
-              href={socials.github}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="GitHub profile"
-              className="glass glow grid h-11 w-11 place-items-center rounded-xl text-[color:var(--color-ink)] transition-all duration-300 hover:-translate-y-0.5"
-            >
-              <GitHubIcon />
-            </a>
+
+            {socials.resumeUrl && (
+              <a
+                href={socials.resumeUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="glass glow inline-flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium text-[color:var(--color-muted)] transition-all duration-300 hover:-translate-y-0.5 hover:text-[color:var(--color-ink)]"
+                aria-label="View and Download Resume"
+              >
+                <DocumentIcon width={16} height={16} className="text-cyan-400" />
+                <span>Resume</span>
+              </a>
+            )}
+
+            <div className="flex items-center gap-2">
+              <a
+                href={socials.github}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="GitHub profile"
+                className="glass glow grid h-11 w-11 place-items-center rounded-xl text-[color:var(--color-ink)] transition-all duration-300 hover:-translate-y-0.5 hover:text-cyan-300"
+              >
+                <GitHubIcon />
+              </a>
+              {socials.linkedin && (
+                <a
+                  href={socials.linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="LinkedIn profile"
+                  className="glass glow grid h-11 w-11 place-items-center rounded-xl text-[color:var(--color-ink)] transition-all duration-300 hover:-translate-y-0.5 hover:text-sky-400"
+                >
+                  <LinkedInIcon width={18} height={18} />
+                </a>
+              )}
+            </div>
           </div>
         </motion.div>
       </div>

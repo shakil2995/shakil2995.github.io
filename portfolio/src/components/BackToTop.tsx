@@ -36,7 +36,7 @@ export default function BackToTop() {
           exit={{ opacity: 0, scale: 0.6, y: 12 }}
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.94 }}
-          className="glass fixed bottom-6 right-6 z-50 grid h-12 w-12 place-items-center rounded-full text-[color:var(--color-ink)]"
+          className="glass fixed bottom-6 left-6 z-40 grid h-12 w-12 place-items-center rounded-full text-[color:var(--color-ink)] shadow-lg"
         >
           <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 48 48">
             <circle cx="24" cy="24" r={R} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="2.5" />

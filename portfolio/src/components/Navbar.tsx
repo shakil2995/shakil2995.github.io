@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useScrollSpy } from '../hooks/useScrollSpy'
-import { CloseIcon, MenuIcon } from './ui/icons'
+import { socials } from '../data/portfolio'
+import { CloseIcon, MenuIcon, WhatsAppIcon } from './ui/icons'
 
 const SECTIONS = [
   { id: 'home', label: 'Home' },
@@ -57,11 +58,22 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2">
           <a
+            href={socials.whatsapp}
+            target="_blank"
+            rel="noreferrer"
+            className="hidden items-center gap-1.5 rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-3.5 py-2 text-xs font-semibold text-emerald-400 transition-all duration-300 hover:scale-105 hover:bg-emerald-500/20 sm:inline-flex"
+          >
+            <WhatsAppIcon width={15} height={15} />
+            <span>Chat</span>
+          </a>
+
+          <a
             href="#contact"
             className="hidden rounded-xl bg-gradient-to-r from-cyan-400 to-violet-500 px-4 py-2 text-sm font-semibold text-[#05060c] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_24px_-12px_rgba(139,92,246,0.7)] sm:block"
           >
             Let&apos;s talk
           </a>
+
           <button
             type="button"
             aria-label={open ? 'Close menu' : 'Open menu'}
