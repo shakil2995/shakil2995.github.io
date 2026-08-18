@@ -58,13 +58,19 @@ export default function About() {
         </Reveal>
 
         <div className="order-1 lg:order-2">
-          {about.paragraphs.map((p, i) => (
-            <Reveal key={i} delay={i * 0.08}>
-              <p className="mb-4 text-base leading-relaxed text-slate-200 sm:text-lg">{p}</p>
-            </Reveal>
-          ))}
+          <div className="glass-card mb-6 rounded-2xl p-5 shadow-xl sm:p-7">
+            {about.paragraphs.map((p, i) => (
+              <p
+                key={i}
+                className={`text-base leading-relaxed sm:text-lg ${i === 0 ? 'mb-4 font-medium text-white' : 'mb-3 text-slate-200 last:mb-0'
+                  }`}
+              >
+                {p}
+              </p>
+            ))}
+          </div>
 
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {stats.map((s, i) => {
               const value = s.key === 'years' ? years : (s.value ?? 0)
               return (
