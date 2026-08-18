@@ -50,7 +50,7 @@ export default function Skills() {
                   {group.items.map((item) => (
                     <li
                       key={item.name}
-                      className={`glass-pill inline-flex items-center justify-center whitespace-nowrap rounded-lg px-3 py-1.5 font-[var(--font-mono)] text-[12px] font-semibold tracking-wide transition-all duration-200 hover:-translate-y-0.5 hover:scale-105 hover:border-white/40 ${TEXT[group.accent]}`}
+                      className={`glass-pill inline-flex flex-1 flex-grow min-w-[calc(50%-0.35rem)] items-center justify-center whitespace-nowrap rounded-lg px-3 py-2 text-center font-[var(--font-mono)] text-[12px] font-semibold tracking-wide transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:border-white/40 ${TEXT[group.accent]}`}
                     >
                       <span className="drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">{item.name}</span>
                     </li>
