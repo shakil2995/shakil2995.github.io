@@ -35,7 +35,6 @@ export default function Hero() {
       <div className="glow-blob left-1/2 top-1/4 h-[32rem] w-[32rem] -translate-x-1/2 -translate-y-1/2 bg-violet-600/10" />
       <div className="glow-blob left-[15%] bottom-[20%] h-80 w-80 bg-cyan-500/8" />
       <div className="glow-blob right-[15%] top-[30%] h-80 w-80 bg-fuchsia-600/8" />
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_bottom,transparent,transparent_75%,var(--color-bg))]" />
 
       {/* Foreground Content */}
       <div className="relative z-10 mx-auto w-full max-w-4xl px-5 text-center sm:px-8">

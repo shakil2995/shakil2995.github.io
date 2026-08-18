@@ -176,6 +176,19 @@ export const projects: Project[] = [
     accent: 'magenta',
   },
   {
+    title: 'Starlight OTT',
+    category: 'web',
+    categoryLabel: 'Streaming Platform',
+    badge: '🎥 OTT Streaming Platform',
+    blurb:
+      'Full-stack on-demand movie and TV series streaming platform with instant video playback, multi-language subtitles, adaptive quality switching, categorized catalog discovery, and personal watchlists.',
+    highlights: ['Movie & TV series streaming', 'React Vite SPA + Laravel API backend', 'Instant playback & subtitle switching'],
+    image: './projects/starlight.png',
+    live: 'https://movie.adnetworkbd.shop/#',
+    tags: ['React', 'Vite', 'Laravel', 'PHP', 'Streaming', 'Full-Stack'],
+    accent: 'cyan',
+  },
+  {
     title: 'SmartPilot',
     category: 'ai',
     categoryLabel: 'AI & Automation SaaS',
