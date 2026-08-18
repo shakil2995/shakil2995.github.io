@@ -125,10 +125,11 @@ h4 {
 .glass-card {
   position: relative;
   background: rgba(10, 14, 28, 0.40);
-  backdrop-filter: blur(14px) saturate(150%);
-  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
   border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow: 0 10px 32px -4px rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  transform: translateZ(0);
 }
 
 /* Dynamic Moon Proximity Edge Border Lighting (+50% border luminescence when Moon touches / approaches) */

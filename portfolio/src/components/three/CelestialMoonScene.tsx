@@ -177,6 +177,10 @@ function DynamicOrbitStars({ count, primaryColor, secondaryColor }: { count: num
 }
 
 /** The Smart Dynamic 3D Celestial Moon Guide */
+const tempVec = new THREE.Vector3()
+let lastScreenX = -9999
+let lastScreenY = -9999
+
 function SmartCelestialMoon({
   isMobile,
   primaryColor,
@@ -245,8 +249,7 @@ function SmartCelestialMoon({
         }
       }
     }
-    const last = waypoints[waypoints.length - 1]
-    return { x: last.x, y: last.y, z: last.z, s: last.s }
+    return waypoints[waypoints.length - 1]
   }
 
   useFrame((state, delta) => {
@@ -279,14 +282,18 @@ function SmartCelestialMoon({
       const curScale = THREE.MathUtils.damp(groupRef.current.scale.x, target.s, 4, delta)
       groupRef.current.scale.set(curScale, curScale, curScale)
 
-      // Project 3D Moon position into 2D viewport coordinates for real-time edge border proximity lighting
-      const worldPos = new THREE.Vector3()
-      groupRef.current.getWorldPosition(worldPos)
-      worldPos.project(state.camera)
-      const screenX = (worldPos.x * 0.5 + 0.5) * window.innerWidth
-      const screenY = (-(worldPos.y * 0.5) + 0.5) * window.innerHeight
-      document.documentElement.style.setProperty('--moon-screen-x', `${screenX.toFixed(1)}px`)
-      document.documentElement.style.setProperty('--moon-screen-y', `${screenY.toFixed(1)}px`)
+      // Project 3D Moon position into 2D viewport coordinates with deadzone throttling to avoid layout thrashing
+      groupRef.current.getWorldPosition(tempVec)
+      tempVec.project(state.camera)
+      const screenX = (tempVec.x * 0.5 + 0.5) * window.innerWidth
+      const screenY = (-(tempVec.y * 0.5) + 0.5) * window.innerHeight
+
+      if (Math.abs(screenX - lastScreenX) > 3 || Math.abs(screenY - lastScreenY) > 3) {
+        lastScreenX = screenX
+        lastScreenY = screenY
+        document.documentElement.style.setProperty('--moon-screen-x', `${screenX.toFixed(0)}px`)
+        document.documentElement.style.setProperty('--moon-screen-y', `${screenY.toFixed(0)}px`)
+      }
     }
 
     if (moonMeshRef.current) {
@@ -316,7 +323,7 @@ function SmartCelestialMoon({
       <Float speed={1.6} rotationIntensity={0.25} floatIntensity={0.4}>
         {/* Dynamic Primary Atmospheric Halo (Matches Section Accent - Reduced 20% on Desktop) */}
         <mesh ref={halo1Ref} scale={isMobile ? 1.16 : 1.12}>
-          <sphereGeometry args={[1, 32, 32]} />
+          <sphereGeometry args={[1, 24, 24]} />
           <meshBasicMaterial
             color="#38bdf8"
             transparent
@@ -328,7 +335,7 @@ function SmartCelestialMoon({
 
         {/* Dynamic Secondary Atmospheric Halo (Reduced 20% on Desktop) */}
         <mesh ref={halo2Ref} scale={isMobile ? 1.34 : 1.25}>
-          <sphereGeometry args={[1, 32, 32]} />
+          <sphereGeometry args={[1, 24, 24]} />
           <meshBasicMaterial
             color="#a855f7"
             transparent
@@ -340,7 +347,7 @@ function SmartCelestialMoon({
 
         {/* The 3D Aesthetic Moon Sphere */}
         <mesh ref={moonMeshRef} castShadow receiveShadow>
-          <sphereGeometry args={[1, 64, 64]} />
+          <sphereGeometry args={[1, 40, 40]} />
           <meshStandardMaterial
             map={moonTexture}
             bumpMap={moonTexture}
@@ -353,7 +360,7 @@ function SmartCelestialMoon({
         </mesh>
 
         {/* Dynamic Color Shifting Star Dust */}
-        <DynamicOrbitStars count={isMobile ? 40 : 80} primaryColor={primaryColor} secondaryColor={secondaryColor} />
+        <DynamicOrbitStars count={isMobile ? 25 : 45} primaryColor={primaryColor} secondaryColor={secondaryColor} />
       </Float>
     </group>
   )
@@ -397,7 +404,7 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
 
   return (
     <Canvas
-      dpr={[1, isMobile ? 1.5 : 2]}
+      dpr={[1, isMobile ? 1.25 : 1.5]}
       camera={{ position: [0, 0, 5.5], fov: isMobile ? 54 : 46 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       style={{ pointerEvents: 'none' }}
@@ -408,7 +415,7 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
       <Stars
         radius={75}
         depth={45}
-        count={isMobile ? 700 : 1600}
+        count={isMobile ? 350 : 750}
         factor={3}
         saturation={0}
         fade
