@@ -58,7 +58,7 @@ export default function About() {
         </Reveal>
 
         <div className="order-1 lg:order-2 flex flex-col justify-between">
-          <div className="rounded-2xl border border-white/14 bg-[rgba(10,14,28,0.65)] p-5 shadow-xl backdrop-blur-md sm:p-7">
+          <div className="rounded-2xl border border-white/20 bg-[rgba(9,12,24,0.88)] p-5 shadow-xl backdrop-blur-md sm:p-7">
             {about.paragraphs.map((p, i) => (
               <p key={i} className="mb-3.5 text-base leading-relaxed text-slate-200 last:mb-0 sm:text-lg">
                 {p}
@@ -78,7 +78,7 @@ export default function About() {
                   transition={{ delay: i * 0.07, duration: 0.5 }}
                   className="h-full"
                 >
-                  <div className="h-full rounded-2xl border border-white/14 bg-[rgba(10,14,28,0.65)] p-4 text-center shadow-md backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/40 hover:bg-[rgba(16,22,42,0.78)]">
+                  <div className="h-full rounded-2xl border border-white/20 bg-[rgba(9,12,24,0.88)] p-4 text-center shadow-md backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/40 hover:bg-[rgba(14,18,36,0.95)]">
                     <div className="font-[var(--font-display)] text-2xl font-bold text-white sm:text-3xl">
                       <Counter target={value} suffix={s.suffix} />
                     </div>

@@ -42,7 +42,7 @@ export default function Skills() {
               transition={{ delay: gi * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="h-full"
             >
-              <div className={`flex h-full flex-col justify-start rounded-2xl border border-white/15 bg-[rgba(12,16,32,0.85)] p-5 shadow-md backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-[rgba(18,24,46,0.95)] ${GLOW_ACCENT[group.accent]}`}>
+              <div className={`flex h-full flex-col justify-start rounded-2xl border border-white/20 bg-[rgba(9,12,24,0.88)] p-5 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-white/35 hover:bg-[rgba(14,18,36,0.95)] ${GLOW_ACCENT[group.accent]}`}>
                 <div className="mb-4 flex items-center gap-2.5">
                   <span className={`h-2.5 w-2.5 rounded-full ${DOT[group.accent]}`} />
                   <h3 className="text-lg font-bold tracking-tight text-white">{group.title}</h3>
@@ -51,7 +51,7 @@ export default function Skills() {
                   {group.items.map((item) => (
                     <li
                       key={item.name}
-                      className={`inline-flex h-8 items-center gap-2 rounded-lg border border-white/15 bg-white/[0.05] px-3 font-[var(--font-mono)] text-[12px] font-semibold transition-all hover:scale-105 hover:border-white/35 ${TEXT[group.accent]}`}
+                      className={`inline-flex h-8 items-center gap-2 rounded-lg border border-white/18 bg-white/[0.06] px-3 font-[var(--font-mono)] text-[12px] font-semibold backdrop-blur-sm transition-all hover:scale-105 hover:border-white/35 ${TEXT[group.accent]}`}
                     >
                       <TechIcon iconKey={item.iconKey} className="opacity-90 transition-opacity group-hover:opacity-100" />
                       <span>{item.name}</span>

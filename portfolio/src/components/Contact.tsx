@@ -69,13 +69,13 @@ export default function Contact() {
           <button
             type="button"
             onClick={copyPhone}
-            className="glass lift glow mx-auto mt-9 flex items-center gap-3 rounded-xl px-4 py-3 font-[var(--font-mono)] text-sm text-[color:var(--color-ink)]"
+            className="mx-auto mt-9 flex items-center gap-3 rounded-xl border border-white/20 bg-[rgba(9,12,24,0.88)] px-4 py-3 font-[var(--font-mono)] text-sm text-[color:var(--color-ink)] shadow-md backdrop-blur-md transition-all hover:border-white/35"
             aria-label="Copy WhatsApp phone number"
           >
             <PhoneIcon width={16} height={16} className="text-emerald-400" />
             <span>{socials.phoneDisplay}</span>
             <span
-              className={`inline-flex items-center gap-1 text-xs transition-colors ${copied ? 'text-emerald-400 font-medium' : 'text-[color:var(--color-faint)]'
+              className={`inline-flex items-center gap-1 text-xs transition-colors ${copied ? 'font-medium text-emerald-400' : 'text-[color:var(--color-faint)]'
                 }`}
             >
               {copied ? (
@@ -101,7 +101,7 @@ export default function Contact() {
                 href={getWhatsAppLink(topic.message)}
                 target="_blank"
                 rel="noreferrer"
-                className="glass glow inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs text-[color:var(--color-muted)] transition-all hover:scale-105 hover:text-[color:var(--color-ink)] hover:border-emerald-400/40"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-white/16 bg-[rgba(9,12,24,0.88)] px-3 py-1.5 text-xs text-slate-200 shadow-sm backdrop-blur-md transition-all hover:scale-105 hover:border-emerald-400/40 hover:text-white"
               >
                 {topic.label}
                 <ArrowUpRight width={12} height={12} className="opacity-70" />
