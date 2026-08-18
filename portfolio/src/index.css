@@ -1,0 +1,219 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   Design tokens — futuristic dark. Electric cyan → violet → magenta accents.
+--------------------------------------------------------------------------- */
+@theme {
+  --color-bg: #05060c;
+  --color-bg-soft: #0a0c16;
+  --color-surface: rgba(255, 255, 255, 0.04);
+  --color-surface-strong: rgba(255, 255, 255, 0.07);
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.16);
+
+  --color-ink: #eef1f8;
+  --color-muted: #a6adc0;
+  --color-faint: #6b7488;
+
+  --color-cyan: #22d3ee;
+  --color-violet: #8b5cf6;
+  --color-magenta: #ec4899;
+
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --shadow-glow: 0 0 40px -8px rgba(139, 92, 246, 0.45);
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+--------------------------------------------------------------------------- */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-muted);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  color: var(--color-ink);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+::selection {
+  background: rgba(139, 92, 246, 0.35);
+  color: #fff;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--color-violet), var(--color-cyan));
+  border-radius: 999px;
+}
+
+/* ---------------------------------------------------------------------------
+   Reusable pieces
+--------------------------------------------------------------------------- */
+.gradient-text {
+  background: linear-gradient(100deg, var(--color-cyan), var(--color-violet));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.glass {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Animated gradient border used on featured cards / CTAs */
+.grad-ring {
+  position: relative;
+  isolation: isolate;
+}
+.grad-ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    130deg,
+    rgba(34, 211, 238, 0.45),
+    rgba(139, 92, 246, 0.45)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: -1;
+}
+.grad-ring:hover::before {
+  opacity: 1;
+}
+
+/* Soft radial glow blobs for section backgrounds */
+.glow-blob {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(80px);
+  opacity: 0.32;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* A soft light that follows the cursor and gently lifts what it passes over. */
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 30;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.07), transparent 60%);
+  mix-blend-mode: screen;
+  filter: blur(4px);
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cursor-glow {
+    display: none;
+  }
+}
+
+/* Gentle elevation on hover. */
+.lift {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+.lift:hover {
+  transform: translateY(-4px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .lift:hover {
+    transform: none;
+  }
+}
+
+/* Whole-component glassy glow while the cursor is over it. */
+.glow {
+  transition:
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+.glow:hover {
+  border-color: rgba(140, 205, 255, 0.55);
+  box-shadow:
+    0 0 0 1px rgba(140, 205, 255, 0.35),
+    0 0 44px -6px rgba(120, 190, 255, 0.6),
+    inset 0 0 26px -6px rgba(150, 195, 255, 0.3);
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+@keyframes pulse-cue {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(6px);
+  }
+}
+.animate-cue {
+  animation: pulse-cue 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-slow,
+  .animate-cue {
+    animation: none;
+  }
+}

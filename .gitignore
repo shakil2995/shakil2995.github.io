@@ -1,0 +1,15 @@
+/.playwright-mcp
+.claude/
+.remember/
+.DS_Store
+
+# Node / Build artifacts
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Portfolio nested node_modules / dist
+portfolio/node_modules/
+portfolio/dist/
+portfolio/dist-ssr/
