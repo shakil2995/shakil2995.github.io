@@ -4,8 +4,9 @@
  */
 
 export const profile = {
-  name: 'Shakil',
+  name: 'Shakil Ahmed',
   firstName: 'Shakil',
+  handle: '@shakil2995',
   role: 'Fullstack Developer & AI SaaS Founder',
   // The rotating words in the hero subtitle.
   roles: [
@@ -53,8 +54,9 @@ export const stats: Stat[] = [
 
 export const about = {
   paragraphs: [
-    "I'm a fullstack developer, AI SaaS founder, and engineering team lead who loves owning applications from database architecture to the pixel. I build AI platforms like Zinodesk and SmartPilot, offline-first hospital systems like ATI EMR, and fluid cross-platform mobile apps with Flutter.",
-    "Since 2017 I've shipped 50+ applications — combining production reliability, offline-first architectures, and modern AI capabilities into products that users genuinely love using.",
+    "Shakil Ahmed (@shakil2995) is a software developer specializing in Flutter, mobile applications, Node.js, backend systems, and full-stack architecture.",
+    "As an AI SaaS founder and engineering team lead at ATI Limited, I build fast, polished products end to end — from offline-first healthcare platforms like ATI EMR to intelligent 24/7 AI receptionists like Zinodesk.",
+    "Since 2017 I've shipped 50+ production applications, pairing rigorous computer science foundations with modern cloud, AI, and mobile frameworks that users love.",
   ],
 }
 
