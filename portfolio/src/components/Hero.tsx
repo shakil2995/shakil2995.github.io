@@ -28,13 +28,6 @@ function RotatingRole() {
   )
 }
 
-const HIGHLIGHTS = [
-  { icon: '⭐', label: 'Zinodesk', sub: 'AI SaaS Founder' },
-  { icon: '🏆', label: 'ATI EMR', sub: 'Offline Sync Architect' },
-  { icon: '📱', label: '50+ Apps', sub: 'Shipped to Prod' },
-  { icon: '📍', label: 'Remote', sub: 'Available Worldwide' },
-]
-
 export default function Hero() {
   return (
     <section id="home" className="relative flex min-h-screen items-center justify-center overflow-hidden py-24 sm:py-32">
@@ -77,29 +70,6 @@ export default function Hero() {
           <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-200 drop-shadow-[0_1px_6px_rgba(0,0,0,0.85)] sm:text-lg">
             {profile.tagline}
           </p>
-
-          {/* Highlights */}
-          <div className="mt-8 grid w-full max-w-3xl grid-cols-2 gap-3 sm:grid-cols-4">
-            {HIGHLIGHTS.map((item, idx) => (
-              <motion.div
-                key={item.label}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + idx * 0.06, duration: 0.5 }}
-                className="h-full"
-              >
-                <div className="glass-card group flex h-full flex-col justify-center rounded-2xl p-3.5 text-left transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-white/[0.09] sm:p-4">
-                  <div className="text-xl">{item.icon}</div>
-                  <div className="mt-2 text-sm font-bold text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">
-                    {item.label}
-                  </div>
-                  <div className="text-xs font-semibold text-slate-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
-                    {item.sub}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
 
           {/* Action CTAs */}
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
@@ -152,25 +122,6 @@ export default function Hero() {
                 </a>
               )}
             </div>
-          </div>
-
-          {/* Clean High-Contrast Highlights Bar */}
-          <div className="mt-14 grid w-full grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-            {HIGHLIGHTS.map((h, i) => (
-              <motion.div
-                key={h.label}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + i * 0.08, duration: 0.5 }}
-                className="flex items-center gap-2.5 rounded-xl border border-white/15 bg-[rgba(12,16,32,0.85)] p-3 text-left shadow-sm backdrop-blur-md transition-all hover:border-white/30 hover:bg-[rgba(18,24,46,0.9)]"
-              >
-                <span className="text-lg">{h.icon}</span>
-                <div className="min-w-0">
-                  <div className="text-xs font-bold text-white truncate">{h.label}</div>
-                  <div className="text-[11px] font-medium text-slate-300 truncate">{h.sub}</div>
-                </div>
-              </motion.div>
-            ))}
           </div>
         </motion.div>
       </div>
