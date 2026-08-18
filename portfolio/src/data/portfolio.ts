@@ -49,14 +49,14 @@ export const stats: Stat[] = [
   { key: 'years', label: 'Years coding', suffix: '+' },
   { key: 'repos', label: 'Public repos', value: 45, suffix: '+' },
   { key: 'stack', label: 'Technologies', value: 15, suffix: '+' },
-  { key: 'projects', label: 'Projects shipped', value: 50, suffix: '+' },
+  { key: 'projects', label: 'Projects shipped', value: 100, suffix: '+' },
 ]
 
 export const about = {
   paragraphs: [
     "Shakil Ahmed (@shakil2995) is a software developer specializing in Flutter, mobile applications, Node.js, backend systems, and full-stack architecture.",
     "As an AI SaaS founder and engineering team lead at ATI Limited, I build fast, polished products end to end — from offline-first healthcare platforms like ATI EMR to intelligent 24/7 AI receptionists like Zinodesk.",
-    "Since 2017 I've shipped 50+ production applications, pairing rigorous computer science foundations with modern cloud, AI, and mobile frameworks that users love.",
+    "Since 2017 I've shipped 100+ production applications, pairing rigorous computer science foundations with modern cloud, AI, and mobile frameworks that users love.",
   ],
 }
 
@@ -222,7 +222,7 @@ export const projects: Project[] = [
     badge: 'Founder',
     blurb:
       'AI-first software studio and agency platform — designing, building, and deploying web, mobile, and desktop applications supercharged with AI for international clients.',
-    highlights: ['50+ projects delivered', 'Intelligent automation systems', 'End-to-end engineering'],
+    highlights: ['100+ projects delivered', 'Intelligent automation systems', 'End-to-end engineering'],
     image: './projects/sns_digitals.png',
     label: 'Software Studio',
     tags: ['Agency', 'AI Studio', 'Founder', 'Fullstack', 'Web & Mobile'],
