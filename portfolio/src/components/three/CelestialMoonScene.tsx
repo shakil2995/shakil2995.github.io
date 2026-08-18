@@ -305,25 +305,25 @@ function SmartCelestialMoon({
   return (
     <group ref={groupRef} position={[waypoints[0].x, waypoints[0].y, waypoints[0].z]}>
       <Float speed={1.6} rotationIntensity={0.25} floatIntensity={0.4}>
-        {/* Dynamic Primary Atmospheric Halo (Matches Section Accent) */}
-        <mesh ref={halo1Ref} scale={1.16}>
+        {/* Dynamic Primary Atmospheric Halo (Matches Section Accent - Reduced 20% on Desktop) */}
+        <mesh ref={halo1Ref} scale={isMobile ? 1.16 : 1.12}>
           <sphereGeometry args={[1, 32, 32]} />
           <meshBasicMaterial
             color="#38bdf8"
             transparent
-            opacity={0.085}
+            opacity={isMobile ? 0.085 : 0.068}
             blending={THREE.AdditiveBlending}
             depthWrite={false}
           />
         </mesh>
 
-        {/* Dynamic Secondary Atmospheric Halo */}
-        <mesh ref={halo2Ref} scale={1.34}>
+        {/* Dynamic Secondary Atmospheric Halo (Reduced 20% on Desktop) */}
+        <mesh ref={halo2Ref} scale={isMobile ? 1.34 : 1.25}>
           <sphereGeometry args={[1, 32, 32]} />
           <meshBasicMaterial
             color="#a855f7"
             transparent
-            opacity={0.045}
+            opacity={isMobile ? 0.045 : 0.036}
             blending={THREE.AdditiveBlending}
             depthWrite={false}
           />
@@ -336,15 +336,15 @@ function SmartCelestialMoon({
             map={moonTexture}
             bumpMap={moonTexture}
             bumpScale={0.035}
-            roughness={0.42}
+            roughness={0.44}
             metalness={0.06}
-            emissive="#0c192e"
-            emissiveIntensity={0.35}
+            emissive="#08101e"
+            emissiveIntensity={isMobile ? 0.35 : 0.28}
           />
         </mesh>
 
         {/* Dynamic Color Shifting Star Dust */}
-        <DynamicOrbitStars count={isMobile ? 40 : 85} primaryColor={primaryColor} secondaryColor={secondaryColor} />
+        <DynamicOrbitStars count={isMobile ? 40 : 80} primaryColor={primaryColor} secondaryColor={secondaryColor} />
       </Float>
     </group>
   )
@@ -353,9 +353,11 @@ function SmartCelestialMoon({
 function DynamicSceneLighting({
   primaryColor,
   secondaryColor,
+  isMobile,
 }: {
   primaryColor: THREE.Color
   secondaryColor: THREE.Color
+  isMobile: boolean
 }) {
   const light1Ref = useRef<THREE.PointLight>(null)
   const light2Ref = useRef<THREE.PointLight>(null)
@@ -371,10 +373,10 @@ function DynamicSceneLighting({
 
   return (
     <>
-      <ambientLight intensity={0.6} color="#e0e7ff" />
-      <directionalLight position={[6, 4, 5]} intensity={2.8} color="#ffffff" />
-      <pointLight ref={light1Ref} position={[-6, -4, -3]} intensity={28} color="#38bdf8" distance={22} />
-      <pointLight ref={light2Ref} position={[3, -5, 2]} intensity={22} color="#a855f7" distance={20} />
+      <ambientLight intensity={isMobile ? 0.6 : 0.52} color="#e0e7ff" />
+      <directionalLight position={[6, 4, 5]} intensity={isMobile ? 2.8 : 2.3} color="#ffffff" />
+      <pointLight ref={light1Ref} position={[-6, -4, -3]} intensity={isMobile ? 28 : 22} color="#38bdf8" distance={20} />
+      <pointLight ref={light2Ref} position={[3, -5, 2]} intensity={isMobile ? 22 : 17} color="#a855f7" distance={18} />
     </>
   )
 }
@@ -391,7 +393,7 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       style={{ pointerEvents: 'none' }}
     >
-      <DynamicSceneLighting primaryColor={primaryColor} secondaryColor={secondaryColor} />
+      <DynamicSceneLighting primaryColor={primaryColor} secondaryColor={secondaryColor} isMobile={isMobile} />
 
       {/* Background Starfield */}
       <Stars
