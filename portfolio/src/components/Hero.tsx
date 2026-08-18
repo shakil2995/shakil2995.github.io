@@ -11,15 +11,15 @@ function RotatingRole() {
   }, [])
 
   return (
-    <div className="relative inline-flex h-[1.8em] items-center justify-center overflow-hidden align-middle">
+    <div className="relative inline-flex min-h-[2.4rem] items-center justify-center overflow-hidden px-1 py-1 align-middle sm:min-h-[2.8rem]">
       <AnimatePresence mode="wait">
         <motion.span
           key={i}
-          initial={{ y: 28, opacity: 0, filter: 'blur(6px)' }}
-          animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
-          exit={{ y: -28, opacity: 0, filter: 'blur(6px)' }}
-          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-          className="bg-gradient-to-r from-cyan-300 via-sky-200 to-violet-300 bg-clip-text font-[var(--font-display)] text-xl font-bold uppercase tracking-[0.06em] text-transparent drop-shadow-[0_0_24px_rgba(56,189,248,0.35)] sm:text-2xl lg:text-3xl"
+          initial={{ y: '100%', opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: '-100%', opacity: 0 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="gradient-text font-[var(--font-display)] text-xl font-semibold leading-normal drop-shadow-[0_0_20px_rgba(56,189,248,0.25)] sm:text-2xl lg:text-3xl"
         >
           {profile.roles[i]}
         </motion.span>
@@ -56,16 +56,12 @@ export default function Hero() {
             </span>
           </div>
 
-          {/* Premium Headline (All-Caps Architectural Styling) */}
-          <h1 className="font-[var(--font-display)] text-5xl font-black uppercase tracking-[0.02em] text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.85)] sm:text-7xl lg:text-8xl">
-            <span className="font-light text-slate-200">HI, I&apos;M </span>
-            <span className="bg-gradient-to-r from-cyan-300 via-sky-300 to-violet-400 bg-clip-text text-transparent drop-shadow-[0_0_35px_rgba(56,189,248,0.4)]">
-              {profile.firstName}
-            </span>
-            <span className="text-cyan-400 font-black">.</span>
+          {/* Clean Natural Title-Case Headline */}
+          <h1 className="font-[var(--font-display)] text-5xl font-bold tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] sm:text-7xl lg:text-8xl">
+            Hi, I&apos;m <span className="gradient-text">{profile.firstName}</span>.
           </h1>
 
-          {/* Dynamic rotating subtitle (All-Caps with expanded height to eliminate cutoff) */}
+          {/* Dynamic rotating subtitle (Title Case with no cutoff) */}
           <div className="mt-4 flex items-center justify-center">
             <RotatingRole />
           </div>
