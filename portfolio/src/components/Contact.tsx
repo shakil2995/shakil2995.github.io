@@ -38,14 +38,15 @@ export default function Contact() {
     <section id="contact" className="relative overflow-hidden py-24 sm:py-32">
       <div className="glow-blob left-1/2 top-1/2 h-[26rem] w-[26rem] -translate-x-1/2 -translate-y-1/2 bg-emerald-600/20" />
 
-      <div className="relative mx-auto max-w-3xl px-5 text-center sm:px-8">
+      <div className="relative mx-auto max-w-3xl px-5 sm:px-8">
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="rounded-3xl border border-white/15 bg-[rgba(10,13,26,0.85)] p-7 text-center shadow-2xl backdrop-blur-xl sm:p-12"
         >
-          <span className="glass inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium text-[color:var(--color-muted)]">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3.5 py-1.5 text-xs font-semibold text-slate-200">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
@@ -53,13 +54,13 @@ export default function Contact() {
             Available for new projects &amp; roles
           </span>
 
-          <h2 className="mt-7 text-4xl font-bold leading-[1.05] sm:text-6xl">
+          <h2 className="mt-7 text-4xl font-bold leading-[1.08] text-white sm:text-5xl lg:text-6xl">
             Have an idea?
             <br />
             Let&apos;s <span className="gradient-text">make it real.</span>
           </h2>
 
-          <p className="mx-auto mt-6 max-w-xl text-[color:var(--color-muted)] sm:text-lg">
+          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-slate-200 sm:text-lg">
             A product to launch, a role to fill, or just a quick chat — message me directly on WhatsApp
             or give me a call anytime.
           </p>

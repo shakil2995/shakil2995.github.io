@@ -120,49 +120,106 @@ export const SparkIcon = (p: SVGProps<SVGSVGElement>) => (
   </svg>
 )
 
-/* Tech brand mini-icons */
+/* Uniform, Pixel-Perfect Tech Brand Icons (All rendered at 14x14 uniform viewbox) */
 export const TechIcon = ({ iconKey, className }: { iconKey?: string; className?: string }) => {
+  const cls = className || 'h-3.5 w-3.5 flex-shrink-0'
+
   switch (iconKey) {
     case 'react':
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className={className || 'h-3.5 w-3.5'}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className={cls}>
           <ellipse cx="12" cy="12" rx="10" ry="4.2" />
           <ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(60 12 12)" />
           <ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(120 12 12)" />
           <circle cx="12" cy="12" r="1.5" fill="currentColor" />
         </svg>
       )
+    case 'nextjs':
+      return (
+        <svg viewBox="0 0 24 24" fill="currentColor" className={cls}>
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.5 14.5h-2v-9h2l5.5 7.5v-7.5h2v9h-2L10.5 9v7.5z" />
+        </svg>
+      )
     case 'flutter':
       return (
-        <svg viewBox="0 0 24 24" fill="currentColor" className={className || 'h-3.5 w-3.5'}>
+        <svg viewBox="0 0 24 24" fill="currentColor" className={cls}>
           <path d="M14.314 0L2.3 12 6 15.7 21.686 0h-7.372zM14.314 11.314L8.343 17.286 14.314 23.257h7.372l-5.971-5.971 5.971-5.972h-7.372z" />
+        </svg>
+      )
+    case 'dart':
+      return (
+        <svg viewBox="0 0 24 24" fill="currentColor" className={cls}>
+          <path d="M4.1 4.1l7.5 7.5-3.6 7.5-3.9-3.9V4.1zm15.8 4.1L8.3 19.8l-4.2-4.2L15.7 4.1h4.2v4.1zm-4.2 0L8.2 15.7l3.7 3.7 7.8-7.8V8.2h-4z" />
         </svg>
       )
     case 'nodejs':
       return (
-        <svg viewBox="0 0 24 24" fill="currentColor" className={className || 'h-3.5 w-3.5'}>
+        <svg viewBox="0 0 24 24" fill="currentColor" className={cls}>
           <path d="M12 2l9 5.2v10.4l-9 5.2-9-5.2V7.2L12 2zm0 2.3L4.8 8.5v7l7.2 4.2 7.2-4.2v-7L12 4.3z" />
         </svg>
       )
     case 'typescript':
+      return (
+        <svg viewBox="0 0 24 24" fill="currentColor" className={cls}>
+          <rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" strokeWidth="1.6" />
+          <path d="M9 8h6M12 8v8M17 11c-.5-.7-1.2-1-2-1-1.2 0-2 .8-2 1.8 0 2 3 1.5 3 3.2 0 1-.8 1.8-2 1.8-1 0-1.7-.5-2.2-1.2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+      )
     case 'javascript':
       return (
-        <svg viewBox="0 0 24 24" fill="currentColor" className={className || 'h-3.5 w-3.5 font-bold'}>
+        <svg viewBox="0 0 24 24" fill="currentColor" className={cls}>
           <rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" strokeWidth="1.6" />
-          <path d="M8 8v8M14 8h5M16.5 8v8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          <path d="M9 13.5v2.2c0 .8-.5 1.3-1.3 1.3H7M16 11c-.5-.7-1.2-1-2-1-1.2 0-2 .8-2 1.8 0 2 3 1.5 3 3.2 0 1-.8 1.8-2 1.8-1 0-1.7-.5-2.2-1.2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
         </svg>
       )
     case 'tailwind':
       return (
-        <svg viewBox="0 0 24 24" fill="currentColor" className={className || 'h-3.5 w-3.5'}>
+        <svg viewBox="0 0 24 24" fill="currentColor" className={cls}>
           <path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.336 6.182 14.975 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.336 13.382 8.975 12 6.001 12z" />
+        </svg>
+      )
+    case 'html5':
+    case 'css3':
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className={cls}>
+          <path d="M4 3l1.8 16.5L12 22l6.2-2.5L20 3H4z" />
+          <path d="M8 8h8M8 12h7l-.5 4.5L12 18l-2.5-1.5" />
+        </svg>
+      )
+    case 'redux':
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className={cls}>
+          <circle cx="12" cy="12" r="3" />
+          <path d="M19.4 15a8 8 0 1 0-7.4 5.9" />
+          <circle cx="19.5" cy="15" r="1.5" fill="currentColor" />
+        </svg>
+      )
+    case 'firebase':
+      return (
+        <svg viewBox="0 0 24 24" fill="currentColor" className={cls}>
+          <path d="M4.5 17.5L8.2 3.8a.8.8 0 0 1 1.5-.1l2.4 4.5 2.1-4a.8.8 0 0 1 1.4 0l4.2 13.3-7.8 4.2-7.5-4.2z" />
+        </svg>
+      )
+    case 'playstore':
+      return (
+        <svg viewBox="0 0 24 24" fill="currentColor" className={cls}>
+          <path d="M4 3.5l11.5 8.5L4 20.5V3.5zm12.7 7.4l2.8 2.1c.7.5.7 1.4 0 1.9l-2.8 2.1-2.2-2.2 2.2-3.9z" />
+        </svg>
+      )
+    case 'express':
+    case 'python':
+    case 'laravel':
+    case 'php':
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className={cls}>
+          <rect x="3" y="4" width="18" height="16" rx="3" />
+          <path d="M7 12h10M7 8h6M7 16h4" />
         </svg>
       )
     case 'mongodb':
     case 'mysql':
-    case 'api':
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className={className || 'h-3.5 w-3.5'}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className={cls}>
           <ellipse cx="12" cy="5" rx="9" ry="3" />
           <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
           <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
@@ -171,18 +228,33 @@ export const TechIcon = ({ iconKey, className }: { iconKey?: string; className?:
     case 'git':
     case 'github':
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className={className || 'h-3.5 w-3.5'}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className={cls}>
           <line x1="6" y1="3" x2="6" y2="15" />
           <circle cx="18" cy="6" r="3" />
           <circle cx="6" cy="18" r="3" />
           <path d="M18 9a9 9 0 0 1-9 9" />
         </svg>
       )
+    case 'vite':
+      return (
+        <svg viewBox="0 0 24 24" fill="currentColor" className={cls}>
+          <path d="M19.5 3L12 21 4.5 3h4l3.5 10 3.5-10h4z" />
+        </svg>
+      )
+    case 'cpp':
+    case 'java':
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className={cls}>
+          <path d="M16 18l6-6-6-6M8 6l-6 6 6 6" />
+        </svg>
+      )
+    case 'algo':
+    case 'api':
     default:
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className={className || 'h-3.5 w-3.5'}>
-          <polyline points="16 18 22 12 16 6" />
-          <polyline points="8 6 2 12 8 18" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className={cls}>
+          <path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+          <circle cx="12" cy="12" r="3" />
         </svg>
       )
   }
