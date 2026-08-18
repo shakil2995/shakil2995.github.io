@@ -29,7 +29,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       className="h-full"
     >
       <div className="glass lift glow group flex h-full flex-col rounded-2xl p-5 sm:p-6 transition-all duration-300">
-        
+
         {/* Card Header: Accent bar & Badge */}
         <div className="mb-4 flex items-center justify-between gap-2">
           <div className={`h-1 w-10 rounded-full bg-gradient-to-r ${BAR[project.accent]}`} />
@@ -160,11 +160,10 @@ export default function Projects() {
               key={cat.id}
               type="button"
               onClick={() => setActiveCategory(cat.id)}
-              className={`relative rounded-xl px-4 py-2 text-xs font-semibold tracking-wide transition-all sm:text-sm ${
-                isSelected
+              className={`relative rounded-xl px-4 py-2 text-xs font-semibold tracking-wide transition-all sm:text-sm ${isSelected
                   ? 'text-[#05060c]'
                   : 'text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]'
-              }`}
+                }`}
             >
               {isSelected && (
                 <motion.span
@@ -179,11 +178,10 @@ export default function Projects() {
               <span className="flex items-center gap-2">
                 {cat.label}
                 <span
-                  className={`rounded-full px-1.5 py-0.2 text-[10px] ${
-                    isSelected
+                  className={`rounded-full px-1.5 py-0.2 text-[10px] ${isSelected
                       ? 'bg-black/20 text-black font-bold'
                       : 'bg-white/10 text-[color:var(--color-faint)]'
-                  }`}
+                    }`}
                 >
                   {count}
                 </span>

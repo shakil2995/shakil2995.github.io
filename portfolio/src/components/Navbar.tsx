@@ -37,11 +37,10 @@ export default function Navbar() {
             <li key={s.id}>
               <a
                 href={`#${s.id}`}
-                className={`relative rounded-lg px-3 py-2 text-sm transition-colors ${
-                  active === s.id
+                className={`relative rounded-lg px-3 py-2 text-sm transition-colors ${active === s.id
                     ? 'text-[color:var(--color-ink)]'
                     : 'text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]'
-                }`}
+                  }`}
               >
                 {active === s.id && (
                   <motion.span
@@ -100,11 +99,10 @@ export default function Navbar() {
                   <a
                     href={`#${s.id}`}
                     onClick={() => setOpen(false)}
-                    className={`block rounded-lg px-4 py-3 text-sm ${
-                      active === s.id
+                    className={`block rounded-lg px-4 py-3 text-sm ${active === s.id
                         ? 'gradient-text font-semibold'
                         : 'text-[color:var(--color-muted)]'
-                    }`}
+                      }`}
                   >
                     {s.label}
                   </a>

@@ -74,9 +74,8 @@ export default function Contact() {
             <PhoneIcon width={16} height={16} className="text-emerald-400" />
             <span>{socials.phoneDisplay}</span>
             <span
-              className={`inline-flex items-center gap-1 text-xs transition-colors ${
-                copied ? 'text-emerald-400 font-medium' : 'text-[color:var(--color-faint)]'
-              }`}
+              className={`inline-flex items-center gap-1 text-xs transition-colors ${copied ? 'text-emerald-400 font-medium' : 'text-[color:var(--color-faint)]'
+                }`}
             >
               {copied ? (
                 <>
