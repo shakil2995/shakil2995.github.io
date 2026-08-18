@@ -301,8 +301,8 @@ function SmartCelestialMoon({
             bumpScale={0.035}
             roughness={0.44}
             metalness={0.06}
-            emissive="#08101e"
-            emissiveIntensity={isMobile ? 0.32 : 0.25}
+            emissive="#0a162b"
+            emissiveIntensity={isMobile ? 0.42 : 0.33}
           />
         </mesh>
 
@@ -330,9 +330,9 @@ function DynamicSceneLighting({
 
   return (
     <>
-      <ambientLight intensity={isMobile ? 0.65 : 0.55} color="#e0e7ff" />
-      <directionalLight position={[5, 4, 4]} intensity={isMobile ? 2.5 : 2.1} color="#ffffff" />
-      <directionalLight ref={fillLightRef} position={[-4, -3, 2]} intensity={isMobile ? 1.0 : 0.8} color="#38bdf8" />
+      <ambientLight intensity={isMobile ? 0.86 : 0.73} color="#e0e7ff" />
+      <directionalLight position={[5, 4, 4]} intensity={isMobile ? 3.3 : 2.8} color="#ffffff" />
+      <directionalLight ref={fillLightRef} position={[-4, -3, 2]} intensity={isMobile ? 1.32 : 1.1} color="#38bdf8" />
     </>
   )
 }
