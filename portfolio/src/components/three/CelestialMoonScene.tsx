@@ -4,270 +4,149 @@ import { Float, Stars } from '@react-three/drei'
 import * as THREE from 'three'
 
 /**
- * Generates an ultra-realistic, highly detailed 2048x1024 Lunar Surface Texture
- * using 6-octave Fractal Brownian Motion (fBm), Voronoi impact crater networks,
- * and ray systems for 100% natural rugged lunar regolith.
+ * Generates an aesthetic, stylized celestial lunar texture
+ * designed specifically for a futuristic, dark-mode portfolio.
+ * Silky pearlescent tones, glowing lunar maria, and neon crater rims.
  */
-function createUltraRealisticMoonMaps(): { colorMap: THREE.CanvasTexture; bumpMap: THREE.CanvasTexture } {
+function createAestheticMoonTexture(): THREE.CanvasTexture {
   const width = 2048
   const height = 1024
 
-  const colorCanvas = document.createElement('canvas')
-  colorCanvas.width = width
-  colorCanvas.height = height
-  const colorCtx = colorCanvas.getContext('2d')!
+  const canvas = document.createElement('canvas')
+  canvas.width = width
+  canvas.height = height
+  const ctx = canvas.getContext('2d')!
 
-  const bumpCanvas = document.createElement('canvas')
-  bumpCanvas.width = width
-  bumpCanvas.height = height
-  const bumpCtx = bumpCanvas.getContext('2d')!
+  // 1. Base Pearlescent Cosmic Gradient (Silky Silver-White to Deep Indigo-Violet)
+  const baseGrad = ctx.createLinearGradient(0, 0, width, height)
+  baseGrad.addColorStop(0, '#ffffff')
+  baseGrad.addColorStop(0.25, '#f1f5f9')
+  baseGrad.addColorStop(0.55, '#cbd5e1')
+  baseGrad.addColorStop(0.8, '#94a3b8')
+  baseGrad.addColorStop(1, '#64748b')
+  ctx.fillStyle = baseGrad
+  ctx.fillRect(0, 0, width, height)
 
-  const colorImg = colorCtx.createImageData(width, height)
-  const bumpImg = bumpCtx.createImageData(width, height)
-  const cData = colorImg.data
-  const bData = bumpImg.data
-
-  // Seeded hash helper for deterministic natural randomness
-  function hash(x: number, y: number, z: number) {
-    let p = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453123
-    return p - Math.floor(p)
-  }
-
-  // 3D Value Noise for smooth fractal basis
-  function smoothNoise3D(x: number, y: number, z: number) {
-    const ix = Math.floor(x)
-    const iy = Math.floor(y)
-    const iz = Math.floor(z)
-    const fx = x - ix
-    const fy = y - iy
-    const fz = z - iz
-
-    // Quintic smoothstep
-    const ux = fx * fx * fx * (fx * (fx * 6 - 15) + 10)
-    const uy = fy * fy * fy * (fy * (fy * 6 - 15) + 10)
-    const uz = fz * fz * fz * (fz * (fz * 6 - 15) + 10)
-
-    const n000 = hash(ix, iy, iz)
-    const n100 = hash(ix + 1, iy, iz)
-    const n010 = hash(ix, iy + 1, iz)
-    const n110 = hash(ix + 1, iy + 1, iz)
-    const n001 = hash(ix, iy, iz + 1)
-    const n101 = hash(ix + 1, iy, iz + 1)
-    const n011 = hash(ix, iy + 1, iz + 1)
-    const n111 = hash(ix + 1, iy + 1, iz + 1)
-
-    const nx00 = n000 + ux * (n100 - n000)
-    const nx10 = n010 + ux * (n110 - n010)
-    const nx01 = n001 + ux * (n101 - n001)
-    const nx11 = n011 + ux * (n111 - n011)
-
-    const nxy0 = nx00 + uy * (nx10 - nx00)
-    const nxy1 = nx01 + uy * (nx11 - nx01)
-
-    return nxy0 + uz * (nxy1 - nxy0)
-  }
-
-  // 6-Octave Fractal Brownian Motion (fBm) for realistic rocky terrain
-  function fbm3D(x: number, y: number, z: number): number {
-    let total = 0
-    let amp = 0.5
-    let freq = 2.0
-    for (let o = 0; o < 6; o++) {
-      total += smoothNoise3D(x * freq, y * freq, z * freq) * amp
-      freq *= 2.1
-      amp *= 0.48
-    }
-    return total
-  }
-
-  // Generate Major Lunar Mare Basins & Craters with Ray Systems
-  interface CraterCenter {
-    x: number
-    y: number
-    z: number
-    r: number
-    depth: number
-    isMare: boolean
-    hasRays: boolean
-  }
-
-  const craters: CraterCenter[] = []
-  let seed = 77
+  // Seeded helper for deterministic aesthetic layout
+  let seed = 123
   function rand() {
     seed = (seed * 9301 + 49297) % 233280
     return seed / 233280
   }
 
-  // 1. Dark Basaltic Maria (Oceanus Procellarum, Mare Imbrium, Mare Serenitatis, etc.)
-  for (let i = 0; i < 12; i++) {
-    const theta = rand() * Math.PI * 2
-    const phi = (rand() - 0.5) * Math.PI * 0.75
+  // 2. Soft, Stylized Luminous Maria Basins (Cosmic Blue/Violet tints)
+  for (let i = 0; i < 10; i++) {
+    const cx = (rand() * 0.8 + 0.1) * width
+    const cy = (rand() * 0.7 + 0.15) * height
+    const r = 120 + rand() * 220
+
+    const rg = ctx.createRadialGradient(cx, cy, 0, cx, cy, r)
+    rg.addColorStop(0, 'rgba(99, 102, 241, 0.22)')   // Soft Indigo
+    rg.addColorStop(0.5, 'rgba(56, 189, 248, 0.14)') // Electric Cyan
+    rg.addColorStop(1, 'transparent')
+
+    ctx.fillStyle = rg
+    ctx.beginPath()
+    ctx.arc(cx, cy, r, 0, Math.PI * 2)
+    ctx.fill()
+  }
+
+  // 3. Stylized Elegant Craters (Spherical-mapped, soft glass-like depth + glowing neon rims)
+  interface AestheticCrater {
+    u: number
+    v: number
+    r: number
+    depth: number
+    accent: string
+  }
+
+  const craters: AestheticCrater[] = []
+
+  // Main featured craters
+  for (let i = 0; i < 38; i++) {
     craters.push({
-      x: Math.cos(phi) * Math.cos(theta),
-      y: Math.sin(phi),
-      z: Math.cos(phi) * Math.sin(theta),
-      r: 0.32 + rand() * 0.42,
-      depth: 0.45 + rand() * 0.3,
-      isMare: true,
-      hasRays: false,
+      u: rand(),
+      v: rand() * 0.8 + 0.1,
+      r: 16 + rand() * 45,
+      depth: 0.18 + rand() * 0.25,
+      accent: rand() > 0.5 ? 'rgba(56, 189, 248, 0.45)' : 'rgba(168, 85, 247, 0.4)',
     })
   }
 
-  // 2. Large Named Impact Craters with Ray Systems (Tycho, Copernicus, Aristarchus)
-  for (let i = 0; i < 6; i++) {
-    const theta = rand() * Math.PI * 2
-    const phi = (rand() - 0.5) * Math.PI * 0.85
+  // Smaller micro-craters
+  for (let i = 0; i < 90; i++) {
     craters.push({
-      x: Math.cos(phi) * Math.cos(theta),
-      y: Math.sin(phi),
-      z: Math.cos(phi) * Math.sin(theta),
-      r: 0.12 + rand() * 0.16,
-      depth: 0.8 + rand() * 0.4,
-      isMare: false,
-      hasRays: true,
+      u: rand(),
+      v: rand() * 0.9 + 0.05,
+      r: 6 + rand() * 14,
+      depth: 0.12 + rand() * 0.18,
+      accent: 'rgba(255, 255, 255, 0.35)',
     })
   }
 
-  // 3. Medium & Small Impact Craters across the entire globe (no smooth zones)
-  for (let i = 0; i < 260; i++) {
-    const theta = rand() * Math.PI * 2
-    const phi = (rand() - 0.5) * Math.PI * 0.96
-    craters.push({
-      x: Math.cos(phi) * Math.cos(theta),
-      y: Math.sin(phi),
-      z: Math.cos(phi) * Math.sin(theta),
-      r: 0.02 + rand() * 0.08,
-      depth: 0.35 + rand() * 0.6,
-      isMare: false,
-      hasRays: false,
-    })
-  }
+  craters.forEach((cr) => {
+    const cx = cr.u * width
+    const cy = cr.v * height
 
-  // Compute lunar surface map in spherical coordinate space
-  for (let py = 0; py < height; py++) {
-    const v = py / height
-    const phi = (0.5 - v) * Math.PI
-    const cosPhi = Math.cos(phi)
-    const sinPhi = Math.sin(phi)
+    // Soft inner depression gradient
+    const craterGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, cr.r)
+    craterGrad.addColorStop(0, `rgba(30, 41, 59, ${cr.depth * 1.2})`)
+    craterGrad.addColorStop(0.7, `rgba(51, 65, 85, ${cr.depth * 0.6})`)
+    craterGrad.addColorStop(0.95, 'rgba(255, 255, 255, 0.1)')
+    craterGrad.addColorStop(1, 'transparent')
 
-    for (let px = 0; px < width; px++) {
-      const u = px / width
-      const theta = u * Math.PI * 2 - Math.PI
-      const sx = cosPhi * Math.cos(theta)
-      const sy = sinPhi
-      const sz = cosPhi * Math.sin(theta)
+    ctx.fillStyle = craterGrad
+    ctx.beginPath()
+    ctx.arc(cx, cy, cr.r, 0, Math.PI * 2)
+    ctx.fill()
 
-      // 6-octave rugged bedrock noise
-      const terrainFbm = fbm3D(sx * 3.5, sy * 3.5, sz * 3.5)
-      // Micro-craterlet high-frequency grain
-      const microGrain = fbm3D(sx * 24.0, sy * 24.0, sz * 24.0) * 0.16
+    // Glowing crescent rim highlight (simulating aesthetic top-right light catch)
+    ctx.strokeStyle = cr.accent
+    ctx.lineWidth = Math.max(cr.r * 0.08, 1.2)
+    ctx.beginPath()
+    ctx.arc(cx - cr.r * 0.1, cy - cr.r * 0.1, cr.r * 0.96, Math.PI * 0.7, Math.PI * 1.8)
+    ctx.stroke()
+  })
 
-      let mareDarkness = 0
-      let craterDisplacement = 0
-      let rayBrightness = 0
+  // 4. Subtle Luminous Ethereal Shimmer Wave
+  const waveGrad = ctx.createLinearGradient(0, 0, width, height)
+  waveGrad.addColorStop(0, 'rgba(56, 189, 248, 0.08)')
+  waveGrad.addColorStop(0.5, 'rgba(168, 85, 247, 0.06)')
+  waveGrad.addColorStop(1, 'rgba(236, 72, 153, 0.05)')
+  ctx.fillStyle = waveGrad
+  ctx.fillRect(0, 0, width, height)
 
-      for (let c = 0; c < craters.length; c++) {
-        const cr = craters[c]
-        const dx = sx - cr.x
-        const dy = sy - cr.y
-        const dz = sz - cr.z
-        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
-
-        if (dist < cr.r) {
-          const nd = dist / cr.r
-          if (cr.isMare) {
-            // Basaltic plain
-            const mareCurve = Math.cos(nd * (Math.PI / 2))
-            mareDarkness = Math.max(mareDarkness, mareCurve * cr.depth)
-          } else {
-            // Realistic crater bowl + sharp rim
-            if (nd > 0.7) {
-              // Raised crater rim
-              const rim = Math.sin((nd - 0.7) / 0.3 * Math.PI)
-              craterDisplacement += rim * cr.depth * 0.42
-            } else {
-              // Deep bowl with central peak
-              const bowl = Math.cos(nd / 0.7 * (Math.PI / 2))
-              const centralPeak = nd < 0.2 ? (1 - nd / 0.2) * 0.25 : 0
-              craterDisplacement -= bowl * cr.depth * 0.55 - centralPeak
-            }
-          }
-        }
-
-        // Ray systems extending from prominent craters (like Tycho)
-        if (cr.hasRays && dist > cr.r * 0.8 && dist < cr.r * 5.0) {
-          const angle = Math.atan2(dy, dx)
-          const rayNoise = Math.sin(angle * 16.0 + dz * 12.0) * 0.5 + 0.5
-          if (rayNoise > 0.6) {
-            const rayFade = 1.0 - (dist - cr.r * 0.8) / (cr.r * 4.2)
-            rayBrightness = Math.max(rayBrightness, (rayNoise - 0.6) * 2.5 * rayFade * 0.45)
-          }
-        }
-      }
-
-      // Natural lunar albedo calculation (highlands: ~190-220, maria: ~70-110)
-      let albedo = 178 + terrainFbm * 45 + microGrain * 40 - mareDarkness * 105 + craterDisplacement * 65 + rayBrightness * 70
-      albedo = Math.min(Math.max(albedo, 55), 250)
-
-      // Bump/displacement map for physical crater relief
-      let bump = 128 + terrainFbm * 38 + microGrain * 45 + craterDisplacement * 115 - mareDarkness * 25
-      bump = Math.min(Math.max(bump, 5), 252)
-
-      const idx = (py * width + px) * 4
-
-      // Realistic Lunar dust tone: subtle warm/silver contrast
-      cData[idx] = Math.round(albedo * 0.95)     // R
-      cData[idx + 1] = Math.round(albedo * 0.97) // G
-      cData[idx + 2] = Math.round(albedo * 1.02) // B
-      cData[idx + 3] = 255
-
-      bData[idx] = Math.round(bump)
-      bData[idx + 1] = Math.round(bump)
-      bData[idx + 2] = Math.round(bump)
-      bData[idx + 3] = 255
-    }
-  }
-
-  colorCtx.putImageData(colorImg, 0, 0)
-  bumpCtx.putImageData(bumpImg, 0, 0)
-
-  const colorTexture = new THREE.CanvasTexture(colorCanvas)
-  colorTexture.wrapS = THREE.RepeatWrapping
-  colorTexture.wrapT = THREE.ClampToEdgeWrapping
-  colorTexture.anisotropy = 16
-
-  const bumpTexture = new THREE.CanvasTexture(bumpCanvas)
-  bumpTexture.wrapS = THREE.RepeatWrapping
-  bumpTexture.wrapT = THREE.ClampToEdgeWrapping
-  bumpTexture.anisotropy = 16
-
-  return { colorMap: colorTexture, bumpMap: bumpTexture }
+  const texture = new THREE.CanvasTexture(canvas)
+  texture.wrapS = THREE.RepeatWrapping
+  texture.wrapT = THREE.ClampToEdgeWrapping
+  texture.anisotropy = 16
+  return texture
 }
 
-/** Shimmering orbital star dust particles */
-function OrbitingStarDust({ count }: { count: number }) {
+/** Ethereal orbital star particles surrounding the moon */
+function AestheticStarDust({ count }: { count: number }) {
   const pointsRef = useRef<THREE.Points>(null)
 
   const { geometry } = useMemo(() => {
     const positions = new Float32Array(count * 3)
     const colors = new Float32Array(count * 3)
     const cyan = new THREE.Color('#38bdf8')
-    const violet = new THREE.Color('#a855f7')
+    const violet = new THREE.Color('#c084fc')
     const white = new THREE.Color('#ffffff')
     const tmp = new THREE.Color()
 
     for (let i = 0; i < count; i++) {
       const angle = (i / count) * Math.PI * 2 + Math.random() * 0.15
-      const radius = 1.35 + Math.random() * 0.9
+      const radius = 1.35 + Math.random() * 0.95
       const x = Math.cos(angle) * radius
-      const y = Math.sin(angle) * (radius * 0.45) + (Math.random() - 0.5) * 0.3
+      const y = Math.sin(angle) * (radius * 0.45) + (Math.random() - 0.5) * 0.35
       const z = Math.sin(angle) * (radius * 0.85)
 
       positions.set([x, y, z], i * 3)
 
       const rand = Math.random()
-      if (rand < 0.4) tmp.copy(cyan)
-      else if (rand < 0.75) tmp.copy(violet)
+      if (rand < 0.45) tmp.copy(cyan)
+      else if (rand < 0.8) tmp.copy(violet)
       else tmp.copy(white)
 
       colors.set([tmp.r, tmp.g, tmp.b], i * 3)
@@ -281,7 +160,7 @@ function OrbitingStarDust({ count }: { count: number }) {
 
   useFrame((_, delta) => {
     if (pointsRef.current) {
-      pointsRef.current.rotation.y += delta * 0.2
+      pointsRef.current.rotation.y += delta * 0.22
       pointsRef.current.rotation.x += delta * 0.08
     }
   })
@@ -289,10 +168,10 @@ function OrbitingStarDust({ count }: { count: number }) {
   return (
     <points ref={pointsRef} geometry={geometry}>
       <pointsMaterial
-        size={0.032}
+        size={0.034}
         vertexColors
         transparent
-        opacity={0.8}
+        opacity={0.85}
         sizeAttenuation
         depthWrite={false}
         blending={THREE.AdditiveBlending}
@@ -301,13 +180,13 @@ function OrbitingStarDust({ count }: { count: number }) {
   )
 }
 
-/** The 100% Realistic 3D Moon with Rugged Lunar Regolith & Relief Shadows */
-function RealisticMoon({ isMobile }: { isMobile: boolean }) {
+/** The Aesthetic Stylized 3D Moon */
+function StylizedMoon({ isMobile }: { isMobile: boolean }) {
   const moonMeshRef = useRef<THREE.Mesh>(null)
   const groupRef = useRef<THREE.Group>(null)
   const scrollProgressRef = useRef(0)
 
-  const { colorMap, bumpMap } = useMemo(() => createUltraRealisticMoonMaps(), [])
+  const moonTexture = useMemo(() => createAestheticMoonTexture(), [])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -321,7 +200,7 @@ function RealisticMoon({ isMobile }: { isMobile: boolean }) {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Refined waypoints across sections
+  // Position waypoints across the sections
   const waypoints = useMemo(() => {
     if (isMobile) {
       return [
@@ -334,7 +213,7 @@ function RealisticMoon({ isMobile }: { isMobile: boolean }) {
       ]
     }
     return [
-      { p: 0.0, x: 2.35, y: 0.15, z: 0.0, s: 1.28 },
+      { p: 0.0, x: 2.35, y: 0.15, z: 0.0, s: 1.3 },
       { p: 0.2, x: -2.35, y: 0.35, z: 0.2, s: 1.12 },
       { p: 0.45, x: 2.4, y: 0.2, z: 0.1, s: 1.08 },
       { p: 0.68, x: -2.35, y: -0.1, z: 0.3, s: 1.18 },
@@ -390,54 +269,55 @@ function RealisticMoon({ isMobile }: { isMobile: boolean }) {
     }
 
     if (moonMeshRef.current) {
-      // Natural axial rotation
-      moonMeshRef.current.rotation.y += delta * 0.04 + scrollProgressRef.current * 0.015
-      moonMeshRef.current.rotation.x = 0.1
+      // Gentle cinematic axial rotation
+      moonMeshRef.current.rotation.y += delta * 0.05 + scrollProgressRef.current * 0.015
+      moonMeshRef.current.rotation.x = 0.08
     }
   })
 
   return (
     <group ref={groupRef} position={[waypoints[0].x, waypoints[0].y, waypoints[0].z]}>
-      <Float speed={1.5} rotationIntensity={0.25} floatIntensity={0.4}>
-        {/* Soft, ethereal cyan atmospheric glow ring */}
-        <mesh scale={1.12}>
+      <Float speed={1.6} rotationIntensity={0.25} floatIntensity={0.4}>
+        {/* Soft, glowing Cyan Atmospheric Halo */}
+        <mesh scale={1.16}>
           <sphereGeometry args={[1, 32, 32]} />
           <meshBasicMaterial
             color="#38bdf8"
             transparent
-            opacity={0.05}
+            opacity={0.07}
             blending={THREE.AdditiveBlending}
             depthWrite={false}
           />
         </mesh>
 
-        <mesh scale={1.25}>
+        {/* Outer Radiant Violet Atmospheric Halo */}
+        <mesh scale={1.32}>
           <sphereGeometry args={[1, 32, 32]} />
           <meshBasicMaterial
-            color="#818cf8"
+            color="#a855f7"
             transparent
-            opacity={0.03}
+            opacity={0.04}
             blending={THREE.AdditiveBlending}
             depthWrite={false}
           />
         </mesh>
 
-        {/* 100% Rugged, Photorealistic 3D Moon Sphere */}
+        {/* Stylized Luminous 3D Moon Sphere */}
         <mesh ref={moonMeshRef} castShadow receiveShadow>
-          <sphereGeometry args={[1, 128, 128]} />
+          <sphereGeometry args={[1, 64, 64]} />
           <meshStandardMaterial
-            map={colorMap}
-            bumpMap={bumpMap}
-            bumpScale={0.16}
-            roughness={0.96}
-            metalness={0.01}
-            emissive="#080c14"
-            emissiveIntensity={0.15}
+            map={moonTexture}
+            bumpMap={moonTexture}
+            bumpScale={0.035}
+            roughness={0.45}
+            metalness={0.05}
+            emissive="#1e1b4b"
+            emissiveIntensity={0.25}
           />
         </mesh>
 
         {/* Orbiting Stardust Particles */}
-        <OrbitingStarDust count={isMobile ? 40 : 85} />
+        <AestheticStarDust count={isMobile ? 40 : 85} />
       </Float>
     </group>
   )
@@ -451,15 +331,15 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       style={{ pointerEvents: 'none' }}
     >
-      {/* Soft space earthshine */}
-      <ambientLight intensity={0.35} color="#c7d2fe" />
+      {/* Soft Ethereal Ambient Glow */}
+      <ambientLight intensity={0.65} color="#e0e7ff" />
 
-      {/* Harsh parallel sunlight casting deep lunar relief shadows */}
-      <directionalLight position={[6, 3.2, 4.8]} intensity={4.0} color="#ffffff" />
+      {/* Main Stylized Light Source */}
+      <directionalLight position={[6, 4, 5]} intensity={2.8} color="#ffffff" />
 
-      {/* Subtle deep-space rim accents */}
-      <pointLight position={[-6, -4, -3]} intensity={18} color="#38bdf8" distance={22} />
-      <pointLight position={[2, -5, 2]} intensity={14} color="#818cf8" distance={20} />
+      {/* Cyan & Violet Atmospheric Rim Lights */}
+      <pointLight position={[-6, -4, -3]} intensity={26} color="#38bdf8" distance={22} />
+      <pointLight position={[3, -5, 2]} intensity={20} color="#a855f7" distance={20} />
 
       {/* Background Starfield */}
       <Stars
@@ -472,7 +352,7 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
         speed={0.3}
       />
 
-      <RealisticMoon isMobile={isMobile} />
+      <StylizedMoon isMobile={isMobile} />
     </Canvas>
   )
 }
