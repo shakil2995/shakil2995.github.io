@@ -11,20 +11,20 @@ function RotatingRole() {
   }, [])
 
   return (
-    <span className="relative inline-flex h-[1.35em] items-center justify-center overflow-hidden align-bottom">
+    <div className="relative inline-flex h-[1.8em] items-center justify-center overflow-hidden align-middle">
       <AnimatePresence mode="wait">
         <motion.span
           key={i}
-          initial={{ y: 24, opacity: 0, filter: 'blur(4px)' }}
+          initial={{ y: 28, opacity: 0, filter: 'blur(6px)' }}
           animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
-          exit={{ y: -24, opacity: 0, filter: 'blur(4px)' }}
+          exit={{ y: -28, opacity: 0, filter: 'blur(6px)' }}
           transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-          className="bg-gradient-to-r from-cyan-300 via-sky-200 to-indigo-300 bg-clip-text font-[var(--font-display)] text-2xl font-bold tracking-tight text-transparent drop-shadow-[0_0_24px_rgba(56,189,248,0.3)] sm:text-3xl lg:text-4xl"
+          className="bg-gradient-to-r from-cyan-300 via-sky-200 to-violet-300 bg-clip-text font-[var(--font-display)] text-xl font-bold uppercase tracking-[0.06em] text-transparent drop-shadow-[0_0_24px_rgba(56,189,248,0.35)] sm:text-2xl lg:text-3xl"
         >
           {profile.roles[i]}
         </motion.span>
       </AnimatePresence>
-    </span>
+    </div>
   )
 }
 
@@ -56,16 +56,16 @@ export default function Hero() {
             </span>
           </div>
 
-          {/* Premium Headline */}
-          <h1 className="font-[var(--font-display)] text-5xl font-extrabold tracking-[-0.035em] text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.85)] sm:text-7xl lg:text-8xl">
-            <span className="font-light text-slate-100">Hi, I&apos;m </span>
-            <span className="bg-gradient-to-r from-cyan-300 via-sky-300 to-violet-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(56,189,248,0.35)]">
+          {/* Premium Headline (All-Caps Architectural Styling) */}
+          <h1 className="font-[var(--font-display)] text-5xl font-black uppercase tracking-[0.02em] text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.85)] sm:text-7xl lg:text-8xl">
+            <span className="font-light text-slate-200">HI, I&apos;M </span>
+            <span className="bg-gradient-to-r from-cyan-300 via-sky-300 to-violet-400 bg-clip-text text-transparent drop-shadow-[0_0_35px_rgba(56,189,248,0.4)]">
               {profile.firstName}
             </span>
-            <span className="text-cyan-400">.</span>
+            <span className="text-cyan-400 font-black">.</span>
           </h1>
 
-          {/* Dynamic rotating subtitle */}
+          {/* Dynamic rotating subtitle (All-Caps with expanded height to eliminate cutoff) */}
           <div className="mt-4 flex items-center justify-center">
             <RotatingRole />
           </div>
