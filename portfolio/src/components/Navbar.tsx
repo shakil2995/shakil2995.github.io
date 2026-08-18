@@ -20,7 +20,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
+    <header className="fixed inset-x-0 top-0 z-50 px-4 sm:px-6">
       <nav className="glass mx-auto mt-3 flex max-w-6xl items-center justify-between rounded-2xl px-4 py-3 sm:px-6">
         <a href="#home" className="group flex items-center gap-2.5" aria-label="Home">
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-cyan-400 to-violet-500 font-[var(--font-display)] text-sm font-bold text-white shadow-[var(--shadow-glow)]">
