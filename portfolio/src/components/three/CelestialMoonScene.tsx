@@ -350,11 +350,13 @@ function SmartCelestialMoon({
   )
 }
 
-export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) {
-  const primaryColor = useMemo(() => new THREE.Color('#38bdf8'), [])
-  const secondaryColor = useMemo(() => new THREE.Color('#818cf8'), [])
-  const emissiveColor = useMemo(() => new THREE.Color('#0c192e'), [])
-
+function DynamicSceneLighting({
+  primaryColor,
+  secondaryColor,
+}: {
+  primaryColor: THREE.Color
+  secondaryColor: THREE.Color
+}) {
   const light1Ref = useRef<THREE.PointLight>(null)
   const light2Ref = useRef<THREE.PointLight>(null)
 
@@ -368,18 +370,28 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
   })
 
   return (
+    <>
+      <ambientLight intensity={0.6} color="#e0e7ff" />
+      <directionalLight position={[6, 4, 5]} intensity={2.8} color="#ffffff" />
+      <pointLight ref={light1Ref} position={[-6, -4, -3]} intensity={28} color="#38bdf8" distance={22} />
+      <pointLight ref={light2Ref} position={[3, -5, 2]} intensity={22} color="#a855f7" distance={20} />
+    </>
+  )
+}
+
+export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) {
+  const primaryColor = useMemo(() => new THREE.Color('#38bdf8'), [])
+  const secondaryColor = useMemo(() => new THREE.Color('#818cf8'), [])
+  const emissiveColor = useMemo(() => new THREE.Color('#0c192e'), [])
+
+  return (
     <Canvas
       dpr={[1, isMobile ? 1.5 : 2]}
       camera={{ position: [0, 0, 5.5], fov: isMobile ? 54 : 46 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       style={{ pointerEvents: 'none' }}
     >
-      <ambientLight intensity={0.6} color="#e0e7ff" />
-      <directionalLight position={[6, 4, 5]} intensity={2.8} color="#ffffff" />
-
-      {/* Dynamic Section Lighting that casts smart atmospheric glow */}
-      <pointLight ref={light1Ref} position={[-6, -4, -3]} intensity={28} color="#38bdf8" distance={22} />
-      <pointLight ref={light2Ref} position={[3, -5, 2]} intensity={22} color="#a855f7" distance={20} />
+      <DynamicSceneLighting primaryColor={primaryColor} secondaryColor={secondaryColor} />
 
       {/* Background Starfield */}
       <Stars
