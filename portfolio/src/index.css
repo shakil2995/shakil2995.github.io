@@ -97,36 +97,39 @@ h4 {
 /* Base Frosted Glass: Balanced 50% translucency for subtle, sophisticated Moon reactivity */
 .glass {
   background: rgba(10, 14, 28, 0.38);
-  backdrop-filter: blur(12px) saturate(150%);
-  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  backdrop-filter: blur(8px) saturate(140%);
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
   border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  transform: translateZ(0);
 }
 
 /* Frosted Navigation Bar */
 .glass-nav {
-  background: rgba(10, 13, 24, 0.65);
-  backdrop-filter: blur(18px) saturate(180%);
-  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  background: rgba(10, 13, 24, 0.72);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
   border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 10px 32px -4px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  transform: translateZ(0);
 }
 
 /* High-Contrast Frosted Drawer for Mobile Menu */
 .glass-menu {
-  background: rgba(8, 10, 22, 0.88);
-  backdrop-filter: blur(20px) saturate(200%);
-  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  background: rgba(8, 10, 22, 0.92);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.85), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+  transform: translateZ(0);
 }
 
 /* Multi-layer Frosted Card (Projects, Skills, Stats, Timeline) */
 .glass-card {
   position: relative;
-  background: rgba(10, 14, 28, 0.40);
-  backdrop-filter: blur(12px) saturate(140%);
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  background: rgba(10, 14, 28, 0.42);
+  backdrop-filter: blur(8px) saturate(140%);
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
   border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow: 0 10px 32px -4px rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
   transform: translateZ(0);
@@ -140,7 +143,7 @@ h4 {
   border-radius: inherit;
   padding: 1px;
   background: radial-gradient(
-    700px circle at var(--moon-screen-x, 80vw) var(--moon-screen-y, 20vh),
+    650px circle at var(--moon-screen-x, 80vw) var(--moon-screen-y, 20vh),
     rgba(255, 255, 255, 0.5) 0%,
     rgba(56, 189, 248, 0.35) 25%,
     rgba(168, 85, 247, 0.15) 50%,
@@ -157,11 +160,12 @@ h4 {
 /* Frosted Micro-badge / Pill (Balanced 50% strength) */
 .glass-pill {
   position: relative;
-  background: rgba(12, 16, 30, 0.36);
-  backdrop-filter: blur(10px) saturate(150%);
-  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  background: rgba(12, 16, 30, 0.38);
+  backdrop-filter: blur(6px) saturate(140%);
+  -webkit-backdrop-filter: blur(6px) saturate(140%);
   border: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transform: translateZ(0);
 }
 
 .glass-pill::after {
@@ -171,7 +175,7 @@ h4 {
   border-radius: inherit;
   padding: 1px;
   background: radial-gradient(
-    550px circle at var(--moon-screen-x, 80vw) var(--moon-screen-y, 20vh),
+    500px circle at var(--moon-screen-x, 80vw) var(--moon-screen-y, 20vh),
     rgba(255, 255, 255, 0.48) 0%,
     rgba(56, 189, 248, 0.3) 30%,
     transparent 70%
@@ -184,22 +188,24 @@ h4 {
 
 /* Frosted Chip (Tech stack tags, topic starters) */
 .glass-chip {
-  background: rgba(12, 16, 30, 0.36);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(12, 16, 30, 0.38);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transform: translateZ(0);
 }
 
 /* Frosted Interactive Button */
 .glass-button {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.03) 100%), rgba(15, 18, 32, 0.85);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   color: var(--color-ink);
   transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateZ(0);
 }
 
 .glass-button:hover {
@@ -237,17 +243,18 @@ h4 {
   opacity: 1;
 }
 
-/* Soft radial glow blobs for section backgrounds */
+/* Pre-baked Soft Radial Glow Sprites (0ms CPU/GPU blur calculation overhead) */
 .glow-blob {
   position: absolute;
-  border-radius: 999px;
-  filter: blur(80px);
-  opacity: 0.32;
+  border-radius: 9999px;
+  background: radial-gradient(circle, currentColor 0%, transparent 70%);
+  opacity: 0.22;
   pointer-events: none;
   z-index: 0;
+  transform: translateZ(0);
 }
 
-/* A soft light that follows the cursor and gently lifts what it passes over. */
+/* Pre-baked Cursor Glow Sprite (0ms blur filter overhead) */
 .cursor-glow {
   position: fixed;
   top: 0;
@@ -255,9 +262,9 @@ h4 {
   border-radius: 9999px;
   pointer-events: none;
   z-index: 30;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.07), transparent 60%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(56, 189, 248, 0.03) 35%, transparent 70%);
   mix-blend-mode: screen;
-  filter: blur(4px);
+  transform: translateZ(0);
   will-change: transform;
 }
 
