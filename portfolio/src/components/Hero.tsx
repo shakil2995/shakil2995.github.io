@@ -37,11 +37,11 @@ export default function Hero() {
   const isMobile = useIsMobile()
 
   return (
-    <section id="home" className="relative flex min-h-screen items-center overflow-hidden">
-      {/* 3D backdrop (or a calm static gradient when motion is reduced) */}
+    <section id="home" className="relative flex min-h-screen items-center overflow-hidden pt-20 sm:pt-0">
+      {/* 3D backdrop (or calm static gradient when motion is reduced) */}
       <div className="absolute inset-0 z-0">
         {reduced ? (
-          <div className="h-full w-full bg-[radial-gradient(ellipse_at_50%_40%,rgba(124,58,237,0.28),transparent_60%)]" />
+          <div className="h-full w-full bg-[radial-gradient(ellipse_at_60%_40%,rgba(124,58,237,0.22),transparent_65%)]" />
         ) : (
           <Suspense fallback={null}>
             <HeroScene isMobile={isMobile} />
@@ -49,41 +49,44 @@ export default function Hero() {
         )}
       </div>
 
-      {/* Ambient glow + grid + bottom fade */}
-      <div className="glow-blob left-[8%] top-[20%] h-72 w-72 bg-cyan-500/20" />
-      <div className="glow-blob right-[6%] bottom-[16%] h-80 w-80 bg-violet-500/18" />
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_bottom,transparent,transparent_70%,var(--color-bg))]" />
+      {/* Subtle ambient lighting + bottom gradient fade */}
+      <div className="glow-blob left-[5%] top-[25%] h-80 w-80 bg-cyan-500/12" />
+      <div className="glow-blob right-[5%] bottom-[20%] h-96 w-96 bg-violet-600/12" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_bottom,transparent,transparent_75%,var(--color-bg))]" />
 
-      {/* Foreground */}
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-5 sm:px-8">
+      {/* Foreground Hero Content */}
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-5 sm:px-8 py-16 sm:py-0">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="max-w-2xl"
         >
-          <span className="glass inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium text-[color:var(--color-muted)]">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+          {/* Status badge */}
+          <div className="mb-6 inline-block">
+            <span className="glass-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold text-[color:var(--color-ink)]">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+              </span>
+              Available for new opportunities
             </span>
-            Available for new opportunities
-          </span>
+          </div>
 
-          <h1 className="mt-6 text-[2.6rem] font-bold leading-[1.05] sm:text-6xl lg:text-7xl">
+          <h1 className="text-[2.6rem] font-bold leading-[1.06] tracking-tight sm:text-6xl lg:text-7xl">
             Hi, I&apos;m <span className="gradient-text">{profile.firstName}</span>.
           </h1>
 
-          <p className="mt-4 text-xl text-[color:var(--color-ink)] sm:text-2xl">
-            <span className="text-[color:var(--color-faint)]">&gt;&nbsp;</span>
+          <p className="mt-4 text-xl font-medium text-[color:var(--color-ink)] sm:text-2xl">
+            <span className="font-[var(--font-mono)] text-cyan-400">&gt;&nbsp;</span>
             <RotatingRole />
           </p>
 
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-[color:var(--color-muted)] sm:text-lg">
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-[#c0c8db] sm:text-lg">
             {profile.tagline}
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="mt-9 flex flex-wrap items-center gap-3">
             <a
               href="#work"
               className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-violet-500 px-5 py-3 text-sm font-semibold text-[#05060c] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_30px_-10px_rgba(139,92,246,0.6)]"
@@ -94,7 +97,7 @@ export default function Hero() {
 
             <a
               href="#contact"
-              className="glass glow inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-[color:var(--color-ink)] transition-all duration-300 hover:-translate-y-0.5"
+              className="glass-button glow inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-[color:var(--color-ink)] transition-all duration-300 hover:-translate-y-0.5"
             >
               Get in touch
             </a>
@@ -104,7 +107,7 @@ export default function Hero() {
                 href={socials.resumeUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="glass glow inline-flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium text-[color:var(--color-muted)] transition-all duration-300 hover:-translate-y-0.5 hover:text-[color:var(--color-ink)]"
+                className="glass-button glow inline-flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium text-[color:var(--color-muted)] transition-all duration-300 hover:-translate-y-0.5 hover:text-cyan-300"
                 aria-label="View and Download Resume"
               >
                 <DocumentIcon width={16} height={16} className="text-cyan-400" />
@@ -118,7 +121,7 @@ export default function Hero() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="GitHub profile"
-                className="glass glow grid h-11 w-11 place-items-center rounded-xl text-[color:var(--color-ink)] transition-all duration-300 hover:-translate-y-0.5 hover:text-cyan-300"
+                className="glass-button glow grid h-11 w-11 place-items-center rounded-xl text-[color:var(--color-ink)] transition-all duration-300 hover:-translate-y-0.5 hover:text-cyan-300"
               >
                 <GitHubIcon />
               </a>
@@ -128,7 +131,7 @@ export default function Hero() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label="LinkedIn profile"
-                  className="glass glow grid h-11 w-11 place-items-center rounded-xl text-[color:var(--color-ink)] transition-all duration-300 hover:-translate-y-0.5 hover:text-sky-400"
+                  className="glass-button glow grid h-11 w-11 place-items-center rounded-xl text-[color:var(--color-ink)] transition-all duration-300 hover:-translate-y-0.5 hover:text-sky-400"
                 >
                   <LinkedInIcon width={18} height={18} />
                 </a>
@@ -142,7 +145,7 @@ export default function Hero() {
       <a
         href="#about"
         aria-label="Scroll to about"
-        className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-[color:var(--color-faint)]"
+        className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-[color:var(--color-faint)] transition-colors hover:text-[color:var(--color-ink)]"
       >
         <ArrowDown className="animate-cue" />
       </a>
