@@ -22,7 +22,7 @@ export default function App() {
     <>
       {/* 3D Celestial Moon Guide — moves smoothly from component to component with scroll */}
       {!reduced && (
-        <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="fixed inset-0 z-0 pointer-events-none w-full h-full">
           <Suspense fallback={null}>
             <CelestialMoonScene isMobile={isMobile} />
           </Suspense>

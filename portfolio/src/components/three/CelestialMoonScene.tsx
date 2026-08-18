@@ -144,7 +144,7 @@ function DynamicOrbitStars({ count, primaryColor, secondaryColor }: { count: num
     return { geometry: g }
   }, [count])
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (pointsRef.current) {
       pointsRef.current.rotation.y += delta * 0.18
       pointsRef.current.rotation.x += delta * 0.06
@@ -152,8 +152,9 @@ function DynamicOrbitStars({ count, primaryColor, secondaryColor }: { count: num
       // Update particle colors based on current theme
       const colAttr = pointsRef.current.geometry.attributes.color as THREE.BufferAttribute
       const tmp = new THREE.Color()
+      const time = performance.now() * 0.001
       for (let i = 0; i < count; i++) {
-        const mix = (Math.sin(state.clock.elapsedTime * 2 + i * 0.1) + 1) * 0.5
+        const mix = (Math.sin(time * 2 + i * 0.1) + 1) * 0.5
         tmp.copy(primaryColor).lerp(secondaryColor, mix)
         colAttr.setXYZ(i, tmp.r, tmp.g, tmp.b)
       }
@@ -252,7 +253,7 @@ function DepthParallaxStarfield({ count = 600 }: { count?: number }) {
     const base = basePositionsRef.current
     const spd = speedsRef.current
     const cls = clustersRef.current
-    const time = state.clock.elapsedTime
+    const time = performance.now() * 0.001
     const scrollP = scrollRef.current
     const mouseX = state.pointer.x * 2.0
     const mouseY = state.pointer.y * 2.0
@@ -336,15 +337,14 @@ interface MeteorItem {
   length: number
   life: number
   maxLife: number
-  themeStart: MeteorColorTheme
-  themeEnd: MeteorColorTheme
+  colorStages: [MeteorColorTheme, MeteorColorTheme, MeteorColorTheme, MeteorColorTheme]
   sparks: Array<{ x: number; y: number; z: number; vx: number; vy: number; vz: number; life: number; maxLife: number }>
 }
 
 const RIBBON_SEGMENTS = 16
 const SPARKS_PER_METEOR = 6
 
-/** Authentic Earth-view sleek shooting stars burning with rich atmospheric ionization colors */
+/** Authentic Earth-view sleek shooting stars burning through 4 progressive atmospheric ionization stages */
 function MeteorShower({
   isMobile,
   flashRef,
@@ -371,8 +371,7 @@ function MeteorShower({
       length: 0,
       life: 0,
       maxLife: 1,
-      themeStart: METEOR_THEMES[0],
-      themeEnd: METEOR_THEMES[1],
+      colorStages: [METEOR_THEMES[0], METEOR_THEMES[1], METEOR_THEMES[2], METEOR_THEMES[3]],
       sparks: Array.from({ length: SPARKS_PER_METEOR }, () => ({
         x: 0,
         y: 0,
@@ -386,13 +385,14 @@ function MeteorShower({
     }))
   )
 
-  const spawnTimer = useRef(0)
-  const nextSpawnInterval = useRef(1.8)
+  const spawnTimer = useRef(999) // Instant spawn on initial load
+  const nextSpawnInterval = useRef(1.4)
 
   const { ribbonGeom, headGeom, sparksGeom } = useMemo(() => {
     const vertsPerMeteor = (RIBBON_SEGMENTS + 1) * 2
     const totalVerts = MAX_METEORS * vertsPerMeteor
     const pos = new Float32Array(totalVerts * 3)
+    pos.fill(-999)
     const col = new Float32Array(totalVerts * 3)
 
     const indices: number[] = []
@@ -415,6 +415,7 @@ function MeteorShower({
     rG.setIndex(indices)
 
     const headPos = new Float32Array(MAX_METEORS * 3)
+    headPos.fill(-999)
     const headCol = new Float32Array(MAX_METEORS * 3)
     const hG = new THREE.BufferGeometry()
     hG.setAttribute('position', new THREE.BufferAttribute(headPos, 3))
@@ -422,6 +423,7 @@ function MeteorShower({
 
     const totalSparks = MAX_METEORS * SPARKS_PER_METEOR
     const sparkPos = new Float32Array(totalSparks * 3)
+    sparkPos.fill(-999)
     const sparkCol = new Float32Array(totalSparks * 3)
     const sG = new THREE.BufferGeometry()
     sG.setAttribute('position', new THREE.BufferAttribute(sparkPos, 3))
@@ -451,14 +453,16 @@ function MeteorShower({
         const isRareLarge = sizeRoll < 0.12
         const isMedium = sizeRoll >= 0.12 && sizeRoll < 0.50
 
-        const startThemeIdx = Math.floor(Math.random() * METEOR_THEMES.length)
-        const endThemeIdx = (startThemeIdx + 1 + Math.floor(Math.random() * (METEOR_THEMES.length - 1))) % METEOR_THEMES.length
+        // Build a randomized 4-stage mineral color sequence: C1 -> C2 -> C3 -> C4
+        const startIndex = Math.floor(Math.random() * METEOR_THEMES.length)
+        const stage0 = METEOR_THEMES[startIndex]
+        const stage1 = METEOR_THEMES[(startIndex + 1) % METEOR_THEMES.length]
+        const stage2 = METEOR_THEMES[(startIndex + 2) % METEOR_THEMES.length]
+        const stage3 = METEOR_THEMES[(startIndex + 3) % METEOR_THEMES.length]
 
         inactive.active = true
         inactive.isLarge = isRareLarge
-        inactive.themeStart = METEOR_THEMES[startThemeIdx]
-        // Mid and Big meteors morph colors midway; small meteors keep a consistent theme
-        inactive.themeEnd = (isRareLarge || isMedium) ? METEOR_THEMES[endThemeIdx] : METEOR_THEMES[startThemeIdx]
+        inactive.colorStages = [stage0, stage1, stage2, stage3]
 
         // Random starting zone across upper and right sky
         const originType = Math.random()
@@ -486,14 +490,14 @@ function MeteorShower({
         let speed: number, headW: number, len: number, lifeTime: number
 
         if (isRareLarge) {
-          // Rare Large Meteor (Doubled size: ~0.04 headWidth, 2.4 length)
+          // Rare Large Meteor
           speed = (isMobile ? 2.1 : 2.5) + Math.random() * 0.3
           headW = isMobile ? 0.030 : 0.044
           len = 1.9 + Math.random() * 0.6
           lifeTime = 4.8 + Math.random() * 0.6 // ~5s
-          flashRef.current = 0.55 // Momentary atmospheric flash
+          flashRef.current = 0.55
         } else if (isMedium) {
-          // Medium Shooting Star (Doubled size: ~0.02 headWidth, 1.3 length)
+          // Medium Shooting Star
           speed = (isMobile ? 1.9 : 2.2) + Math.random() * 0.3
           headW = isMobile ? 0.015 : 0.022
           len = 1.0 + Math.random() * 0.5
@@ -568,21 +572,31 @@ function MeteorShower({
       // Sustained brightness curve: quick fade-in, long visible flight, smooth fade-out
       const lifeProg = m.life / m.maxLife
       let meteorAlpha = 1.0
-      if (lifeProg < 0.12) {
-        meteorAlpha = lifeProg / 0.12
-      } else if (lifeProg > 0.85) {
-        meteorAlpha = Math.max(0, (1.0 - lifeProg) / 0.15)
+      if (lifeProg < 0.10) {
+        meteorAlpha = lifeProg / 0.10
+      } else if (lifeProg > 0.86) {
+        meteorAlpha = Math.max(0, (1.0 - lifeProg) / 0.14)
       }
 
-      // Mid-flight mineral color morphing (smooth transition across 30% to 70% of life)
-      const colorShift = THREE.MathUtils.smoothstep(lifeProg, 0.28, 0.72)
-      const curBodyR = THREE.MathUtils.lerp(m.themeStart.body[0], m.themeEnd.body[0], colorShift)
-      const curBodyG = THREE.MathUtils.lerp(m.themeStart.body[1], m.themeEnd.body[1], colorShift)
-      const curBodyB = THREE.MathUtils.lerp(m.themeStart.body[2], m.themeEnd.body[2], colorShift)
+      // 4-Stage Progressive Atmospheric Mineral Combustion: C1 -> C2 -> C3 -> C4 -> Disappears
+      // 3 transitions across lifeProg [0.0 - 1.0]: stage 0, stage 1, stage 2, stage 3
+      const phase = lifeProg * 3.0 // 0.0 to 3.0
+      const stageIdx = Math.min(Math.floor(phase), 2)
+      const nextStageIdx = stageIdx + 1
+      const stageFrac = phase - stageIdx
+      // Hold each color clearly for most of the stage, then smoothly crossfade
+      const stageT = THREE.MathUtils.smoothstep(stageFrac, 0.25, 0.75)
 
-      const curTailR = THREE.MathUtils.lerp(m.themeStart.tail[0], m.themeEnd.tail[0], colorShift)
-      const curTailG = THREE.MathUtils.lerp(m.themeStart.tail[1], m.themeEnd.tail[1], colorShift)
-      const curTailB = THREE.MathUtils.lerp(m.themeStart.tail[2], m.themeEnd.tail[2], colorShift)
+      const cA = m.colorStages[stageIdx]
+      const cB = m.colorStages[nextStageIdx]
+
+      const curBodyR = THREE.MathUtils.lerp(cA.body[0], cB.body[0], stageT)
+      const curBodyG = THREE.MathUtils.lerp(cA.body[1], cB.body[1], stageT)
+      const curBodyB = THREE.MathUtils.lerp(cA.body[2], cB.body[2], stageT)
+
+      const curTailR = THREE.MathUtils.lerp(cA.tail[0], cB.tail[0], stageT)
+      const curTailG = THREE.MathUtils.lerp(cA.tail[1], cB.tail[1], stageT)
+      const curTailB = THREE.MathUtils.lerp(cA.tail[2], cB.tail[2], stageT)
 
       // 1. Sleek Burning Incandescent Head
       headPos[headBase] = m.x
@@ -593,7 +607,7 @@ function MeteorShower({
       headCol[headBase + 1] = 0.98 * headBright
       headCol[headBase + 2] = 1.0 * headBright
 
-      // 2. Burning Tapered Meteor Body with Midway Mineral Color Shift
+      // 2. Burning Tapered Meteor Body with 4 Progressive Mineral Color Stages
       for (let s = 0; s <= RIBBON_SEGMENTS; s++) {
         const u = s / RIBBON_SEGMENTS
         const width = m.headWidth * Math.pow(1 - u, 1.4)
@@ -614,7 +628,7 @@ function MeteorShower({
         ribbonPos[rightIdx + 1] = cy - normY * halfW
         ribbonPos[rightIdx + 2] = cz
 
-        // Burning flame color: Incandescent White -> Dynamic Mid-Flight Body Color -> Deep Tail Stardust
+        // Burning flame color: Incandescent White -> Current Stage Mineral Flame -> Deep Tail Stardust
         const fade = Math.pow(1 - u, 1.2) * meteorAlpha
         let r = 1, g = 1, b = 1
         if (u < 0.25) {
@@ -639,7 +653,7 @@ function MeteorShower({
         ribbonCol[rightIdx + 2] = b * boost
       }
 
-      // 3. Slipstream Stardust Spark Embers with Dynamic Morphing Color
+      // 3. Slipstream Stardust Spark Embers
       m.sparks.forEach((sp, sIdx) => {
         const spIdx = sparkBase + sIdx * 3
         if (sp.life >= sp.maxLife) {
@@ -903,10 +917,12 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
 
   return (
     <Canvas
+      frameloop="always"
+      className="w-full h-full"
       dpr={[1, isMobile ? 1.25 : 1.5]}
       camera={{ position: [0, 0, 5.5], fov: isMobile ? 54 : 46 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-      style={{ pointerEvents: 'none' }}
+      style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
     >
       <DynamicSceneLighting primaryColor={primaryColor} isMobile={isMobile} flashRef={flashRef} />
 
