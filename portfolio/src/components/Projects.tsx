@@ -28,42 +28,42 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       transition={{ delay: (index % 3) * 0.05, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       className="h-full"
     >
-      <div className="glass lift glow group flex h-full flex-col rounded-2xl p-5 sm:p-6 transition-all duration-300">
+      <div className="group flex h-full flex-col rounded-2xl border border-white/15 bg-[rgba(12,16,32,0.85)] p-5 sm:p-6 shadow-md backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-[rgba(18,24,46,0.95)]">
 
         {/* Card Header: Accent bar & Badge */}
         <div className="mb-4 flex items-center justify-between gap-2">
-          <div className={`h-1 w-10 rounded-full bg-gradient-to-r ${BAR[project.accent]}`} />
-          <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold tracking-wide ${BADGE_STYLE(project.badge)}`}>
+          <div className={`h-1.5 w-12 rounded-full bg-gradient-to-r ${BAR[project.accent]}`} />
+          <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-bold tracking-wide ${BADGE_STYLE(project.badge)}`}>
             {project.badge || project.categoryLabel}
           </span>
         </div>
 
         {/* Project Screenshot / Visual Container (Properly fitted, not edge-to-edge) */}
         {project.image && (
-          <div className="relative mb-4 w-full overflow-hidden rounded-xl border border-white/10 bg-[#090b14] aspect-[16/9]">
+          <div className="relative mb-4 w-full overflow-hidden rounded-xl border border-white/15 bg-[#090b14] aspect-[16/9]">
             <img
               src={project.image}
               alt={`${project.title} screenshot`}
               loading="lazy"
               className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
             />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#090b14]/50 via-transparent to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#090b14]/60 via-transparent to-transparent" />
           </div>
         )}
 
         <div className="flex items-baseline justify-between gap-3">
-          <h3 className="text-xl font-bold transition-colors group-hover:text-[color:var(--color-ink)]">
+          <h3 className="text-xl font-bold tracking-tight text-white transition-colors group-hover:text-cyan-200">
             {project.title}
           </h3>
         </div>
 
-        <p className="mt-2 text-sm leading-relaxed text-[color:var(--color-muted)]">
+        <p className="mt-2 text-sm leading-relaxed text-[#cbd5e1]">
           {project.blurb}
         </p>
 
         {/* Feature Highlights */}
         {project.highlights && project.highlights.length > 0 && (
-          <ul className="mt-4 space-y-1.5 border-t border-white/5 pt-3 text-xs text-[color:var(--color-muted)]">
+          <ul className="mt-4 space-y-1.5 border-t border-white/10 pt-3 text-xs font-medium text-slate-200">
             {project.highlights.map((h) => (
               <li key={h} className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-cyan-400" />
@@ -78,7 +78,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           {project.tags.map((t) => (
             <li
               key={t}
-              className="rounded-md border border-white/10 bg-white/[0.03] px-2 py-0.5 font-[var(--font-mono)] text-[11px] text-[color:var(--color-muted)]"
+              className="rounded-md border border-white/15 bg-white/[0.06] px-2.5 py-0.5 font-[var(--font-mono)] text-[11px] font-semibold text-slate-200"
             >
               {t}
             </li>
@@ -92,7 +92,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
               href={project.live}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-300 transition-colors hover:text-cyan-200"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-300 transition-colors hover:text-cyan-200"
             >
               <ExternalLink width={14} height={14} /> Visit Site
               <ArrowUpRight width={12} height={12} className="opacity-70" />
@@ -103,7 +103,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
               href={project.playStore}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 transition-colors hover:text-emerald-300"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400 transition-colors hover:text-emerald-300"
             >
               <PlayStoreIcon width={14} height={14} /> Google Play
               <ArrowUpRight width={12} height={12} className="opacity-70" />
@@ -114,14 +114,14 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
               href={project.repo}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[color:var(--color-ink)] transition-colors hover:text-cyan-300"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-white transition-colors hover:text-cyan-300"
             >
               <GitHubIcon width={15} height={15} /> Source
               <ArrowUpRight width={12} height={12} className="opacity-70" />
             </a>
           )}
           {!project.repo && !project.live && !project.playStore && project.label && (
-            <span className="inline-flex items-center gap-1.5 text-xs text-[color:var(--color-faint)]">
+            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-300">
               <LockIcon width={13} height={13} />
               {project.label}
             </span>

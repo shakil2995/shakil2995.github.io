@@ -212,21 +212,21 @@ function SmartCelestialMoon({
   const waypoints = useMemo(() => {
     if (isMobile) {
       return [
-        { p: 0.0, x: 0.92, y: 1.6, z: -1.0, s: 1.25 },  // Hero: Corner sky accent
-        { p: 0.2, x: -0.92, y: 0.65, z: -0.9, s: 0.85 }, // About: Compact margin
-        { p: 0.45, x: 0.92, y: 0.35, z: -0.9, s: 0.8 },  // Skills: Compact margin
-        { p: 0.68, x: -0.92, y: 0.05, z: -0.9, s: 0.9 },  // Projects: Medium margin
-        { p: 0.85, x: 0.92, y: -0.1, z: -0.9, s: 0.85 }, // Timeline: Compact margin
-        { p: 1.0, x: 0.0, y: 1.65, z: -0.9, s: 1.45 },  // Contact: Grand finale beacon
+        { p: 0.0, x: 0.92, y: 1.6, z: -1.0, s: 0.95 },  // Hero: Corner sky accent
+        { p: 0.2, x: -0.92, y: 0.65, z: -0.9, s: 0.75 }, // About: Compact margin
+        { p: 0.45, x: 0.92, y: 0.35, z: -0.9, s: 0.7 },  // Skills: Compact margin
+        { p: 0.68, x: -0.92, y: 0.05, z: -0.9, s: 0.8 },  // Projects: Medium margin
+        { p: 0.85, x: 0.92, y: -0.1, z: -0.9, s: 0.75 }, // Timeline: Compact margin
+        { p: 1.0, x: 0.0, y: 1.65, z: -0.9, s: 1.1 },   // Contact: Beacon overhead
       ]
     }
     return [
-      { p: 0.0, x: 2.3, y: 0.1, z: 0.0, s: 2.15 },    // Hero: Grand celestial entrance
-      { p: 0.2, x: -2.38, y: 0.35, z: 0.2, s: 1.45 }, // About: Medium-compact, leaves room for cards
-      { p: 0.45, x: 2.45, y: 0.2, z: 0.1, s: 1.35 },  // Skills: Compact, tucked in right margin
-      { p: 0.68, x: -2.4, y: -0.1, z: 0.3, s: 1.65 }, // Projects: Medium-large glowing alongside showcases
-      { p: 0.85, x: 2.4, y: 0.05, z: 0.2, s: 1.4 },   // Timeline: Medium, balances timeline tree
-      { p: 1.0, x: 0.0, y: 1.45, z: -0.2, s: 2.35 },   // Contact: Majestic Full Moon overhead
+      { p: 0.0, x: 2.32, y: 0.15, z: 0.0, s: 1.55 },   // Hero: Perfectly balanced celestial presence
+      { p: 0.2, x: -2.35, y: 0.35, z: 0.2, s: 1.25 }, // About: Compact margin, full room for stats
+      { p: 0.45, x: 2.4, y: 0.2, z: 0.1, s: 1.2 },    // Skills: Tucked in right margin
+      { p: 0.68, x: -2.35, y: -0.1, z: 0.3, s: 1.35 }, // Projects: Alongside project cards
+      { p: 0.85, x: 2.35, y: 0.05, z: 0.2, s: 1.25 },  // Timeline: Balances timeline tree
+      { p: 1.0, x: 0.0, y: 1.45, z: -0.2, s: 1.65 },   // Contact: Crown above contact portal
     ]
   }, [isMobile])
 

@@ -72,9 +72,8 @@ export default function Hero() {
           <p className="mt-4 text-xl font-medium text-[color:var(--color-ink)] sm:text-2xl lg:text-3xl">
             <RotatingRole />
           </p>
-
           {/* Concise Value Statement */}
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-[#b8c2d6] sm:text-lg lg:text-xl">
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-[#d1d5db] sm:text-lg lg:text-xl">
             {profile.tagline}
           </p>
 
@@ -82,17 +81,17 @@ export default function Hero() {
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
             <a
               href="#work"
-              className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-violet-500 px-6 py-3.5 text-sm font-semibold text-[#05060c] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_32px_-10px_rgba(139,92,246,0.6)]"
+              className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-violet-500 px-6 py-3.5 text-sm font-semibold text-[#05060c] shadow-lg shadow-cyan-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_32px_-10px_rgba(139,92,246,0.6)]"
             >
-              Explore Projects
+              <span>Explore Projects</span>
               <ArrowUpRight className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </a>
 
             <a
               href="#contact"
-              className="glass-button glow inline-flex items-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold text-[color:var(--color-ink)] transition-all duration-300 hover:-translate-y-0.5"
+              className="glass-button glow inline-flex items-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold text-[color:var(--color-ink)] transition-all duration-300 hover:-translate-y-0.5"
             >
-              Get in touch
+              <span>Get in touch</span>
             </a>
 
             {socials.resumeUrl && (
@@ -100,10 +99,9 @@ export default function Hero() {
                 href={socials.resumeUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="glass-button glow inline-flex items-center gap-2 rounded-xl px-4 py-3.5 text-sm font-medium text-[color:var(--color-muted)] transition-all duration-300 hover:-translate-y-0.5 hover:text-cyan-300"
-                aria-label="View and Download Resume"
+                className="glass-button glow inline-flex items-center gap-2 rounded-xl px-4 py-3.5 text-sm font-medium text-[color:var(--color-ink)] transition-all duration-300 hover:-translate-y-0.5"
               >
-                <DocumentIcon width={16} height={16} className="text-cyan-400" />
+                <DocumentIcon />
                 <span>Resume</span>
               </a>
             )}
@@ -132,7 +130,7 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Clean Understated Highlights Bar */}
+          {/* Clean High-Contrast Highlights Bar */}
           <div className="mt-14 grid w-full grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
             {HIGHLIGHTS.map((h, i) => (
               <motion.div
@@ -140,17 +138,16 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 + i * 0.08, duration: 0.5 }}
-                className="glass-card flex items-center gap-2.5 rounded-xl p-3 text-left transition-all hover:border-white/20"
+                className="flex items-center gap-2.5 rounded-xl border border-white/15 bg-[rgba(12,16,32,0.85)] p-3 text-left shadow-sm backdrop-blur-md transition-all hover:border-white/30 hover:bg-[rgba(18,24,46,0.9)]"
               >
                 <span className="text-lg">{h.icon}</span>
                 <div className="min-w-0">
-                  <div className="text-xs font-bold text-[color:var(--color-ink)] truncate">{h.label}</div>
-                  <div className="text-[11px] text-[color:var(--color-faint)] truncate">{h.sub}</div>
+                  <div className="text-xs font-bold text-white truncate">{h.label}</div>
+                  <div className="text-[11px] font-medium text-slate-300 truncate">{h.sub}</div>
                 </div>
               </motion.div>
             ))}
           </div>
-
         </motion.div>
       </div>
 

@@ -50,9 +50,9 @@ export default function About() {
                 className="aspect-square w-full rounded-2xl object-cover object-[center_20%] shadow-2xl"
               />
             </div>
-            <div className="glass absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-xl px-4 py-2 text-sm">
-              <span className="gradient-text font-semibold">{profile.role}</span>
-              <span className="text-[color:var(--color-faint)]"> @ {profile.company}</span>
+            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-xl border border-white/20 bg-[rgba(10,13,26,0.92)] px-4 py-2 text-sm shadow-xl backdrop-blur-md">
+              <span className="gradient-text font-bold">{profile.role}</span>
+              <span className="text-slate-300 font-medium"> @ {profile.company}</span>
             </div>
           </div>
         </Reveal>
@@ -60,7 +60,7 @@ export default function About() {
         <div className="order-1 lg:order-2">
           {about.paragraphs.map((p, i) => (
             <Reveal key={i} delay={i * 0.08}>
-              <p className="mb-4 text-base text-[color:var(--color-muted)] sm:text-lg">{p}</p>
+              <p className="mb-4 text-base leading-relaxed text-slate-200 sm:text-lg">{p}</p>
             </Reveal>
           ))}
 
@@ -76,11 +76,11 @@ export default function About() {
                   transition={{ delay: i * 0.07, duration: 0.5 }}
                   className="h-full"
                 >
-                  <div className="glass lift glow h-full rounded-2xl p-4 text-center">
-                    <div className="font-[var(--font-display)] text-2xl font-bold text-[color:var(--color-ink)] sm:text-3xl">
+                  <div className="h-full rounded-2xl border border-white/15 bg-[rgba(12,16,32,0.85)] p-4 text-center shadow-md backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/40 hover:bg-[rgba(18,24,46,0.95)]">
+                    <div className="font-[var(--font-display)] text-2xl font-bold text-white sm:text-3xl">
                       <Counter target={value} suffix={s.suffix} />
                     </div>
-                    <div className="mt-1 text-xs text-[color:var(--color-faint)]">{s.label}</div>
+                    <div className="mt-1 text-xs font-semibold tracking-wide text-slate-300">{s.label}</div>
                   </div>
                 </motion.div>
               )

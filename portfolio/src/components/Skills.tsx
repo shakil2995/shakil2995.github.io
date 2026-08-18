@@ -42,18 +42,18 @@ export default function Skills() {
               transition={{ delay: gi * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="h-full"
             >
-              <div className={`glass lift glow group h-full rounded-2xl p-5 transition-all duration-300 ${GLOW_ACCENT[group.accent]}`}>
+              <div className={`h-full rounded-2xl border border-white/15 bg-[rgba(12,16,32,0.85)] p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-[rgba(18,24,46,0.95)] shadow-md ${GLOW_ACCENT[group.accent]}`}>
                 <div className="mb-4 flex items-center gap-2.5">
                   <span className={`h-2.5 w-2.5 rounded-full ${DOT[group.accent]}`} />
-                  <h3 className="text-lg font-semibold">{group.title}</h3>
+                  <h3 className="text-lg font-bold text-white tracking-tight">{group.title}</h3>
                 </div>
                 <ul className="flex flex-wrap gap-2">
                   {group.items.map((item) => (
                     <li
                       key={item.name}
-                      className={`inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-1.5 font-[var(--font-mono)] text-[12px] transition-all hover:scale-105 hover:border-white/30 hover:text-[color:var(--color-ink)] ${TEXT[group.accent]}`}
+                      className={`inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/[0.05] px-2.5 py-1.5 font-[var(--font-mono)] text-[12px] font-medium transition-all hover:scale-105 hover:border-white/35 ${TEXT[group.accent]}`}
                     >
-                      <TechIcon iconKey={item.iconKey} className="opacity-80 transition-opacity group-hover:opacity-100" />
+                      <TechIcon iconKey={item.iconKey} className="opacity-85 transition-opacity group-hover:opacity-100" />
                       <span>{item.name}</span>
                     </li>
                   ))}
