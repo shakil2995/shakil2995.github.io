@@ -54,7 +54,7 @@ export default function Hero() {
         >
           {/* Status badge */}
           <div className="mb-6">
-            <span className="glass-pill inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold text-[color:var(--color-ink)] shadow-sm">
+            <span className="glass-pill inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold text-[color:var(--color-ink)] shadow-md bg-[rgba(9,12,24,0.88)] border border-white/20 backdrop-blur-md">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
