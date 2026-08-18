@@ -23,9 +23,11 @@ export const profile = {
 
 export const socials = {
   github: 'https://github.com/shakil2995',
-  // TODO: replace with your real public contact email before publishing.
-  email: 'hello@example.com',
-  // TODO: add these if you have them, otherwise leave empty and they are hidden.
+  phone: '01837138305',
+  phoneInternational: '+8801837138305',
+  phoneDisplay: '+880 1837-138305',
+  whatsappNumber: '8801837138305',
+  whatsapp: 'https://wa.me/8801837138305?text=Hi%20Shakil,%20I%20saw%20your%20portfolio%20and%20wanted%20to%20connect!',
   linkedin: '',
   twitter: '',
 }
