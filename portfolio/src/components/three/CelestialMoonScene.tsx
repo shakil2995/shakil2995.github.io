@@ -76,6 +76,70 @@ function getInterpolatedTheme(progress: number, curPrim: THREE.Color, curSec: TH
   curEmis.copy(last.emissive)
 }
 
+/**
+ * Hero-only automatic colour cycle.
+ *
+ * Everywhere else the palette is driven by scroll position (see SECTION_THEMES).
+ * At the top of the page there is no scroll to drive it, so the moon idles
+ * through this loop on a timer instead. The two are cross-faded by scroll
+ * progress rather than switched, so there is no pop as you leave the hero —
+ * by HERO_CYCLE_HANDOFF the scroll-driven theme has full control again.
+ */
+const HERO_CYCLE: SectionTheme[] = [
+  { p: 0, primary: new THREE.Color('#38bdf8'), secondary: new THREE.Color('#818cf8'), emissive: new THREE.Color('#10263f') },
+  { p: 0, primary: new THREE.Color('#a855f7'), secondary: new THREE.Color('#6366f1'), emissive: new THREE.Color('#241748') },
+  { p: 0, primary: new THREE.Color('#ec4899'), secondary: new THREE.Color('#a855f7'), emissive: new THREE.Color('#3a1030') },
+  { p: 0, primary: new THREE.Color('#2dd4bf'), secondary: new THREE.Color('#06b6d4'), emissive: new THREE.Color('#0b3733') },
+]
+
+/** Seconds spent on each stop before crossfading to the next. */
+const HERO_CYCLE_SECONDS = 3.2
+/** Scroll progress at which the cycle has fully handed off to the scroll theme. */
+const HERO_CYCLE_HANDOFF = 0.14
+
+/** Untinted lunar surface, and how far toward the cycle hue it is allowed to go. */
+const MOON_BASE = new THREE.Color('#ffffff')
+const MOON_TINT_STRENGTH = 0.5
+const moonTint = new THREE.Color()
+
+const heroPrim = new THREE.Color()
+const heroSec = new THREE.Color()
+const heroEmis = new THREE.Color()
+
+/**
+ * Blends the timed hero palette over the scroll-derived one and returns how
+ * much of it is currently applied (1 at the very top, 0 past the handoff).
+ */
+function applyHeroAutoCycle(
+  progress: number,
+  time: number,
+  curPrim: THREE.Color,
+  curSec: THREE.Color,
+  curEmis: THREE.Color,
+): number {
+  const weight = 1 - THREE.MathUtils.smoothstep(progress, 0, HERO_CYCLE_HANDOFF)
+  if (weight <= 0.001) return 0
+
+  const span = HERO_CYCLE.length * HERO_CYCLE_SECONDS
+  const t = (time % span) / HERO_CYCLE_SECONDS
+  const i = Math.floor(t)
+  const a = HERO_CYCLE[i % HERO_CYCLE.length]
+  const b = HERO_CYCLE[(i + 1) % HERO_CYCLE.length]
+  const ease = 0.5 - Math.cos((t - i) * Math.PI) * 0.5
+
+  // lerpHSL, not lerp: interpolating near-complementary hues in RGB drags the
+  // midpoint through grey, so the moon visibly desaturated to silver halfway
+  // between stops. Sweeping the hue arc instead keeps saturation up throughout.
+  heroPrim.copy(a.primary).lerpHSL(b.primary, ease)
+  heroSec.copy(a.secondary).lerpHSL(b.secondary, ease)
+  heroEmis.copy(a.emissive).lerpHSL(b.emissive, ease)
+
+  curPrim.lerp(heroPrim, weight)
+  curSec.lerp(heroSec, weight)
+  curEmis.lerp(heroEmis, weight)
+  return weight
+}
+
 /** Generates clean, aesthetic pearlescent lunar texture with soft glowing maria */
 function createSmartAestheticMoonTexture(): THREE.CanvasTexture {
   const width = 2048
@@ -858,6 +922,13 @@ function SmartCelestialMoon({
 
     // Update dynamic theme colors smoothly
     getInterpolatedTheme(progress, primaryColor, secondaryColor, emissiveColor)
+    const heroWeight = applyHeroAutoCycle(
+      progress,
+      state.clock.elapsedTime,
+      primaryColor,
+      secondaryColor,
+      emissiveColor,
+    )
 
     if (groupRef.current) {
       groupRef.current.position.x = THREE.MathUtils.damp(
@@ -891,6 +962,13 @@ function SmartCelestialMoon({
       const mat = moonMeshRef.current.material as THREE.MeshStandardMaterial
       if (mat) {
         mat.emissive.lerp(emissiveColor, delta * 3)
+
+        // Wash the lunar surface itself with the current hue while the cycle is
+        // active. The rim light alone only tints one edge; tinting `color` is
+        // what actually reads as "the moon changed colour". Fades back to plain
+        // white as `heroWeight` drops, so scrolled-past behaviour is unchanged.
+        moonTint.copy(MOON_BASE).lerp(primaryColor, heroWeight * MOON_TINT_STRENGTH)
+        mat.color.lerp(moonTint, delta * 3)
       }
     }
   })
