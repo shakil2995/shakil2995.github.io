@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { socials } from '../data/portfolio'
-import { ArrowUpRight, CheckIcon, CopyIcon, GitHubIcon, LinkedInIcon, PhoneIcon, WhatsAppIcon } from './ui/icons'
+import { ArrowUpRight, CheckIcon, CopyIcon, GitHubIcon, LinkedInIcon, MailIcon, PhoneIcon, WhatsAppIcon } from './ui/icons'
 
 const QUICK_TOPICS = [
   {
@@ -61,8 +61,8 @@ export default function Contact() {
           </h2>
 
           <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-slate-200 drop-shadow-[0_1px_6px_rgba(0,0,0,0.85)] sm:text-lg">
-            A product to launch, a role to fill, or just a quick chat — message me directly on WhatsApp
-            or give me a call anytime.
+            A product to launch, a role to fill, or just a quick chat — email me, message me on
+            WhatsApp, or give me a call anytime.
           </p>
 
           {/* Interactive Phone / WhatsApp number — click to copy */}
@@ -75,6 +75,7 @@ export default function Contact() {
             <PhoneIcon width={16} height={16} className="text-emerald-400" />
             <span>{socials.phoneDisplay}</span>
             <span
+              aria-live="polite"
               className={`inline-flex items-center gap-1 text-xs transition-colors ${copied ? 'text-emerald-400 font-medium' : 'text-slate-300'
                 }`}
             >
@@ -111,6 +112,14 @@ export default function Contact() {
 
           {/* Main Action CTAs */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <a
+              href={`mailto:${socials.email}`}
+              className="glass glow inline-flex items-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold text-[color:var(--color-ink)] transition-all duration-300 hover:-translate-y-0.5 hover:text-cyan-300"
+            >
+              <MailIcon width={18} height={18} className="text-cyan-300" />
+              Email me
+            </a>
+
             <a
               href={socials.whatsapp}
               target="_blank"

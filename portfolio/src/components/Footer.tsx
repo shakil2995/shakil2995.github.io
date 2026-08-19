@@ -1,5 +1,5 @@
 import { socials } from '../data/portfolio'
-import { GitHubIcon, LinkedInIcon, PhoneIcon, WhatsAppIcon } from './ui/icons'
+import { GitHubIcon, LinkedInIcon, MailIcon, PhoneIcon, WhatsAppIcon } from './ui/icons'
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -30,6 +30,13 @@ export default function Footer() {
               <LinkedInIcon width={17} height={17} />
             </a>
           )}
+          <a
+            href={`mailto:${socials.email}`}
+            aria-label="Email Shakil"
+            className="grid h-9 w-9 place-items-center rounded-lg text-[color:var(--color-muted)] ring-1 ring-white/10 transition-colors hover:text-cyan-300"
+          >
+            <MailIcon width={17} height={17} />
+          </a>
           <a
             href={socials.whatsapp}
             target="_blank"

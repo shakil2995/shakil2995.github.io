@@ -46,7 +46,10 @@ export default function About() {
               <img
                 src={profile.avatar}
                 alt={`${profile.name}, ${profile.role}`}
+                width={profile.avatarWidth}
+                height={profile.avatarHeight}
                 loading="lazy"
+                decoding="async"
                 className="aspect-square w-full rounded-2xl object-cover object-[center_20%] shadow-2xl"
               />
             </div>

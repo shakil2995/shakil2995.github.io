@@ -20,8 +20,8 @@
   --color-violet: #8b5cf6;
   --color-magenta: #ec4899;
 
-  --font-display: 'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
   --shadow-glow: 0 0 40px -8px rgba(139, 92, 246, 0.45);
@@ -63,6 +63,39 @@ h4 {
   line-height: 1.05;
   letter-spacing: -0.02em;
   margin: 0;
+}
+
+/* Keyboard focus must be obvious on dark glass — the UA default ring is
+   effectively invisible against these surfaces. */
+:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Pointer users don't get the ring; keyboard users always do. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Skip link — off-screen until focused. */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 50%;
+  z-index: 100;
+  transform: translate(-50%, -200%);
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  background: var(--color-cyan);
+  color: #05060c;
+  font-weight: 700;
+  font-size: 0.875rem;
+  transition: transform 0.2s ease;
+}
+
+.skip-link:focus {
+  transform: translate(-50%, 0);
 }
 
 ::selection {
@@ -254,9 +287,15 @@ h4 {
   }
 }
 
-/* Gentle elevation on hover. */
+/* Gentle elevation on hover.
+   `will-change` is applied on hover only — declaring it permanently forced a
+   compositor layer per card for the life of the page (dozens of them, each
+   also carrying a backdrop-filter). */
 .lift {
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lift:hover {
   will-change: transform;
 }
 
@@ -283,6 +322,104 @@ h4 {
     0 0 0 1px rgba(140, 205, 255, 0.35),
     0 0 44px -6px rgba(120, 190, 255, 0.6),
     inset 0 0 26px -6px rgba(150, 195, 255, 0.3);
+}
+
+/* ---------------------------------------------------------------------------
+   Mobile blur budget
+
+   Every backdrop-filter surface re-samples what's behind it, and behind these
+   is a live WebGL canvas. On phones that's the dominant GPU cost, so below the
+   md breakpoint the blur is dropped and the panels go opaque instead — the
+   backdrop there is near-black anyway, so the look barely changes.
+--------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+
+  .glass,
+  .glass-nav,
+  .glass-menu,
+  .glass-card,
+  .glass-pill,
+  .glass-chip,
+  .glass-button {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .glass,
+  .glass-card {
+    background: rgba(11, 15, 29, 0.94);
+  }
+
+  .glass-nav {
+    background: rgba(8, 11, 22, 0.96);
+  }
+
+  .glass-pill,
+  .glass-chip {
+    background: rgba(15, 20, 40, 0.94);
+  }
+
+  .glass-button {
+    background: rgba(16, 21, 40, 0.96);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Hero scrim + reduced-motion starfield
+--------------------------------------------------------------------------- */
+
+/* Pool of shadow behind the hero copy so the headline stays legible no matter
+   where the moon drifts at a given viewport width. */
+.hero-scrim {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(78rem, 130%);
+  height: 42rem;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse at center,
+      rgba(5, 6, 12, 0.82) 0%,
+      rgba(5, 6, 12, 0.62) 38%,
+      rgba(5, 6, 12, 0.28) 62%,
+      transparent 78%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+
+  /* The width was a % of the section, and the gradient reaches `transparent` at
+     78% of that — so the darkening stopped a few px short of the viewport's
+     right edge, leaving a bare strip the moon's lit limb showed through.
+     Anchoring the box to `vw` instead pushes that 78% point past both edges.
+     Same colour stops, so the brightness is unchanged. */
+  .hero-scrim {
+    width: 150vw;
+  }
+}
+
+/* When motion is reduced the 3D canvas is not mounted at all. Without this the
+   page would drop to a flat void; a static field keeps it feeling designed. */
+.static-starfield {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 18%, rgba(226, 232, 240, 0.85), transparent),
+    radial-gradient(1.5px 1.5px at 34% 62%, rgba(186, 230, 253, 0.7), transparent),
+    radial-gradient(1px 1px at 58% 26%, rgba(233, 213, 255, 0.7), transparent),
+    radial-gradient(1.5px 1.5px at 74% 74%, rgba(226, 232, 240, 0.8), transparent),
+    radial-gradient(1px 1px at 88% 38%, rgba(186, 230, 253, 0.65), transparent),
+    radial-gradient(1px 1px at 22% 86%, rgba(226, 232, 240, 0.6), transparent),
+    radial-gradient(1.5px 1.5px at 46% 8%, rgba(226, 232, 240, 0.7), transparent),
+    radial-gradient(1px 1px at 66% 52%, rgba(233, 213, 255, 0.6), transparent),
+    radial-gradient(circle at 78% 22%, rgba(56, 189, 248, 0.10), transparent 45%),
+    radial-gradient(circle at 24% 68%, rgba(139, 92, 246, 0.10), transparent 45%);
+  background-size:
+    420px 420px, 420px 420px, 380px 380px, 460px 460px, 400px 400px,
+    440px 440px, 360px 360px, 480px 480px, 100% 100%, 100% 100%;
 }
 
 @keyframes float-slow {

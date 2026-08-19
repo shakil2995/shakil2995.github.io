@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useScrollSpy } from '../hooks/useScrollSpy'
 import { socials } from '../data/portfolio'
@@ -18,9 +18,30 @@ const IDS = SECTIONS.map((s) => s.id)
 export default function Navbar() {
   const active = useScrollSpy(IDS)
   const [open, setOpen] = useState(false)
+  const headerRef = useRef<HTMLElement>(null)
+
+  // Escape closes the drawer and returns focus to the toggle; a pointer press
+  // outside it closes too. Both are baseline expectations for a disclosure.
+  useEffect(() => {
+    if (!open) return
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    const onPointerDown = (e: PointerEvent) => {
+      if (!headerRef.current?.contains(e.target as Node)) setOpen(false)
+    }
+
+    window.addEventListener('keydown', onKey)
+    window.addEventListener('pointerdown', onPointerDown)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('pointerdown', onPointerDown)
+    }
+  }, [open])
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-4 sm:px-6">
+    <header ref={headerRef} className="fixed inset-x-0 top-0 z-50 px-4 sm:px-6">
       <nav className="glass mx-auto mt-3 flex max-w-6xl items-center justify-between rounded-2xl px-4 py-3 sm:px-6">
         <a href="#home" className="group flex items-center gap-2.5" aria-label="Home">
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-cyan-400 to-violet-500 font-[var(--font-display)] text-sm font-bold text-white shadow-[var(--shadow-glow)]">
@@ -37,6 +58,7 @@ export default function Navbar() {
             <li key={s.id}>
               <a
                 href={`#${s.id}`}
+                aria-current={active === s.id ? 'true' : undefined}
                 className={`relative rounded-lg px-3 py-2 text-sm transition-colors ${active === s.id
                     ? 'text-[color:var(--color-ink)]'
                     : 'text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]'
@@ -76,6 +98,8 @@ export default function Navbar() {
           <button
             type="button"
             aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
             onClick={() => setOpen((v) => !v)}
             className="grid h-10 w-10 place-items-center rounded-xl text-[color:var(--color-ink)] ring-1 ring-white/10 md:hidden"
           >
@@ -91,7 +115,8 @@ export default function Navbar() {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className="glass mx-auto mt-2 max-w-6xl overflow-hidden rounded-2xl border border-white/15 bg-[rgba(10,13,26,0.95)] p-3 shadow-2xl backdrop-blur-xl md:hidden"
+            id="mobile-menu"
+            className="glass mx-auto mt-2 max-w-6xl overflow-hidden rounded-2xl border border-white/15 bg-[rgba(10,13,26,0.95)] p-3 shadow-2xl md:hidden"
           >
             <ul className="flex flex-col">
               {SECTIONS.map((s) => (
@@ -99,6 +124,7 @@ export default function Navbar() {
                   <a
                     href={`#${s.id}`}
                     onClick={() => setOpen(false)}
+                    aria-current={active === s.id ? 'true' : undefined}
                     className={`block rounded-xl px-4 py-3 text-sm font-medium transition-colors ${active === s.id
                         ? 'gradient-text bg-white/5 font-bold'
                         : 'text-slate-200 hover:bg-white/5 hover:text-white'

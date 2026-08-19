@@ -36,6 +36,9 @@ export default function Hero() {
       <div className="glow-blob left-[15%] bottom-[20%] h-80 w-80 bg-cyan-500/8" />
       <div className="glow-blob right-[15%] top-[30%] h-80 w-80 bg-fuchsia-600/8" />
 
+      {/* Keeps the headline readable wherever the moon drifts at a given width */}
+      <div className="hero-scrim" aria-hidden />
+
       {/* Foreground Content */}
       <div className="relative z-10 mx-auto w-full max-w-4xl px-5 text-center sm:px-8">
         <motion.div

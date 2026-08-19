@@ -19,7 +19,9 @@ export const profile = {
   tagline:
     'Founder of Zinodesk & SmartPilot. Architect of ATI EMR. I build fast, polished products end to end — AI SaaS, offline-first systems, web & Flutter apps.',
   company: 'ATI Limited',
-  avatar: './avatar.jpg',
+  avatar: './avatar.webp',
+  avatarWidth: 1024,
+  avatarHeight: 1024,
   location: 'Available worldwide · Remote',
   startYear: 2017,
   publicRepos: 45,
@@ -33,6 +35,7 @@ export const socials = {
   phoneDisplay: '+880 1837-138305',
   whatsappNumber: '8801837138305',
   whatsapp: 'https://wa.me/8801837138305?text=Hi%20Shakil,%20I%20saw%20your%20portfolio%20and%20wanted%20to%20connect!',
+  email: 'atidevs01@gmail.com',
   resumeUrl: './resume.html',
 }
 
@@ -122,6 +125,21 @@ export const skills: SkillGroup[] = [
 
 export type ProjectCategory = 'all' | 'ai' | 'mobile' | 'web'
 
+/**
+ * Long-form project breakdown shown in the case-study drawer.
+ *
+ * NOTE: `outcome` deliberately contains no invented metrics. Replace these lines
+ * with real numbers when you have them (users onboarded, clinics deployed,
+ * response latency, uptime) — concrete figures are what make a case study land.
+ */
+export type CaseStudy = {
+  role: string
+  timeframe: string
+  problem: string
+  approach: Array<{ title: string; detail: string }>
+  outcome: string[]
+}
+
 export type Project = {
   title: string
   category: 'ai' | 'mobile' | 'web'
@@ -131,6 +149,11 @@ export type Project = {
   tags: string[]
   highlights?: string[]
   image?: string
+  /** Intrinsic pixel size of `image` — set so the browser reserves space (no layout shift). */
+  imageWidth?: number
+  imageHeight?: number
+  /** Long-form breakdown. Present only on signature work; renders an expandable case study. */
+  caseStudy?: CaseStudy
   repo?: string
   live?: string
   playStore?: string
@@ -157,7 +180,42 @@ export const projects: Project[] = [
     blurb:
       'Your AI Receptionist live in 5 minutes. Upload your business knowledge, customize a premium widget, and embed an intelligent assistant that captures leads and answers customer questions 24/7.',
     highlights: ['1-line script embed', 'Custom AI business knowledge', '24/7 automated lead capture'],
-    image: './projects/zinodesk.png',
+    image: './projects/zinodesk.webp',
+    imageWidth: 1024,
+    imageHeight: 480,
+    caseStudy: {
+      role: 'Founder · Architect · Sole engineer',
+      timeframe: '2025 — ongoing',
+      problem:
+        'Small businesses lose enquiries outside office hours, but staffing a human receptionist around the clock is not viable for them. Off-the-shelf chatbots either need a developer to wire up, or answer from generic training data that knows nothing about the actual business.',
+      approach: [
+        {
+          title: 'Onboarding measured in minutes, not sprints',
+          detail:
+            'The whole product is designed around one constraint: a non-technical owner has to be live in five minutes. Business knowledge is uploaded rather than configured, and the widget ships as a single script tag — no build step, no framework requirement, no backend work on the customer side.',
+        },
+        {
+          title: 'Grounding the model in the customer\u2019s own knowledge',
+          detail:
+            'Rather than fine-tuning per customer, each tenant\u2019s uploaded material becomes the retrieval corpus the assistant answers from. That keeps answers specific to the business while staying on a shared, cheap-to-operate LLM path.',
+        },
+        {
+          title: 'The widget is the product surface',
+          detail:
+            'It is embedded in someone else\u2019s page, so it has to be visually customisable enough to feel native to their brand, and isolated enough that it can never break their site. That pushed the styling and mounting strategy toward strict encapsulation.',
+        },
+        {
+          title: 'Conversation as a lead pipeline',
+          detail:
+            'Answering questions is table stakes; the commercial value is in capturing intent. Conversations are treated as a funnel, so qualifying details surface as structured leads rather than staying buried in chat logs.',
+        },
+      ],
+      outcome: [
+        'Live in production at zinodesk.com, serving real businesses.',
+        'Self-serve onboarding — no engineering involvement per customer.',
+        'Single-line embed removed the integration barrier that blocks non-technical buyers.',
+      ],
+    },
     live: 'https://zinodesk.com',
     tags: ['AI', 'SaaS', 'Chatbot', 'Founder', 'Next.js', 'LLMs'],
     accent: 'cyan',
@@ -170,7 +228,42 @@ export const projects: Project[] = [
     blurb:
       'A fully offline, multi-device sync electronic medical records system for hospitals and clinics. Complete patient workspace, vitals tracking, clinic pipeline, and prescription management with zero internet dependency.',
     highlights: ['Zero-internet LAN sync', 'Multi-device patient workspace', 'Customizable clinical workflows'],
-    image: './projects/ati_emr.png',
+    image: './projects/ati_emr.webp',
+    imageWidth: 1024,
+    imageHeight: 576,
+    caseStudy: {
+      role: 'Architect · Engineering lead',
+      timeframe: 'ATI Limited',
+      problem:
+        'Clinics and hospitals cannot make patient care depend on an internet connection. A dropped link during a consultation cannot be allowed to stall a prescription or lose a set of vitals — but staff still need to work across several devices and see the same patient record.',
+      approach: [
+        {
+          title: 'Offline is the default state, not the failure state',
+          detail:
+            'The system is built so that every clinical action completes locally first. Connectivity is treated as an optimisation for sharing data between devices, never as a precondition for recording care.',
+        },
+        {
+          title: 'Sync over the local network instead of the cloud',
+          detail:
+            'Devices reconcile with each other across the clinic LAN, so a site with no external connection still gets a shared, current patient record. This removes the hosting dependency that usually rules EMR systems out for smaller facilities.',
+        },
+        {
+          title: 'One patient workspace across roles',
+          detail:
+            'Patient records, vitals tracking, the clinic pipeline and prescription management are unified into a single workspace rather than separate modules, so a patient\u2019s state is legible at a glance regardless of which device or role opened it.',
+        },
+        {
+          title: 'Workflows configurable per clinic',
+          detail:
+            'No two clinics run the same intake process. Clinical workflows are customisable so the software adapts to an existing practice instead of forcing staff to change how they work.',
+        },
+      ],
+      outcome: [
+        'Deployed as ATI Limited\u2019s signature clinical system.',
+        'Full patient workspace, vitals, pipeline and prescriptions usable with zero internet dependency.',
+        'Multi-device clinics stay in sync without any cloud infrastructure to buy or maintain.',
+      ],
+    },
     label: 'Signature System',
     tags: ['Healthcare', 'Offline-First', 'Multi-device Sync', 'EMR', 'Enterprise'],
     accent: 'magenta',
@@ -183,7 +276,9 @@ export const projects: Project[] = [
     blurb:
       'Full-stack on-demand movie and TV series streaming platform with instant video playback, multi-language subtitles, adaptive quality switching, categorized catalog discovery, and personal watchlists.',
     highlights: ['Movie & TV series streaming', 'React Vite SPA + Laravel API backend', 'Instant playback & subtitle switching'],
-    image: './projects/starlight.png',
+    image: './projects/starlight.webp',
+    imageWidth: 1024,
+    imageHeight: 478,
     live: 'https://movie.adnetworkbd.shop/#',
     tags: ['React', 'Vite', 'Laravel', 'PHP', 'Streaming', 'Full-Stack'],
     accent: 'cyan',
@@ -196,7 +291,9 @@ export const projects: Project[] = [
     blurb:
       'AI-powered Facebook page automation platform — automated message replies, intelligent comment responses, and automated order management 24/7 without manual effort.',
     highlights: ['Facebook page AI auto-replies', 'Intelligent comment & message automation', 'Automated order capture pipeline'],
-    image: './projects/smartpilot.png',
+    image: './projects/smartpilot.webp',
+    imageWidth: 1024,
+    imageHeight: 482,
     live: 'https://smartpilot.site/',
     tags: ['AI', 'SaaS', 'Founder', 'Automation', 'Social Commerce'],
     accent: 'cyan',
@@ -209,7 +306,9 @@ export const projects: Project[] = [
     blurb:
       'Cross-platform mobile community app and comprehensive SaaS platform with Admin Control Center dashboard, marketplace, job listings, support tickets, and real-time moderation.',
     highlights: ['Cross-platform mobile app', 'Full Platform Admin Dashboard', 'Community & marketplace'],
-    image: './projects/livora.png',
+    image: './projects/livora.webp',
+    imageWidth: 1024,
+    imageHeight: 483,
     live: 'https://my-sg.com/',
     playStore: 'https://play.google.com/store/apps/details?id=com.ucllc.mysg',
     tags: ['Flutter', 'Mobile', 'SaaS Admin', 'Play Store', 'Community'],
@@ -223,7 +322,9 @@ export const projects: Project[] = [
     blurb:
       'AI-first software studio and agency platform — designing, building, and deploying web, mobile, and desktop applications supercharged with AI for international clients.',
     highlights: ['100+ projects delivered', 'Intelligent automation systems', 'End-to-end engineering'],
-    image: './projects/sns_digitals.png',
+    image: './projects/sns_digitals.webp',
+    imageWidth: 1024,
+    imageHeight: 481,
     label: 'Software Studio',
     tags: ['Agency', 'AI Studio', 'Founder', 'Fullstack', 'Web & Mobile'],
     accent: 'cyan',
@@ -236,7 +337,9 @@ export const projects: Project[] = [
     blurb:
       'A cross-platform Flutter mobile app with client and admin interfaces for tracking university shuttle routes, live GPS bus locations, schedules, and digital ticket scanning.',
     highlights: ['Client & Admin mobile apps', 'Live GPS route tracking', 'QR ticket scanner & schedules'],
-    image: './projects/ushuttle.png',
+    image: './projects/ushuttle.webp',
+    imageWidth: 836,
+    imageHeight: 488,
     repo: 'https://github.com/shakil2995/Ushuttle',
     hideOnAll: true,
     tags: ['Flutter', 'Dart', 'Mobile', 'Maps', 'Admin & Client'],
@@ -250,7 +353,9 @@ export const projects: Project[] = [
     blurb:
       'Commercial web platform and digital storefront for custom canopy tents, event displays, and marketing collateral — interactive product catalog and quote request flows.',
     highlights: ['Interactive catalog', 'Dynamic quote builder', 'SEO & mobile optimized'],
-    image: './projects/tent_usa.png',
+    image: './projects/tent_usa.webp',
+    imageWidth: 1024,
+    imageHeight: 484,
     live: 'https://tentdesignusa.com/',
     tags: ['Client Website', 'JavaScript', 'Frontend', 'Tailwind CSS'],
     accent: 'magenta',

@@ -1,7 +1,37 @@
-import { useMemo, useRef, useEffect } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
-import { Float } from '@react-three/drei'
+import { useMemo, useRef, useEffect, type ReactNode } from 'react'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
+import { getScrollProgress, subscribeScroll } from '../../hooks/useScrollProgress'
+
+/**
+ * Local stand-in for drei's <Float>. Same motion, but lets us drop
+ * @react-three/drei (and its dependency tree) from the bundle entirely.
+ */
+function FloatGroup({
+  speed = 1,
+  rotationIntensity = 1,
+  floatIntensity = 1,
+  children,
+}: {
+  speed?: number
+  rotationIntensity?: number
+  floatIntensity?: number
+  children: ReactNode
+}) {
+  const ref = useRef<THREE.Group>(null)
+  const offset = useMemo(() => Math.random() * 10000, [])
+
+  useFrame((state) => {
+    if (!ref.current) return
+    const t = offset + state.clock.elapsedTime * speed
+    ref.current.rotation.x = (Math.cos(t / 4) * rotationIntensity) / 8
+    ref.current.rotation.y = (Math.sin(t / 4) * rotationIntensity) / 8
+    ref.current.rotation.z = (Math.sin(t / 4) * rotationIntensity) / 20
+    ref.current.position.y = (Math.sin(t / 4) * floatIntensity) / 10
+  })
+
+  return <group ref={ref}>{children}</group>
+}
 
 /** Section-based Dynamic Color Themes for Smart Atmospheric Shifting */
 interface SectionTheme {
@@ -113,11 +143,16 @@ function createSmartAestheticMoonTexture(): THREE.CanvasTexture {
   }
 
   const texture = new THREE.CanvasTexture(canvas)
+  // Colour maps must be tagged sRGB or three applies the wrong transfer curve.
+  texture.colorSpace = THREE.SRGBColorSpace
   texture.wrapS = THREE.RepeatWrapping
   texture.wrapT = THREE.ClampToEdgeWrapping
   texture.anisotropy = 16
   return texture
 }
+
+/** Scratch colour reused across frames — allocating inside useFrame churns the GC. */
+const scratchColor = new THREE.Color()
 
 /** Swirling Orbital Star Particles that dynamically shift colors with the theme */
 function DynamicOrbitStars({ count, primaryColor, secondaryColor }: { count: number; primaryColor: THREE.Color; secondaryColor: THREE.Color }) {
@@ -151,12 +186,11 @@ function DynamicOrbitStars({ count, primaryColor, secondaryColor }: { count: num
 
       // Update particle colors based on current theme
       const colAttr = pointsRef.current.geometry.attributes.color as THREE.BufferAttribute
-      const tmp = new THREE.Color()
       const time = performance.now() * 0.001
       for (let i = 0; i < count; i++) {
         const mix = (Math.sin(time * 2 + i * 0.1) + 1) * 0.5
-        tmp.copy(primaryColor).lerp(secondaryColor, mix)
-        colAttr.setXYZ(i, tmp.r, tmp.g, tmp.b)
+        scratchColor.copy(primaryColor).lerp(secondaryColor, mix)
+        colAttr.setXYZ(i, scratchColor.r, scratchColor.g, scratchColor.b)
       }
       colAttr.needsUpdate = true
     }
@@ -177,35 +211,90 @@ function DynamicOrbitStars({ count, primaryColor, secondaryColor }: { count: num
   )
 }
 
-/** Dynamic multi-depth parallax starfield where stars drift in unison and naturally breathe/twinkle */
+/**
+ * Multi-depth parallax starfield, evaluated entirely on the GPU.
+ *
+ * The previous version rebuilt 600 positions + 600 colours on the CPU every
+ * frame and re-uploaded both buffers (~14KB of bus traffic per frame). All of
+ * that motion is a pure function of time, so it now lives in the vertex shader
+ * and the attribute buffers are uploaded exactly once.
+ *
+ * This also fixes a latent bug: the old per-frame colour write overwrote the
+ * per-star hues assigned at init, so every star rendered the same flat tint.
+ * Here `aColor` survives to the fragment stage and the variety is visible.
+ */
+const STAR_FIELD_SIZE = 65
+
+const starVertexShader = /* glsl */ `
+  attribute float aSpeed;
+  attribute float aPhase;
+  attribute vec3 aColor;
+
+  uniform float uTime;
+  uniform float uScroll;
+  uniform vec2 uMouse;
+  uniform float uSize;
+  uniform float uScale;
+
+  varying vec3 vColor;
+  varying float vAlpha;
+
+  // Wrap a coordinate into [-size/2, size/2] so the field tiles seamlessly.
+  float wrap(float v, float size) {
+    return mod(v + size * 0.5, size) - size * 0.5;
+  }
+
+  void main() {
+    // Shared cosmic river: everything drifts along the same diagonal, scaled
+    // by per-star speed so nearer stars visibly outrun distant ones.
+    float driftX = uTime * 0.35 * aSpeed * 7.0 + uMouse.x * aSpeed * 3.5;
+    float driftY = uTime * 0.55 * aSpeed * 7.0 + uScroll * aSpeed * 12.0 + uMouse.y * aSpeed * 3.5;
+
+    vec3 p = position;
+    p.x = wrap(p.x - driftX, ${STAR_FIELD_SIZE}.0);
+    p.y = wrap(p.y - driftY, ${STAR_FIELD_SIZE}.0);
+
+    // Clusters breathe in and out of visibility in harmonious waves.
+    float breathe = 0.5 + 0.5 * sin(uTime * 0.4 + aPhase);
+    vAlpha = 0.65 + breathe * 0.35;
+    vColor = aColor;
+
+    vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
+    gl_PointSize = uSize * (uScale / -mvPosition.z);
+    gl_Position = projectionMatrix * mvPosition;
+  }
+`
+
+const starFragmentShader = /* glsl */ `
+  varying vec3 vColor;
+  varying float vAlpha;
+
+  void main() {
+    // Soft round sprite. Untextured THREE points are squares by default —
+    // this is what makes them read as stars rather than pixels.
+    vec2 uv = gl_PointCoord - 0.5;
+    float d = dot(uv, uv);
+    if (d > 0.25) discard;
+    float falloff = 1.0 - smoothstep(0.0, 0.25, d);
+    gl_FragColor = vec4(vColor * vAlpha, falloff * vAlpha * 0.88);
+  }
+`
+
 function DepthParallaxStarfield({ count = 600 }: { count?: number }) {
-  const pointsRef = useRef<THREE.Points>(null)
-  const basePositionsRef = useRef<Float32Array | null>(null)
-  const speedsRef = useRef<Float32Array | null>(null)
-  const clustersRef = useRef<Float32Array | null>(null)
-  const scrollRef = useRef(0)
+  const matRef = useRef<THREE.ShaderMaterial>(null)
+  const size = useThree((state) => state.size)
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const totalScroll = document.documentElement.scrollHeight - window.innerHeight
-      if (totalScroll > 0) {
-        scrollRef.current = window.scrollY / totalScroll
-      }
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  useEffect(subscribeScroll, [])
 
-  const { geometry, basePositions, speeds, clusters } = useMemo(() => {
+  const geometry = useMemo(() => {
     const pos = new Float32Array(count * 3)
-    const basePos = new Float32Array(count * 3)
     const spd = new Float32Array(count)
-    const cls = new Float32Array(count)
+    const phase = new Float32Array(count)
     const col = new Float32Array(count * 3)
 
     for (let i = 0; i < count; i++) {
-      const x = (Math.random() - 0.5) * 65
-      const y = (Math.random() - 0.5) * 65
+      const x = (Math.random() - 0.5) * STAR_FIELD_SIZE
+      const y = (Math.random() - 0.5) * STAR_FIELD_SIZE
       // Deep cosmic distance: kept between -90 and -30 so no stars are bloated near camera
       const z = -90 + Math.random() * 60
 
@@ -213,16 +302,12 @@ function DepthParallaxStarfield({ count = 600 }: { count?: number }) {
       pos[i * 3 + 1] = y
       pos[i * 3 + 2] = z
 
-      basePos[i * 3] = x
-      basePos[i * 3 + 1] = y
-      basePos[i * 3 + 2] = z
-
-      // Distance-based velocity: Far stars move in a slower, majestic phase; close stars move faster
+      // Distance-based velocity: far stars drift in a slower, majestic phase.
       const depthFactor = (z + 90) / 60
       spd[i] = 0.012 + depthFactor * 0.038
-      cls[i] = Math.random() * Math.PI * 2
+      phase[i] = Math.random() * Math.PI * 2
 
-      // Subtle celestial star colors
+      // Subtle celestial star colours — these now actually reach the screen.
       const starHue = Math.random()
       if (starHue > 0.75) {
         col[i * 3] = 0.70; col[i * 3 + 1] = 0.88; col[i * 3 + 2] = 1.0 // Ice cyan
@@ -235,71 +320,45 @@ function DepthParallaxStarfield({ count = 600 }: { count?: number }) {
 
     const g = new THREE.BufferGeometry()
     g.setAttribute('position', new THREE.BufferAttribute(pos, 3))
-    g.setAttribute('color', new THREE.BufferAttribute(col, 3))
-
-    return { geometry: g, basePositions: basePos, speeds: spd, clusters: cls }
+    g.setAttribute('aSpeed', new THREE.BufferAttribute(spd, 1))
+    g.setAttribute('aPhase', new THREE.BufferAttribute(phase, 1))
+    g.setAttribute('aColor', new THREE.BufferAttribute(col, 3))
+    return g
   }, [count])
 
-  basePositionsRef.current = basePositions
-  speedsRef.current = speeds
-  clustersRef.current = clusters
+  const uniforms = useMemo(
+    () => ({
+      uTime: { value: 0 },
+      uScroll: { value: 0 },
+      uMouse: { value: new THREE.Vector2() },
+      // Slightly larger than the old 0.035 square points: the round falloff
+      // discards the corners, so same number reads smaller on screen.
+      uSize: { value: 0.042 },
+      uScale: { value: 300 },
+    }),
+    [],
+  )
+
+  // Free GPU memory if the star count changes (mobile/desktop breakpoint flip).
+  useEffect(() => () => geometry.dispose(), [geometry])
 
   useFrame((state) => {
-    if (!pointsRef.current || !basePositionsRef.current || !speedsRef.current || !clustersRef.current) return
-    const posAttr = pointsRef.current.geometry.attributes.position as THREE.BufferAttribute
-    const colAttr = pointsRef.current.geometry.attributes.color as THREE.BufferAttribute
-    const positions = posAttr.array as Float32Array
-    const colors = colAttr.array as Float32Array
-    const base = basePositionsRef.current
-    const spd = speedsRef.current
-    const cls = clustersRef.current
-    const time = performance.now() * 0.001
-    const scrollP = scrollRef.current
-    const mouseX = state.pointer.x * 2.0
-    const mouseY = state.pointer.y * 2.0
-
-    // Shared cosmic unison river (diagonal drift across the night sky)
-    const streamX = time * 0.35
-    const streamY = time * 0.55
-
-    for (let i = 0; i < count; i++) {
-      const speed = spd[i]
-      const clusterPhase = cls[i]
-      const idx = i * 3
-
-      // Move in unison along the cosmic stream, scaled by distance
-      const driftX = (streamX * speed * 7) % 65 + mouseX * speed * 3.5
-      const driftY = (streamY * speed * 7) % 65 + scrollP * (speed * 12) + mouseY * speed * 3.5
-
-      let currX = base[idx] - driftX
-      if (currX < -32) currX += 65
-      if (currX > 32) currX -= 65
-      positions[idx] = currX
-
-      let currY = base[idx + 1] - driftY
-      if (currY < -32) currY += 65
-      if (currY > 32) currY -= 65
-      positions[idx + 1] = currY
-
-      // "Come and go": individual clusters softly fade in and out in harmonious waves
-      const breathe = 0.5 + 0.5 * Math.sin(time * 0.4 + clusterPhase)
-      const baseBright = 0.65 + breathe * 0.35
-      colors[idx] = baseBright * 0.85
-      colors[idx + 1] = baseBright * 0.92
-      colors[idx + 2] = baseBright * 1.0
-    }
-    posAttr.needsUpdate = true
-    colAttr.needsUpdate = true
+    const u = matRef.current?.uniforms
+    if (!u) return
+    u.uTime.value = state.clock.elapsedTime
+    u.uScroll.value = getScrollProgress()
+    u.uMouse.value.set(state.pointer.x * 2, state.pointer.y * 2)
+    u.uScale.value = size.height * state.gl.getPixelRatio() * 0.5
   })
 
   return (
-    <points ref={pointsRef} geometry={geometry}>
-      <pointsMaterial
-        size={0.035}
-        vertexColors
+    <points geometry={geometry}>
+      <shaderMaterial
+        ref={matRef}
+        uniforms={uniforms}
+        vertexShader={starVertexShader}
+        fragmentShader={starFragmentShader}
         transparent
-        opacity={0.88}
-        sizeAttenuation
         depthWrite={false}
         blending={THREE.AdditiveBlending}
       />
@@ -747,21 +806,11 @@ function SmartCelestialMoon({
 }) {
   const groupRef = useRef<THREE.Group>(null)
   const moonMeshRef = useRef<THREE.Mesh>(null)
-  const scrollProgressRef = useRef(0)
 
   const moonTexture = useMemo(() => createSmartAestheticMoonTexture(), [])
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const totalScroll = document.documentElement.scrollHeight - window.innerHeight
-      if (totalScroll > 0) {
-        scrollProgressRef.current = Math.min(Math.max(window.scrollY / totalScroll, 0), 1)
-      }
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll()
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  useEffect(subscribeScroll, [])
+  useEffect(() => () => moonTexture.dispose(), [moonTexture])
 
   // Dynamic Section-Aware Sizing & Positioning based on content density and empty negative space
   const waypoints = useMemo(() => {
@@ -776,7 +825,7 @@ function SmartCelestialMoon({
       ]
     }
     return [
-      { p: 0.0, x: 2.32, y: 0.15, z: 0.0, s: 1.55 },   // Hero: Perfectly balanced celestial presence
+      { p: 0.0, x: 2.75, y: 0.58, z: 0.0, s: 0.95 },   // Hero: upper-right, clear of the headline & tagline
       { p: 0.2, x: -2.35, y: 0.35, z: 0.2, s: 1.25 }, // About: Compact margin, full room for stats
       { p: 0.45, x: 2.4, y: 0.2, z: 0.1, s: 1.2 },    // Skills: Tucked in right margin
       { p: 0.68, x: -2.35, y: -0.1, z: 0.3, s: 1.35 }, // Projects: Alongside project cards
@@ -804,7 +853,7 @@ function SmartCelestialMoon({
   }
 
   useFrame((state, delta) => {
-    const progress = scrollProgressRef.current
+    const progress = getScrollProgress()
     const target = getTargetTransform(progress)
 
     // Update dynamic theme colors smoothly
@@ -848,7 +897,7 @@ function SmartCelestialMoon({
 
   return (
     <group ref={groupRef} position={[waypoints[0].x, waypoints[0].y, waypoints[0].z]}>
-      <Float speed={1.6} rotationIntensity={0.25} floatIntensity={0.4}>
+      <FloatGroup speed={1.6} rotationIntensity={0.25} floatIntensity={0.4}>
         {/* The 3D Aesthetic Moon Sphere */}
         <mesh ref={moonMeshRef}>
           <sphereGeometry args={[1, 36, 36]} />
@@ -865,10 +914,19 @@ function SmartCelestialMoon({
 
         {/* Dynamic Color Shifting Star Dust */}
         <DynamicOrbitStars count={isMobile ? 20 : 35} primaryColor={primaryColor} secondaryColor={secondaryColor} />
-      </Float>
+      </FloatGroup>
     </group>
   )
 }
+
+/**
+ * Key-light sweep, in scene units. At the top of the page the moon is lit from
+ * the side so the terminator is visible (a waxing crescent); by the contact
+ * section the light has swung frontal and the moon reads full — the phase
+ * completes as the visitor completes the journey.
+ */
+const KEY_LIGHT_CRESCENT = new THREE.Vector3(6.2, 3.4, 1.2)
+const KEY_LIGHT_FULL = new THREE.Vector3(2.0, 3.0, 6.0)
 
 function DynamicSceneLighting({
   primaryColor,
@@ -879,11 +937,19 @@ function DynamicSceneLighting({
   isMobile: boolean
   flashRef: React.MutableRefObject<number>
 }) {
+  const keyLightRef = useRef<THREE.DirectionalLight>(null)
   const fillLightRef = useRef<THREE.DirectionalLight>(null)
   const ambientRef = useRef<THREE.AmbientLight>(null)
   const baseAmbient = isMobile ? 0.86 : 0.73
 
+  useEffect(subscribeScroll, [])
+
   useFrame((_, delta) => {
+    if (keyLightRef.current) {
+      const phase = THREE.MathUtils.smoothstep(getScrollProgress(), 0, 1)
+      keyLightRef.current.position.lerpVectors(KEY_LIGHT_CRESCENT, KEY_LIGHT_FULL, phase)
+    }
+
     if (fillLightRef.current) {
       fillLightRef.current.color.lerp(primaryColor, delta * 3)
     }
@@ -903,7 +969,12 @@ function DynamicSceneLighting({
   return (
     <>
       <ambientLight ref={ambientRef} intensity={baseAmbient} color="#e0e7ff" />
-      <directionalLight position={[5, 4, 4]} intensity={isMobile ? 3.3 : 2.8} color="#ffffff" />
+      <directionalLight
+        ref={keyLightRef}
+        position={[KEY_LIGHT_CRESCENT.x, KEY_LIGHT_CRESCENT.y, KEY_LIGHT_CRESCENT.z]}
+        intensity={isMobile ? 3.3 : 2.8}
+        color="#ffffff"
+      />
       <directionalLight ref={fillLightRef} position={[-4, -3, 2]} intensity={isMobile ? 1.32 : 1.1} color="#38bdf8" />
     </>
   )
@@ -921,7 +992,12 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
       className="w-full h-full"
       dpr={[1, isMobile ? 1.25 : 1.5]}
       camera={{ position: [0, 0, 5.5], fov: isMobile ? 54 : 46 }}
-      gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+      gl={{
+        antialias: !isMobile,
+        alpha: true,
+        // 'high-performance' asks for the discrete GPU — a battery tax on phones.
+        powerPreference: isMobile ? 'default' : 'high-performance',
+      }}
       style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
     >
       <DynamicSceneLighting primaryColor={primaryColor} isMobile={isMobile} flashRef={flashRef} />

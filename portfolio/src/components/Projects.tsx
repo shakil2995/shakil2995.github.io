@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { projectCategories, projects, type Project, type ProjectCategory } from '../data/portfolio'
 import { SectionHeading } from './ui/SectionHeading'
-import { ArrowUpRight, ExternalLink, GitHubIcon, LockIcon, PlayStoreIcon } from './ui/icons'
+import CaseStudyDialog from './CaseStudyDialog'
+import { ArrowUpRight, ExternalLink, GitHubIcon, LockIcon, PlayStoreIcon, SparkIcon } from './ui/icons'
 
 const BAR: Record<Project['accent'], string> = {
   cyan: 'from-cyan-400 to-sky-500',
@@ -18,7 +19,15 @@ const BADGE_STYLE = (badge?: string) => {
   return 'bg-violet-400/10 text-violet-300 border-violet-400/30'
 }
 
-function ProjectCard({ project, index }: { project: Project; index: number }) {
+function ProjectCard({
+  project,
+  index,
+  onOpenCaseStudy,
+}: {
+  project: Project
+  index: number
+  onOpenCaseStudy: (p: Project) => void
+}) {
   return (
     <motion.div
       layout
@@ -44,7 +53,10 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             <img
               src={project.image}
               alt={`${project.title} screenshot`}
+              width={project.imageWidth}
+              height={project.imageHeight}
               loading="lazy"
+              decoding="async"
               className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#090b14]/60 via-transparent to-transparent" />
@@ -87,6 +99,17 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
         {/* Action Links */}
         <div className="mt-auto flex flex-wrap items-center gap-3 pt-5">
+          {project.caseStudy && (
+            <button
+              type="button"
+              onClick={() => onOpenCaseStudy(project)}
+              className="inline-flex items-center gap-1.5 rounded-lg text-xs font-bold text-violet-300 transition-colors hover:text-violet-200"
+            >
+              <SparkIcon width={13} height={13} />
+              Read case study
+              <ArrowUpRight width={12} height={12} className="opacity-70" />
+            </button>
+          )}
           {project.live && (
             <a
               href={project.live}
@@ -134,6 +157,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
 export default function Projects() {
   const [activeCategory, setActiveCategory] = useState<ProjectCategory>('all')
+  const [caseStudy, setCaseStudy] = useState<Project | null>(null)
 
   const filtered = activeCategory === 'all'
     ? projects.filter((p) => !p.hideOnAll).slice(0, 6)
@@ -159,6 +183,7 @@ export default function Projects() {
             <button
               key={cat.id}
               type="button"
+              aria-pressed={isSelected}
               onClick={() => setActiveCategory(cat.id)}
               className={`relative rounded-xl px-4 py-2 text-xs font-semibold tracking-wide transition-all sm:text-sm ${isSelected
                   ? 'text-[#05060c]'
@@ -195,10 +220,12 @@ export default function Projects() {
       <motion.div layout className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <AnimatePresence mode="popLayout">
           {filtered.map((p, i) => (
-            <ProjectCard key={p.title} project={p} index={i} />
+            <ProjectCard key={p.title} project={p} index={i} onOpenCaseStudy={setCaseStudy} />
           ))}
         </AnimatePresence>
       </motion.div>
+
+      <CaseStudyDialog project={caseStudy} onClose={() => setCaseStudy(null)} />
     </section>
   )
 }
