@@ -40,7 +40,7 @@ export default function About() {
       <SectionHeading index="01" title="About me" />
 
       <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
-        <Reveal className="order-2 lg:order-1">
+        <Reveal className="order-2 min-w-0 lg:order-1">
           <div className="relative mx-auto w-full max-w-sm">
             <div className="glass animate-float-slow overflow-hidden rounded-3xl p-2">
               <img
@@ -53,14 +53,14 @@ export default function About() {
                 className="aspect-square w-full rounded-2xl object-cover object-[center_20%] shadow-2xl"
               />
             </div>
-            <div className="glass-pill absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-xl px-4 py-2 text-sm shadow-xl">
+            <div className="glass-pill absolute -bottom-4 left-1/2 max-w-full -translate-x-1/2 rounded-xl px-4 py-2 text-center text-sm shadow-xl sm:whitespace-nowrap">
               <span className="gradient-text font-bold">{profile.role}</span>
               <span className="font-medium text-slate-200"> @ {profile.company}</span>
             </div>
           </div>
         </Reveal>
 
-        <div className="order-1 lg:order-2">
+        <div className="order-1 min-w-0 lg:order-2">
           <div className="glass-card mb-6 rounded-2xl p-5 shadow-xl sm:p-7">
             {about.paragraphs.map((p, i) => (
               <p

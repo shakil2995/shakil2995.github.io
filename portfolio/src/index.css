@@ -365,38 +365,8 @@ h4 {
 }
 
 /* ---------------------------------------------------------------------------
-   Hero scrim + reduced-motion starfield
+   Reduced-motion starfield
 --------------------------------------------------------------------------- */
-
-/* Pool of shadow behind the hero copy so the headline stays legible no matter
-   where the moon drifts at a given viewport width. */
-.hero-scrim {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: min(78rem, 130%);
-  height: 42rem;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(ellipse at center,
-      rgba(5, 6, 12, 0.82) 0%,
-      rgba(5, 6, 12, 0.62) 38%,
-      rgba(5, 6, 12, 0.28) 62%,
-      transparent 78%);
-  pointer-events: none;
-  z-index: 1;
-}
-
-@media (max-width: 768px) {
-
-  /* The width was a % of the section, and the gradient reaches `transparent` at
-     78% of that — so the darkening stopped a few px short of the viewport's
-     right edge, leaving a bare strip the moon's lit limb showed through.
-     Anchoring the box to `vw` instead pushes that 78% point past both edges.
-     Same colour stops, so the brightness is unchanged. */
-  .hero-scrim {
-    width: 150vw;
-  }
-}
 
 /* When motion is reduced the 3D canvas is not mounted at all. Without this the
    page would drop to a flat void; a static field keeps it feeling designed. */
