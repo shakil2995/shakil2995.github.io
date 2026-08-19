@@ -42,8 +42,10 @@ interface SectionTheme {
 }
 
 const SECTION_THEMES: SectionTheme[] = [
-  // 0.00: Hero — Electric Cyan & Starlight Ice (AI & Fullstack)
-  { p: 0.00, primary: new THREE.Color('#38bdf8'), secondary: new THREE.Color('#818cf8'), emissive: new THREE.Color('#0c192e') },
+  // 0.00: Hero — Azure Blue & Starlight Ice. Deliberately blue rather than
+  // cyan; the old sky-400 rim carried a green channel of 189, which on a
+  // neutral pearl surface read as a green cast across the shadow side.
+  { p: 0.00, primary: new THREE.Color('#4f8bf5'), secondary: new THREE.Color('#818cf8'), emissive: new THREE.Color('#0c192e') },
   // 0.20: About — Royal Violet & Indigo (Founder Story & Milestones)
   { p: 0.20, primary: new THREE.Color('#a855f7'), secondary: new THREE.Color('#6366f1'), emissive: new THREE.Color('#1e1035') },
   // 0.45: Skills — Neon Teal & Mint Green (Performance & Tech Matrix)
@@ -76,70 +78,6 @@ function getInterpolatedTheme(progress: number, curPrim: THREE.Color, curSec: TH
   curEmis.copy(last.emissive)
 }
 
-/**
- * Hero-only automatic colour cycle.
- *
- * Everywhere else the palette is driven by scroll position (see SECTION_THEMES).
- * At the top of the page there is no scroll to drive it, so the moon idles
- * through this loop on a timer instead. The two are cross-faded by scroll
- * progress rather than switched, so there is no pop as you leave the hero —
- * by HERO_CYCLE_HANDOFF the scroll-driven theme has full control again.
- */
-const HERO_CYCLE: SectionTheme[] = [
-  { p: 0, primary: new THREE.Color('#38bdf8'), secondary: new THREE.Color('#818cf8'), emissive: new THREE.Color('#10263f') },
-  { p: 0, primary: new THREE.Color('#a855f7'), secondary: new THREE.Color('#6366f1'), emissive: new THREE.Color('#241748') },
-  { p: 0, primary: new THREE.Color('#ec4899'), secondary: new THREE.Color('#a855f7'), emissive: new THREE.Color('#3a1030') },
-  { p: 0, primary: new THREE.Color('#2dd4bf'), secondary: new THREE.Color('#06b6d4'), emissive: new THREE.Color('#0b3733') },
-]
-
-/** Seconds spent on each stop before crossfading to the next. */
-const HERO_CYCLE_SECONDS = 3.2
-/** Scroll progress at which the cycle has fully handed off to the scroll theme. */
-const HERO_CYCLE_HANDOFF = 0.14
-
-/** Untinted lunar surface, and how far toward the cycle hue it is allowed to go. */
-const MOON_BASE = new THREE.Color('#ffffff')
-const MOON_TINT_STRENGTH = 0.5
-const moonTint = new THREE.Color()
-
-const heroPrim = new THREE.Color()
-const heroSec = new THREE.Color()
-const heroEmis = new THREE.Color()
-
-/**
- * Blends the timed hero palette over the scroll-derived one and returns how
- * much of it is currently applied (1 at the very top, 0 past the handoff).
- */
-function applyHeroAutoCycle(
-  progress: number,
-  time: number,
-  curPrim: THREE.Color,
-  curSec: THREE.Color,
-  curEmis: THREE.Color,
-): number {
-  const weight = 1 - THREE.MathUtils.smoothstep(progress, 0, HERO_CYCLE_HANDOFF)
-  if (weight <= 0.001) return 0
-
-  const span = HERO_CYCLE.length * HERO_CYCLE_SECONDS
-  const t = (time % span) / HERO_CYCLE_SECONDS
-  const i = Math.floor(t)
-  const a = HERO_CYCLE[i % HERO_CYCLE.length]
-  const b = HERO_CYCLE[(i + 1) % HERO_CYCLE.length]
-  const ease = 0.5 - Math.cos((t - i) * Math.PI) * 0.5
-
-  // lerpHSL, not lerp: interpolating near-complementary hues in RGB drags the
-  // midpoint through grey, so the moon visibly desaturated to silver halfway
-  // between stops. Sweeping the hue arc instead keeps saturation up throughout.
-  heroPrim.copy(a.primary).lerpHSL(b.primary, ease)
-  heroSec.copy(a.secondary).lerpHSL(b.secondary, ease)
-  heroEmis.copy(a.emissive).lerpHSL(b.emissive, ease)
-
-  curPrim.lerp(heroPrim, weight)
-  curSec.lerp(heroSec, weight)
-  curEmis.lerp(heroEmis, weight)
-  return weight
-}
-
 /** Generates clean, aesthetic pearlescent lunar texture with soft glowing maria */
 function createSmartAestheticMoonTexture(): THREE.CanvasTexture {
   const width = 2048
@@ -150,8 +88,17 @@ function createSmartAestheticMoonTexture(): THREE.CanvasTexture {
   canvas.height = height
   const ctx = canvas.getContext('2d')!
 
-  // Pearlescent silver-white gradient base
-  const baseGrad = ctx.createLinearGradient(0, 0, width, height)
+  // Pearlescent silver-white base.
+  //
+  // This gradient must run top-to-bottom, NOT diagonally. The texture is mapped
+  // equirectangularly with wrapS = RepeatWrapping, so any horizontal variation
+  // makes the left edge (u=0) and right edge (u=1) different colours — and
+  // where they meet on the sphere you get an instant step from slate back to
+  // white. That seam read as a hard-edged second shadow crossing the real
+  // terminator, and because this same canvas is also the bumpMap the step
+  // became a normal-map cliff that shaded like one too. Varying only in v
+  // wraps seamlessly and still gives the pole-to-limb falloff.
+  const baseGrad = ctx.createLinearGradient(0, 0, 0, height)
   baseGrad.addColorStop(0, '#ffffff')
   baseGrad.addColorStop(0.3, '#f8fafc')
   baseGrad.addColorStop(0.65, '#e2e8f0')
@@ -165,21 +112,34 @@ function createSmartAestheticMoonTexture(): THREE.CanvasTexture {
     return seed / 233280
   }
 
+  /**
+   * Draws a surface feature, repeating it across the u seam when it straddles
+   * the edge. Without this, features near u=0 or u=1 get sliced in half and
+   * leave their own hard edge at exactly the same place.
+   */
+  function drawWrapped(cx: number, r: number, draw: (x: number) => void) {
+    draw(cx)
+    if (cx - r < 0) draw(cx + width)
+    if (cx + r > width) draw(cx - width)
+  }
+
   // Soft lunar maria basins (semi-transparent for dynamic light transmission)
   for (let i = 0; i < 12; i++) {
     const cx = (rand() * 0.8 + 0.1) * width
     const cy = (rand() * 0.7 + 0.15) * height
     const r = 100 + rand() * 200
 
-    const rg = ctx.createRadialGradient(cx, cy, 0, cx, cy, r)
-    rg.addColorStop(0, 'rgba(71, 85, 105, 0.28)')
-    rg.addColorStop(0.6, 'rgba(100, 116, 139, 0.14)')
-    rg.addColorStop(1, 'transparent')
+    drawWrapped(cx, r, (x) => {
+      const rg = ctx.createRadialGradient(x, cy, 0, x, cy, r)
+      rg.addColorStop(0, 'rgba(71, 85, 105, 0.28)')
+      rg.addColorStop(0.6, 'rgba(100, 116, 139, 0.14)')
+      rg.addColorStop(1, 'transparent')
 
-    ctx.fillStyle = rg
-    ctx.beginPath()
-    ctx.arc(cx, cy, r, 0, Math.PI * 2)
-    ctx.fill()
+      ctx.fillStyle = rg
+      ctx.beginPath()
+      ctx.arc(x, cy, r, 0, Math.PI * 2)
+      ctx.fill()
+    })
   }
 
   // Stylized crater rings with soft highlights
@@ -188,22 +148,24 @@ function createSmartAestheticMoonTexture(): THREE.CanvasTexture {
     const cy = (rand() * 0.8 + 0.1) * height
     const r = 12 + rand() * 38
 
-    const craterGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r)
-    craterGrad.addColorStop(0, 'rgba(30, 41, 59, 0.35)')
-    craterGrad.addColorStop(0.7, 'rgba(71, 85, 105, 0.18)')
-    craterGrad.addColorStop(1, 'transparent')
+    drawWrapped(cx, r, (x) => {
+      const craterGrad = ctx.createRadialGradient(x, cy, 0, x, cy, r)
+      craterGrad.addColorStop(0, 'rgba(30, 41, 59, 0.35)')
+      craterGrad.addColorStop(0.7, 'rgba(71, 85, 105, 0.18)')
+      craterGrad.addColorStop(1, 'transparent')
 
-    ctx.fillStyle = craterGrad
-    ctx.beginPath()
-    ctx.arc(cx, cy, r, 0, Math.PI * 2)
-    ctx.fill()
+      ctx.fillStyle = craterGrad
+      ctx.beginPath()
+      ctx.arc(x, cy, r, 0, Math.PI * 2)
+      ctx.fill()
 
-    // Luminous crater edge highlight
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'
-    ctx.lineWidth = Math.max(r * 0.08, 1.4)
-    ctx.beginPath()
-    ctx.arc(cx - r * 0.12, cy - r * 0.12, r * 0.94, Math.PI * 0.65, Math.PI * 1.85)
-    ctx.stroke()
+      // Luminous crater edge highlight
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'
+      ctx.lineWidth = Math.max(r * 0.08, 1.4)
+      ctx.beginPath()
+      ctx.arc(x - r * 0.12, cy - r * 0.12, r * 0.94, Math.PI * 0.65, Math.PI * 1.85)
+      ctx.stroke()
+    })
   }
 
   const texture = new THREE.CanvasTexture(canvas)
@@ -857,6 +819,16 @@ function MeteorShower({
 }
 
 /** The Smart Dynamic 3D Celestial Moon Guide */
+/**
+ * A sphere sitting off the optical axis does not project to a circle — it
+ * projects to an ellipse stretched along the radial direction by 1/cos θ. The
+ * hero moon sits ~27° off axis, which measures out at 11.5% wider than tall:
+ * the "skew". That is correct perspective, so we don't cancel it outright —
+ * compressing the radial axis by this fraction of the error leaves the moon
+ * reading round without flattening it into an orthographic cut-out.
+ */
+const OFF_AXIS_CORRECTION = 0.6
+
 function SmartCelestialMoon({
   isMobile,
   primaryColor,
@@ -870,6 +842,8 @@ function SmartCelestialMoon({
 }) {
   const groupRef = useRef<THREE.Group>(null)
   const moonMeshRef = useRef<THREE.Mesh>(null)
+  /** Damped uniform scale, tracked apart from scale.x — see the aspect fix below. */
+  const uniformScaleRef = useRef(1)
 
   const moonTexture = useMemo(() => createSmartAestheticMoonTexture(), [])
 
@@ -922,13 +896,6 @@ function SmartCelestialMoon({
 
     // Update dynamic theme colors smoothly
     getInterpolatedTheme(progress, primaryColor, secondaryColor, emissiveColor)
-    const heroWeight = applyHeroAutoCycle(
-      progress,
-      state.clock.elapsedTime,
-      primaryColor,
-      secondaryColor,
-      emissiveColor,
-    )
 
     if (groupRef.current) {
       groupRef.current.position.x = THREE.MathUtils.damp(
@@ -950,8 +917,25 @@ function SmartCelestialMoon({
         delta
       )
 
-      const curScale = THREE.MathUtils.damp(groupRef.current.scale.x, target.s, 4, delta)
-      groupRef.current.scale.set(curScale, curScale, curScale)
+      // Damped on its own rather than off scale.x, which now also carries the
+      // aspect correction below and would otherwise feed back into itself.
+      uniformScaleRef.current = THREE.MathUtils.damp(uniformScaleRef.current, target.s, 4, delta)
+      const s = uniformScaleRef.current
+
+      const px = groupRef.current.position.x
+      const py = groupRef.current.position.y
+      const radial = Math.hypot(px, py)
+      const depth = Math.max(state.camera.position.z - groupRef.current.position.z, 0.001)
+      // cos θ between the view axis and the direction to the moon.
+      const cosTheta = depth / Math.hypot(radial, depth)
+      const squash = OFF_AXIS_CORRECTION * (1 - cosTheta)
+      // Split the correction across x and y by where the moon actually sits.
+      // Every waypoint lands within ~12° of an axis, so this diagonal form
+      // tracks the true radial squash closely without having to rotate the
+      // group — which would visibly roll the surface as the moon travels.
+      const dx = radial > 1e-4 ? px / radial : 0
+      const dy = radial > 1e-4 ? py / radial : 0
+      groupRef.current.scale.set(s * (1 - squash * dx * dx), s * (1 - squash * dy * dy), s)
     }
 
     if (moonMeshRef.current) {
@@ -962,13 +946,6 @@ function SmartCelestialMoon({
       const mat = moonMeshRef.current.material as THREE.MeshStandardMaterial
       if (mat) {
         mat.emissive.lerp(emissiveColor, delta * 3)
-
-        // Wash the lunar surface itself with the current hue while the cycle is
-        // active. The rim light alone only tints one edge; tinting `color` is
-        // what actually reads as "the moon changed colour". Fades back to plain
-        // white as `heroWeight` drops, so scrolled-past behaviour is unchanged.
-        moonTint.copy(MOON_BASE).lerp(primaryColor, heroWeight * MOON_TINT_STRENGTH)
-        mat.color.lerp(moonTint, delta * 3)
       }
     }
   })
@@ -1046,20 +1023,22 @@ function DynamicSceneLighting({
 
   return (
     <>
-      <ambientLight ref={ambientRef} intensity={baseAmbient} color="#e0e7ff" />
+      <ambientLight ref={ambientRef} intensity={baseAmbient} color="#e9e8f2" />
       <directionalLight
         ref={keyLightRef}
         position={[KEY_LIGHT_CRESCENT.x, KEY_LIGHT_CRESCENT.y, KEY_LIGHT_CRESCENT.z]}
         intensity={isMobile ? 3.3 : 2.8}
-        color="#ffffff"
+        // Faintly amber rather than pure white — a warm lit limb against the
+        // cool blue fill is what gives the moon its blue/amber duality.
+        color="#ffeccb"
       />
-      <directionalLight ref={fillLightRef} position={[-4, -3, 2]} intensity={isMobile ? 1.32 : 1.1} color="#38bdf8" />
+      <directionalLight ref={fillLightRef} position={[-4, -3, 2]} intensity={isMobile ? 1.32 : 1.1} color="#4f8bf5" />
     </>
   )
 }
 
 export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) {
-  const primaryColor = useMemo(() => new THREE.Color('#38bdf8'), [])
+  const primaryColor = useMemo(() => new THREE.Color('#4f8bf5'), [])
   const secondaryColor = useMemo(() => new THREE.Color('#818cf8'), [])
   const emissiveColor = useMemo(() => new THREE.Color('#0c192e'), [])
   const flashRef = useRef(0)

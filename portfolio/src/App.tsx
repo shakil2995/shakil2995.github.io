@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { MotionConfig } from 'framer-motion'
 import Navbar from './components/Navbar'
-import Hero from './components/Hero'
+import Hero, { HeroAmbience } from './components/Hero'
 import About from './components/About'
 import Skills from './components/Skills'
 import Projects from './components/Projects'
@@ -34,15 +34,24 @@ export default function App() {
 
       {/* 3D Celestial Moon Guide — moves smoothly from component to component with scroll */}
       {reduced ? (
-        <StaticStarfield />
+        <>
+          {/* The static field is opaque, so the ambience has to sit on top of it. */}
+          <StaticStarfield />
+          <HeroAmbience />
+        </>
       ) : (
-        <div className="fixed inset-0 z-0 pointer-events-none w-full h-full">
-          <SceneBoundary fallback={<StaticStarfield />}>
-            <Suspense fallback={null}>
-              <CelestialMoonScene isMobile={isMobile} />
-            </Suspense>
-          </SceneBoundary>
-        </div>
+        <>
+          {/* Both layers are z-0; DOM order is what puts the clouds behind the
+              moon. The canvas is alpha-transparent, so they still show through. */}
+          <HeroAmbience />
+          <div className="fixed inset-0 z-0 pointer-events-none w-full h-full">
+            <SceneBoundary fallback={<StaticStarfield />}>
+              <Suspense fallback={null}>
+                <CelestialMoonScene isMobile={isMobile} />
+              </Suspense>
+            </SceneBoundary>
+          </div>
+        </>
       )}
 
       <CursorGlow />

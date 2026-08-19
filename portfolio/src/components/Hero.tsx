@@ -28,14 +28,36 @@ function RotatingRole() {
   )
 }
 
-export default function Hero() {
+/**
+ * Soft, calm ambient background lighting for the hero.
+ *
+ * Rendered by <App> rather than inside <Hero> on purpose. The hero lives inside
+ * `<main className="relative z-10">`, which is its own stacking context sitting
+ * above the fixed z-0 3D canvas — so any blob declared in here would paint a
+ * haze *over* the moon no matter how low its z-index went. These are meant to
+ * be clouds behind the moon, so they have to escape <main> entirely.
+ *
+ * `absolute top-0 h-screen` (no positioned ancestor) resolves against the
+ * initial containing block: a viewport-sized box pinned to the document origin.
+ * That reproduces the old behaviour exactly — the blobs cover the first screen
+ * and scroll away with it.
+ */
+export function HeroAmbience() {
   return (
-    <section id="home" className="relative flex min-h-screen items-center justify-center overflow-hidden py-24 sm:py-32">
-      {/* Soft, calm ambient background lighting */}
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-x-0 top-0 z-0 h-screen overflow-hidden"
+    >
       <div className="glow-blob left-1/2 top-1/4 h-[32rem] w-[32rem] -translate-x-1/2 -translate-y-1/2 bg-violet-600/10" />
       <div className="glow-blob left-[15%] bottom-[20%] h-80 w-80 bg-cyan-500/8" />
       <div className="glow-blob right-[15%] top-[30%] h-80 w-80 bg-fuchsia-600/8" />
+    </div>
+  )
+}
 
+export default function Hero() {
+  return (
+    <section id="home" className="relative flex min-h-screen items-center justify-center overflow-hidden py-24 sm:py-32">
       {/* Foreground Content */}
       <div className="relative z-10 mx-auto w-full max-w-4xl px-5 text-center sm:px-8">
         <motion.div
