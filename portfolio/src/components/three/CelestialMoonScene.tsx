@@ -163,38 +163,35 @@ const scratchColor = new THREE.Color()
 /** Swirling Orbital Star Particles that dynamically shift colors with the theme */
 function DynamicOrbitStars({
   count = 35,
-  isMobile,
   primaryColor,
   secondaryColor,
 }: {
   count?: number
-  isMobile?: boolean
   primaryColor: THREE.Color
   secondaryColor: THREE.Color
 }) {
   const pointsRef = useRef<THREE.Points>(null)
-  const actualCount = isMobile ? Math.min(count, 10) : count
 
   const { geometry } = useMemo(() => {
-    const positions = new Float32Array(actualCount * 3)
-    const colors = new Float32Array(actualCount * 3)
+    const positions = new Float32Array(count * 3)
+    const colors = new Float32Array(count * 3)
 
-    for (let i = 0; i < actualCount; i++) {
-      const angle = (i / actualCount) * Math.PI * 2 + Math.random() * 0.15
+    for (let i = 0; i < count; i++) {
+      const angle = (i / count) * Math.PI * 2 + Math.random() * 0.15
       const radius = 1.35 + Math.random() * 0.95
       const x = Math.cos(angle) * radius
       const y = Math.sin(angle) * (radius * 0.45) + (Math.random() - 0.5) * 0.35
       const z = Math.sin(angle) * (radius * 0.85)
 
       positions.set([x, y, z], i * 3)
-      colors.set([0.75, 0.88, 1.0], i * 3)
+      colors.set([1, 1, 1], i * 3)
     }
 
     const g = new THREE.BufferGeometry()
     g.setAttribute('position', new THREE.BufferAttribute(positions, 3))
     g.setAttribute('color', new THREE.BufferAttribute(colors, 3))
     return { geometry: g }
-  }, [actualCount])
+  }, [count])
 
   useFrame((_, delta) => {
     if (pointsRef.current) {
@@ -203,7 +200,7 @@ function DynamicOrbitStars({
 
       const colAttr = pointsRef.current.geometry.attributes.color as THREE.BufferAttribute
       const time = performance.now() * 0.001
-      for (let i = 0; i < actualCount; i++) {
+      for (let i = 0; i < count; i++) {
         const mix = (Math.sin(time * 2.0 + i * 0.1) + 1) * 0.5
         scratchColor.copy(primaryColor).lerp(secondaryColor, mix)
         colAttr.setXYZ(i, scratchColor.r, scratchColor.g, scratchColor.b)
@@ -215,7 +212,7 @@ function DynamicOrbitStars({
   return (
     <points ref={pointsRef} geometry={geometry}>
       <pointsMaterial
-        size={isMobile ? 0.028 : 0.035}
+        size={0.035}
         vertexColors
         transparent
         opacity={0.85}
@@ -406,9 +403,9 @@ function MeteorShower({
   const meshRef = useRef<THREE.Mesh>(null)
   const headRef = useRef<THREE.Points>(null)
   const sparksRef = useRef<THREE.Points>(null)
-  const MAX_METEORS = isMobile ? 4 : 20
-  const RIBBON_SEGMENTS = isMobile ? 6 : 16
-  const SPARKS_PER_METEOR = isMobile ? 2 : 6
+  const MAX_METEORS = 12
+  const RIBBON_SEGMENTS = 16
+  const SPARKS_PER_METEOR = 6
 
   const meteors = useRef<MeteorItem[]>(
     Array.from({ length: MAX_METEORS }, () => ({
@@ -524,12 +521,12 @@ function MeteorShower({
     if (spawnTimer.current > nextSpawnInterval.current) {
       spawnTimer.current = 0
       nextSpawnInterval.current = isStormSpawning
-        ? (isMobile ? (0.24 + Math.random() * 0.12) : (0.12 + Math.random() * 0.08))
-        : isMobile ? (2.8 + Math.random() * 2.4) : (1.4 + Math.random() * 2.0)
+        ? (0.13 + Math.random() * 0.08)
+        : (1.4 + Math.random() * 2.0)
 
       const burstCount = isStormSpawning
-        ? (isMobile ? 2 : (Math.random() < 0.6 ? 3 : 4))
-        : (isMobile ? 1 : (Math.random() < 0.68 ? 1 : Math.random() < 0.88 ? 2 : 3))
+        ? (Math.random() < 0.6 ? 2 : 3)
+        : (Math.random() < 0.68 ? 1 : Math.random() < 0.88 ? 2 : 3)
 
       for (let b = 0; b < burstCount; b++) {
         const inactive = meteors.current.find((m) => !m.active)
@@ -847,7 +844,7 @@ function MoonShatterChunks({
   const impactDirRef = useRef<THREE.Vector3>(new THREE.Vector3(-0.8, -0.5, 0.1))
   const wasShatteredRef = useRef(false)
 
-  const numChunks = isMobile ? 8 : 28
+  const numChunks = 28
 
   // 4 varied jagged rock chunk geometries
   const geometries = useMemo(() => {
@@ -917,7 +914,7 @@ function MoonShatterChunks({
   }, [numChunks])
 
   // Spark dust nebula expanding & contracting around the shattered core
-  const numDust = isMobile ? 12 : 56
+  const numDust = 56
   const { dustGeom, dustVel } = useMemo(() => {
     const pos = new Float32Array(numDust * 3)
     pos.fill(-999)
@@ -1353,7 +1350,7 @@ function SmartCelestialMoon({
             document.body.style.cursor = 'auto'
           }}
         >
-          <sphereGeometry args={[1, isMobile ? 24 : 48, isMobile ? 24 : 48]} />
+          <sphereGeometry args={[1, 48, 48]} />
           <meshStandardMaterial
             map={moonTexture}
             bumpMap={moonTexture}
@@ -1374,7 +1371,7 @@ function SmartCelestialMoon({
         />
 
         {/* Dynamic Color Shifting Star Dust */}
-        <DynamicOrbitStars isMobile={isMobile} count={isMobile ? 10 : 35} primaryColor={primaryColor} secondaryColor={secondaryColor} />
+        <DynamicOrbitStars count={35} primaryColor={primaryColor} secondaryColor={secondaryColor} />
       </FloatGroup>
     </group>
   )
@@ -1617,8 +1614,8 @@ function AdaptiveDprController({ isMobile }: { isMobile: boolean }) {
   const timeoutId = useRef<number | null>(null)
 
   useEffect(() => {
-    const baseDpr = isMobile ? 0.85 : 1.5
-    const scrollDpr = isMobile ? 0.70 : 1.0
+    const baseDpr = isMobile ? 1.5 : 1.75
+    const scrollDpr = 1.0
 
     const onScroll = () => {
       if (!isScrolling.current) {
@@ -1655,12 +1652,12 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
     <Canvas
       frameloop="always"
       className="w-full h-full"
-      dpr={isMobile ? 0.85 : [1, 1.5]}
+      dpr={isMobile ? [1, 1.5] : [1, 1.75]}
       camera={{ position: [0, 0, 5.5], fov: isMobile ? 54 : 46 }}
       gl={{
-        antialias: !isMobile,
+        antialias: true,
         alpha: true,
-        powerPreference: isMobile ? 'default' : 'high-performance',
+        powerPreference: 'high-performance',
         stencil: false,
         depth: true,
       }}
@@ -1670,7 +1667,7 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
       <DynamicSceneLighting primaryColor={primaryColor} isMobile={isMobile} flashRef={flashRef} />
 
       {/* Dynamic Multi-Depth Parallax Starfield */}
-      <DepthParallaxStarfield isMobile={isMobile} count={isMobile ? 100 : 600} />
+      <DepthParallaxStarfield isMobile={isMobile} count={isMobile ? 380 : 600} />
 
       {/* Torrential Meteor Shower (10-20+ streaming active meteors during storm) */}
       <MeteorShower isMobile={isMobile} flashRef={flashRef} />
