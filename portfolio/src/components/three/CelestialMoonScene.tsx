@@ -162,36 +162,39 @@ const scratchColor = new THREE.Color()
 
 /** Swirling Orbital Star Particles that dynamically shift colors with the theme */
 function DynamicOrbitStars({
-  count,
+  count = 35,
+  isMobile,
   primaryColor,
   secondaryColor,
 }: {
-  count: number
+  count?: number
+  isMobile?: boolean
   primaryColor: THREE.Color
   secondaryColor: THREE.Color
 }) {
   const pointsRef = useRef<THREE.Points>(null)
+  const actualCount = isMobile ? Math.min(count, 10) : count
 
   const { geometry } = useMemo(() => {
-    const positions = new Float32Array(count * 3)
-    const colors = new Float32Array(count * 3)
+    const positions = new Float32Array(actualCount * 3)
+    const colors = new Float32Array(actualCount * 3)
 
-    for (let i = 0; i < count; i++) {
-      const angle = (i / count) * Math.PI * 2 + Math.random() * 0.15
+    for (let i = 0; i < actualCount; i++) {
+      const angle = (i / actualCount) * Math.PI * 2 + Math.random() * 0.15
       const radius = 1.35 + Math.random() * 0.95
       const x = Math.cos(angle) * radius
       const y = Math.sin(angle) * (radius * 0.45) + (Math.random() - 0.5) * 0.35
       const z = Math.sin(angle) * (radius * 0.85)
 
       positions.set([x, y, z], i * 3)
-      colors.set([1, 1, 1], i * 3)
+      colors.set([0.75, 0.88, 1.0], i * 3)
     }
 
     const g = new THREE.BufferGeometry()
     g.setAttribute('position', new THREE.BufferAttribute(positions, 3))
     g.setAttribute('color', new THREE.BufferAttribute(colors, 3))
     return { geometry: g }
-  }, [count])
+  }, [actualCount])
 
   useFrame((_, delta) => {
     if (pointsRef.current) {
@@ -200,8 +203,8 @@ function DynamicOrbitStars({
 
       const colAttr = pointsRef.current.geometry.attributes.color as THREE.BufferAttribute
       const time = performance.now() * 0.001
-      for (let i = 0; i < count; i++) {
-        const mix = (Math.sin(time * 2 + i * 0.1) + 1) * 0.5
+      for (let i = 0; i < actualCount; i++) {
+        const mix = (Math.sin(time * 2.0 + i * 0.1) + 1) * 0.5
         scratchColor.copy(primaryColor).lerp(secondaryColor, mix)
         colAttr.setXYZ(i, scratchColor.r, scratchColor.g, scratchColor.b)
       }
@@ -212,7 +215,7 @@ function DynamicOrbitStars({
   return (
     <points ref={pointsRef} geometry={geometry}>
       <pointsMaterial
-        size={0.035}
+        size={isMobile ? 0.028 : 0.035}
         vertexColors
         transparent
         opacity={0.85}
@@ -245,15 +248,16 @@ const starVertexShader = /* glsl */ `
   }
 
   void main() {
-    float driftX = uTime * 0.35 * aSpeed * 7.0 + uMouse.x * aSpeed * 3.5;
-    float driftY = uTime * 0.55 * aSpeed * 7.0 + uScroll * aSpeed * 12.0 + uMouse.y * aSpeed * 3.5;
+    float driftX = uTime * 0.18 * aSpeed * 4.5 + uMouse.x * aSpeed * 2.5;
+    float driftY = uTime * 0.28 * aSpeed * 4.5 + uScroll * aSpeed * 9.0 + uMouse.y * aSpeed * 2.5;
 
     vec3 p = position;
     p.x = wrap(p.x - driftX, ${STAR_FIELD_SIZE}.0);
     p.y = wrap(p.y - driftY, ${STAR_FIELD_SIZE}.0);
 
-    float breathe = 0.5 + 0.5 * sin(uTime * 0.4 + aPhase);
-    vAlpha = 0.65 + breathe * 0.35;
+    // 1.3x star twinkle cadence
+    float breathe = 0.5 + 0.5 * sin(uTime * 0.124 + aPhase);
+    vAlpha = 0.78 + breathe * 0.22;
     vColor = aColor;
 
     vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
@@ -402,9 +406,9 @@ function MeteorShower({
   const meshRef = useRef<THREE.Mesh>(null)
   const headRef = useRef<THREE.Points>(null)
   const sparksRef = useRef<THREE.Points>(null)
-  const MAX_METEORS = 20
-  const RIBBON_SEGMENTS = 16
-  const SPARKS_PER_METEOR = 6
+  const MAX_METEORS = isMobile ? 4 : 20
+  const RIBBON_SEGMENTS = isMobile ? 6 : 16
+  const SPARKS_PER_METEOR = isMobile ? 2 : 6
 
   const meteors = useRef<MeteorItem[]>(
     Array.from({ length: MAX_METEORS }, () => ({
@@ -520,12 +524,12 @@ function MeteorShower({
     if (spawnTimer.current > nextSpawnInterval.current) {
       spawnTimer.current = 0
       nextSpawnInterval.current = isStormSpawning
-        ? (0.12 + Math.random() * 0.08)
-        : isMobile ? (2.2 + Math.random() * 2.2) : (1.4 + Math.random() * 2.0)
+        ? (isMobile ? (0.24 + Math.random() * 0.12) : (0.12 + Math.random() * 0.08))
+        : isMobile ? (2.8 + Math.random() * 2.4) : (1.4 + Math.random() * 2.0)
 
       const burstCount = isStormSpawning
-        ? (isMobile ? 3 : (Math.random() < 0.6 ? 3 : 4))
-        : (isMobile ? (Math.random() < 0.8 ? 1 : 2) : (Math.random() < 0.68 ? 1 : Math.random() < 0.88 ? 2 : 3))
+        ? (isMobile ? 2 : (Math.random() < 0.6 ? 3 : 4))
+        : (isMobile ? 1 : (Math.random() < 0.68 ? 1 : Math.random() < 0.88 ? 2 : 3))
 
       for (let b = 0; b < burstCount; b++) {
         const inactive = meteors.current.find((m) => !m.active)
@@ -843,7 +847,7 @@ function MoonShatterChunks({
   const impactDirRef = useRef<THREE.Vector3>(new THREE.Vector3(-0.8, -0.5, 0.1))
   const wasShatteredRef = useRef(false)
 
-  const numChunks = 28
+  const numChunks = isMobile ? 8 : 28
 
   // 4 varied jagged rock chunk geometries
   const geometries = useMemo(() => {
@@ -913,7 +917,7 @@ function MoonShatterChunks({
   }, [numChunks])
 
   // Spark dust nebula expanding & contracting around the shattered core
-  const numDust = 56
+  const numDust = isMobile ? 12 : 56
   const { dustGeom, dustVel } = useMemo(() => {
     const pos = new Float32Array(numDust * 3)
     pos.fill(-999)
@@ -1278,34 +1282,41 @@ function SmartCelestialMoon({
       uniformScaleRef.current = THREE.MathUtils.damp(uniformScaleRef.current, target.s, 4.5, safeDelta)
       const s = uniformScaleRef.current
 
-      const px = groupRef.current.position.x
-      const py = groupRef.current.position.y
-      const radial = Math.hypot(px, py)
-      const depth = Math.max(state.camera.position.z - groupRef.current.position.z, 0.001)
-      const cosTheta = depth / Math.hypot(radial, depth)
-      const squash = OFF_AXIS_CORRECTION * (1 - cosTheta)
-      const dx = radial > 1e-4 ? px / radial : 0
-      const dy = radial > 1e-4 ? py / radial : 0
       const scaleMultiplier = settleScale
+      if (isMobile) {
+        groupRef.current.scale.set(s * scaleMultiplier, s * scaleMultiplier, s * scaleMultiplier)
+        moonScreenBounds.current.x = ((target.x / 2.5 + 1) * state.size.width) / 2
+        moonScreenBounds.current.y = ((-target.y / 2.5 + 1) * state.size.height) / 2
+        moonScreenBounds.current.r = 65
+      } else {
+        const px = groupRef.current.position.x
+        const py = groupRef.current.position.y
+        const radial = Math.hypot(px, py)
+        const depth = Math.max(state.camera.position.z - groupRef.current.position.z, 0.001)
+        const cosTheta = depth / Math.hypot(radial, depth)
+        const squash = OFF_AXIS_CORRECTION * (1 - cosTheta)
+        const dx = radial > 1e-4 ? px / radial : 0
+        const dy = radial > 1e-4 ? py / radial : 0
 
-      groupRef.current.scale.set(
-        s * (1 - squash * dx * dx) * scaleMultiplier,
-        s * (1 - squash * dy * dy) * scaleMultiplier,
-        s * scaleMultiplier
-      )
+        groupRef.current.scale.set(
+          s * (1 - squash * dx * dx) * scaleMultiplier,
+          s * (1 - squash * dy * dy) * scaleMultiplier,
+          s * scaleMultiplier
+        )
 
-      // Calculate 2D screen-space coordinates of the moon for 100% reliable clicks
-      groupRef.current.updateWorldMatrix(true, false)
-      _projVec.setFromMatrixPosition(groupRef.current.matrixWorld)
-      _projVec.project(state.camera)
-      const screenX = ((_projVec.x + 1) * state.size.width) / 2
-      const screenY = ((-_projVec.y + 1) * state.size.height) / 2
-      const fovRad = THREE.MathUtils.degToRad((state.camera as THREE.PerspectiveCamera).fov || 50)
-      const distZ = Math.max(state.camera.position.z - groupRef.current.position.z, 1.0)
-      const radiusPx = (s * state.size.height) / (2 * Math.tan(fovRad / 2) * distZ)
-      moonScreenBounds.current.x = screenX
-      moonScreenBounds.current.y = screenY
-      moonScreenBounds.current.r = Math.max(radiusPx * 1.15, 45)
+        // Calculate 2D screen-space coordinates of the moon for 100% reliable clicks
+        groupRef.current.updateWorldMatrix(true, false)
+        _projVec.setFromMatrixPosition(groupRef.current.matrixWorld)
+        _projVec.project(state.camera)
+        const screenX = ((_projVec.x + 1) * state.size.width) / 2
+        const screenY = ((-_projVec.y + 1) * state.size.height) / 2
+        const fovRad = THREE.MathUtils.degToRad((state.camera as THREE.PerspectiveCamera).fov || 50)
+        const distZ = Math.max(state.camera.position.z - groupRef.current.position.z, 1.0)
+        const radiusPx = (s * state.size.height) / (2 * Math.tan(fovRad / 2) * distZ)
+        moonScreenBounds.current.x = screenX
+        moonScreenBounds.current.y = screenY
+        moonScreenBounds.current.r = Math.max(radiusPx * 1.15, 45)
+      }
     }
 
     if (moonMeshRef.current) {
@@ -1342,7 +1353,7 @@ function SmartCelestialMoon({
             document.body.style.cursor = 'auto'
           }}
         >
-          <sphereGeometry args={[1, 48, 48]} />
+          <sphereGeometry args={[1, isMobile ? 24 : 48, isMobile ? 24 : 48]} />
           <meshStandardMaterial
             map={moonTexture}
             bumpMap={moonTexture}
@@ -1363,7 +1374,7 @@ function SmartCelestialMoon({
         />
 
         {/* Dynamic Color Shifting Star Dust */}
-        <DynamicOrbitStars count={35} primaryColor={primaryColor} secondaryColor={secondaryColor} />
+        <DynamicOrbitStars isMobile={isMobile} count={isMobile ? 10 : 35} primaryColor={primaryColor} secondaryColor={secondaryColor} />
       </FloatGroup>
     </group>
   )
@@ -1606,11 +1617,13 @@ function AdaptiveDprController({ isMobile }: { isMobile: boolean }) {
   const timeoutId = useRef<number | null>(null)
 
   useEffect(() => {
-    const baseDpr = isMobile ? 1.25 : 1.5
+    const baseDpr = isMobile ? 0.85 : 1.5
+    const scrollDpr = isMobile ? 0.70 : 1.0
+
     const onScroll = () => {
       if (!isScrolling.current) {
         isScrolling.current = true
-        setDpr(1.0)
+        setDpr(scrollDpr)
       }
       if (timeoutId.current !== null) {
         window.clearTimeout(timeoutId.current)
@@ -1642,7 +1655,7 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
     <Canvas
       frameloop="always"
       className="w-full h-full"
-      dpr={isMobile ? [1, 1.25] : [1, 1.5]}
+      dpr={isMobile ? 0.85 : [1, 1.5]}
       camera={{ position: [0, 0, 5.5], fov: isMobile ? 54 : 46 }}
       gl={{
         antialias: !isMobile,
@@ -1657,7 +1670,7 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
       <DynamicSceneLighting primaryColor={primaryColor} isMobile={isMobile} flashRef={flashRef} />
 
       {/* Dynamic Multi-Depth Parallax Starfield */}
-      <DepthParallaxStarfield isMobile={isMobile} count={isMobile ? 380 : 600} />
+      <DepthParallaxStarfield isMobile={isMobile} count={isMobile ? 100 : 600} />
 
       {/* Torrential Meteor Shower (10-20+ streaming active meteors during storm) */}
       <MeteorShower isMobile={isMobile} flashRef={flashRef} />
