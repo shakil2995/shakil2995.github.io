@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect, type ReactNode } from 'react'
+import { useMemo, useRef, useEffect, useState, useCallback, type ReactNode } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { getScrollProgress, subscribeScroll } from '../../hooks/useScrollProgress'
@@ -42,19 +42,17 @@ interface SectionTheme {
 }
 
 const SECTION_THEMES: SectionTheme[] = [
-  // 0.00: Hero — Azure Blue & Starlight Ice. Deliberately blue rather than
-  // cyan; the old sky-400 rim carried a green channel of 189, which on a
-  // neutral pearl surface read as a green cast across the shadow side.
+  // 0.00: Hero — Azure Blue & Starlight Ice
   { p: 0.00, primary: new THREE.Color('#4f8bf5'), secondary: new THREE.Color('#818cf8'), emissive: new THREE.Color('#0c192e') },
-  // 0.20: About — Royal Violet & Indigo (Founder Story & Milestones)
+  // 0.20: About — Royal Violet & Indigo
   { p: 0.20, primary: new THREE.Color('#a855f7'), secondary: new THREE.Color('#6366f1'), emissive: new THREE.Color('#1e1035') },
-  // 0.45: Skills — Neon Teal & Mint Green (Performance & Tech Matrix)
+  // 0.45: Skills — Neon Teal & Mint Green
   { p: 0.45, primary: new THREE.Color('#2dd4bf'), secondary: new THREE.Color('#06b6d4'), emissive: new THREE.Color('#062420') },
-  // 0.68: Projects — Radiant Magenta & Electric Violet (Zinodesk & ATI EMR)
+  // 0.68: Projects — Radiant Magenta & Electric Violet
   { p: 0.68, primary: new THREE.Color('#ec4899'), secondary: new THREE.Color('#a855f7'), emissive: new THREE.Color('#290c2b') },
-  // 0.85: Timeline — Cyber Amber & Warm Gold (7+ Years Track Record)
+  // 0.85: Timeline — Cyber Amber & Warm Gold
   { p: 0.85, primary: new THREE.Color('#f59e0b'), secondary: new THREE.Color('#fb923c'), emissive: new THREE.Color('#261706') },
-  // 1.00: Contact — Electric Cyan & Ultra Violet Beacon (Uplink & Reach Out)
+  // 1.00: Contact — Electric Cyan & Ultra Violet Beacon
   { p: 1.00, primary: new THREE.Color('#06b6d4'), secondary: new THREE.Color('#c084fc'), emissive: new THREE.Color('#0d182b') },
 ]
 
@@ -88,16 +86,6 @@ function createSmartAestheticMoonTexture(): THREE.CanvasTexture {
   canvas.height = height
   const ctx = canvas.getContext('2d')!
 
-  // Pearlescent silver-white base.
-  //
-  // This gradient must run top-to-bottom, NOT diagonally. The texture is mapped
-  // equirectangularly with wrapS = RepeatWrapping, so any horizontal variation
-  // makes the left edge (u=0) and right edge (u=1) different colours — and
-  // where they meet on the sphere you get an instant step from slate back to
-  // white. That seam read as a hard-edged second shadow crossing the real
-  // terminator, and because this same canvas is also the bumpMap the step
-  // became a normal-map cliff that shaded like one too. Varying only in v
-  // wraps seamlessly and still gives the pole-to-limb falloff.
   const baseGrad = ctx.createLinearGradient(0, 0, 0, height)
   baseGrad.addColorStop(0, '#ffffff')
   baseGrad.addColorStop(0.3, '#f8fafc')
@@ -112,18 +100,13 @@ function createSmartAestheticMoonTexture(): THREE.CanvasTexture {
     return seed / 233280
   }
 
-  /**
-   * Draws a surface feature, repeating it across the u seam when it straddles
-   * the edge. Without this, features near u=0 or u=1 get sliced in half and
-   * leave their own hard edge at exactly the same place.
-   */
   function drawWrapped(cx: number, r: number, draw: (x: number) => void) {
     draw(cx)
     if (cx - r < 0) draw(cx + width)
     if (cx + r > width) draw(cx - width)
   }
 
-  // Soft lunar maria basins (semi-transparent for dynamic light transmission)
+  // Soft lunar maria basins
   for (let i = 0; i < 12; i++) {
     const cx = (rand() * 0.8 + 0.1) * width
     const cy = (rand() * 0.7 + 0.15) * height
@@ -159,7 +142,6 @@ function createSmartAestheticMoonTexture(): THREE.CanvasTexture {
       ctx.arc(x, cy, r, 0, Math.PI * 2)
       ctx.fill()
 
-      // Luminous crater edge highlight
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'
       ctx.lineWidth = Math.max(r * 0.08, 1.4)
       ctx.beginPath()
@@ -169,7 +151,6 @@ function createSmartAestheticMoonTexture(): THREE.CanvasTexture {
   }
 
   const texture = new THREE.CanvasTexture(canvas)
-  // Colour maps must be tagged sRGB or three applies the wrong transfer curve.
   texture.colorSpace = THREE.SRGBColorSpace
   texture.wrapS = THREE.RepeatWrapping
   texture.wrapT = THREE.ClampToEdgeWrapping
@@ -177,11 +158,18 @@ function createSmartAestheticMoonTexture(): THREE.CanvasTexture {
   return texture
 }
 
-/** Scratch colour reused across frames — allocating inside useFrame churns the GC. */
 const scratchColor = new THREE.Color()
 
 /** Swirling Orbital Star Particles that dynamically shift colors with the theme */
-function DynamicOrbitStars({ count, primaryColor, secondaryColor }: { count: number; primaryColor: THREE.Color; secondaryColor: THREE.Color }) {
+function DynamicOrbitStars({
+  count,
+  primaryColor,
+  secondaryColor,
+}: {
+  count: number
+  primaryColor: THREE.Color
+  secondaryColor: THREE.Color
+}) {
   const pointsRef = useRef<THREE.Points>(null)
 
   const { geometry } = useMemo(() => {
@@ -210,7 +198,6 @@ function DynamicOrbitStars({ count, primaryColor, secondaryColor }: { count: num
       pointsRef.current.rotation.y += delta * 0.18
       pointsRef.current.rotation.x += delta * 0.06
 
-      // Update particle colors based on current theme
       const colAttr = pointsRef.current.geometry.attributes.color as THREE.BufferAttribute
       const time = performance.now() * 0.001
       for (let i = 0; i < count; i++) {
@@ -237,18 +224,6 @@ function DynamicOrbitStars({ count, primaryColor, secondaryColor }: { count: num
   )
 }
 
-/**
- * Multi-depth parallax starfield, evaluated entirely on the GPU.
- *
- * The previous version rebuilt 600 positions + 600 colours on the CPU every
- * frame and re-uploaded both buffers (~14KB of bus traffic per frame). All of
- * that motion is a pure function of time, so it now lives in the vertex shader
- * and the attribute buffers are uploaded exactly once.
- *
- * This also fixes a latent bug: the old per-frame colour write overwrote the
- * per-star hues assigned at init, so every star rendered the same flat tint.
- * Here `aColor` survives to the fragment stage and the variety is visible.
- */
 const STAR_FIELD_SIZE = 65
 
 const starVertexShader = /* glsl */ `
@@ -265,14 +240,11 @@ const starVertexShader = /* glsl */ `
   varying vec3 vColor;
   varying float vAlpha;
 
-  // Wrap a coordinate into [-size/2, size/2] so the field tiles seamlessly.
   float wrap(float v, float size) {
     return mod(v + size * 0.5, size) - size * 0.5;
   }
 
   void main() {
-    // Shared cosmic river: everything drifts along the same diagonal, scaled
-    // by per-star speed so nearer stars visibly outrun distant ones.
     float driftX = uTime * 0.35 * aSpeed * 7.0 + uMouse.x * aSpeed * 3.5;
     float driftY = uTime * 0.55 * aSpeed * 7.0 + uScroll * aSpeed * 12.0 + uMouse.y * aSpeed * 3.5;
 
@@ -280,7 +252,6 @@ const starVertexShader = /* glsl */ `
     p.x = wrap(p.x - driftX, ${STAR_FIELD_SIZE}.0);
     p.y = wrap(p.y - driftY, ${STAR_FIELD_SIZE}.0);
 
-    // Clusters breathe in and out of visibility in harmonious waves.
     float breathe = 0.5 + 0.5 * sin(uTime * 0.4 + aPhase);
     vAlpha = 0.65 + breathe * 0.35;
     vColor = aColor;
@@ -296,8 +267,6 @@ const starFragmentShader = /* glsl */ `
   varying float vAlpha;
 
   void main() {
-    // Soft round sprite. Untextured THREE points are squares by default —
-    // this is what makes them read as stars rather than pixels.
     vec2 uv = gl_PointCoord - 0.5;
     float d = dot(uv, uv);
     if (d > 0.25) discard;
@@ -321,26 +290,23 @@ function DepthParallaxStarfield({ count = 600 }: { count?: number }) {
     for (let i = 0; i < count; i++) {
       const x = (Math.random() - 0.5) * STAR_FIELD_SIZE
       const y = (Math.random() - 0.5) * STAR_FIELD_SIZE
-      // Deep cosmic distance: kept between -90 and -30 so no stars are bloated near camera
       const z = -90 + Math.random() * 60
 
       pos[i * 3] = x
       pos[i * 3 + 1] = y
       pos[i * 3 + 2] = z
 
-      // Distance-based velocity: far stars drift in a slower, majestic phase.
       const depthFactor = (z + 90) / 60
       spd[i] = 0.012 + depthFactor * 0.038
       phase[i] = Math.random() * Math.PI * 2
 
-      // Subtle celestial star colours — these now actually reach the screen.
       const starHue = Math.random()
       if (starHue > 0.75) {
-        col[i * 3] = 0.70; col[i * 3 + 1] = 0.88; col[i * 3 + 2] = 1.0 // Ice cyan
+        col[i * 3] = 0.70; col[i * 3 + 1] = 0.88; col[i * 3 + 2] = 1.0
       } else if (starHue > 0.55) {
-        col[i * 3] = 0.88; col[i * 3 + 1] = 0.78; col[i * 3 + 2] = 1.0 // Soft violet
+        col[i * 3] = 0.88; col[i * 3 + 1] = 0.78; col[i * 3 + 2] = 1.0
       } else {
-        col[i * 3] = 0.95; col[i * 3 + 1] = 0.96; col[i * 3 + 2] = 1.0 // Platinum white
+        col[i * 3] = 0.95; col[i * 3 + 1] = 0.96; col[i * 3 + 2] = 1.0
       }
     }
 
@@ -357,15 +323,12 @@ function DepthParallaxStarfield({ count = 600 }: { count?: number }) {
       uTime: { value: 0 },
       uScroll: { value: 0 },
       uMouse: { value: new THREE.Vector2() },
-      // Slightly larger than the old 0.035 square points: the round falloff
-      // discards the corners, so same number reads smaller on screen.
       uSize: { value: 0.042 },
       uScale: { value: 300 },
     }),
     [],
   )
 
-  // Free GPU memory if the star count changes (mobile/desktop breakpoint flip).
   useEffect(() => () => geometry.dispose(), [geometry])
 
   useFrame((state) => {
@@ -429,7 +392,7 @@ interface MeteorItem {
 const RIBBON_SEGMENTS = 16
 const SPARKS_PER_METEOR = 6
 
-/** Authentic Earth-view sleek shooting stars burning through 4 progressive atmospheric ionization stages */
+/** High-intensity Meteor Shower with atmospheric ionization stages */
 function MeteorShower({
   isMobile,
   flashRef,
@@ -440,7 +403,7 @@ function MeteorShower({
   const meshRef = useRef<THREE.Mesh>(null)
   const headRef = useRef<THREE.Points>(null)
   const sparksRef = useRef<THREE.Points>(null)
-  const MAX_METEORS = isMobile ? 4 : 7
+  const MAX_METEORS = isMobile ? 18 : 34
 
   const meteors = useRef<MeteorItem[]>(
     Array.from({ length: MAX_METEORS }, () => ({
@@ -470,15 +433,15 @@ function MeteorShower({
     }))
   )
 
-  const spawnTimer = useRef(999) // Instant spawn on initial load
+  const spawnTimer = useRef(999)
   const nextSpawnInterval = useRef(1.4)
   const stormUntil = useRef(0)
 
   useEffect(() => {
     const onStorm = () => {
-      stormUntil.current = performance.now() + 4000
+      stormUntil.current = performance.now() + 5000
       spawnTimer.current = 999
-      flashRef.current = 0.9
+      flashRef.current = 0.95
     }
     window.addEventListener('shakil:meteor-storm', onStorm)
     return () => window.removeEventListener('shakil:meteor-storm', onStorm)
@@ -528,35 +491,38 @@ function MeteorShower({
     return { ribbonGeom: rG, headGeom: hG, sparksGeom: sG }
   }, [MAX_METEORS])
 
+  useEffect(() => {
+    return () => {
+      ribbonGeom.dispose()
+      headGeom.dispose()
+      sparksGeom.dispose()
+    }
+  }, [ribbonGeom, headGeom, sparksGeom])
+
   useFrame((_, delta) => {
     spawnTimer.current += delta
     const storming = performance.now() < stormUntil.current
 
-    // Randomized spawn cadence
     if (spawnTimer.current > nextSpawnInterval.current) {
       spawnTimer.current = 0
+      // Continuous torrential stream during storm mode (10-20+ active meteors concurrently)
       nextSpawnInterval.current = storming
-        ? 0.11
+        ? 0.055
         : isMobile ? (2.2 + Math.random() * 2.2) : (1.4 + Math.random() * 2.0)
 
-      // Burst count: 70% single, 20% double, 10% triple meteor cluster —
-      // or every available slot at once while a storm is running.
       const burstRoll = Math.random()
       const burstCount = storming
-        ? MAX_METEORS
+        ? (isMobile ? 4 : 7)
         : isMobile ? (burstRoll < 0.8 ? 1 : 2) : (burstRoll < 0.68 ? 1 : burstRoll < 0.88 ? 2 : 3)
 
       for (let b = 0; b < burstCount; b++) {
         const inactive = meteors.current.find((m) => !m.active)
         if (!inactive) break
 
-        // Size variance: storms skew bright — 40% rare large, 40% medium,
-        // 20% small; calm skies keep the original 12/38/50 mix.
         const sizeRoll = Math.random()
-        const isRareLarge = sizeRoll < (storming ? 0.4 : 0.12)
-        const isMedium = sizeRoll >= (storming ? 0.4 : 0.12) && sizeRoll < 0.5
+        const isRareLarge = sizeRoll < (storming ? 0.45 : 0.12)
+        const isMedium = sizeRoll >= (storming ? 0.45 : 0.12) && sizeRoll < 0.8
 
-        // Build a randomized 4-stage mineral color sequence: C1 -> C2 -> C3 -> C4
         const startIndex = Math.floor(Math.random() * METEOR_THEMES.length)
         const stage0 = METEOR_THEMES[startIndex]
         const stage1 = METEOR_THEMES[(startIndex + 1) % METEOR_THEMES.length]
@@ -567,63 +533,46 @@ function MeteorShower({
         inactive.isLarge = isRareLarge
         inactive.colorStages = [stage0, stage1, stage2, stage3]
 
-        // Random starting zone. Calm skies favour the upper-right; a storm
-        // barrages the entire top of the sky in a directed sweep.
-        const originType = Math.random()
         let startX: number, startY: number
         if (storming) {
-          startX = (Math.random() - 0.5) * (isMobile ? 4.2 : 7.5)
-          startY = 2.9 + Math.random() * 1.4
-        } else if (originType < 0.5) {
-          // Top-right zone
+          startX = (Math.random() - 0.4) * (isMobile ? 5.5 : 9.5)
+          startY = 3.2 + Math.random() * 1.8
+        } else {
           startX = (isMobile ? 1.8 : 3.5) + Math.random() * 2.5 + b * 0.8
           startY = 2.8 + Math.random() * 1.5 + b * 0.6
-        } else if (originType < 0.8) {
-          // Top-center zone
-          startX = (Math.random() - 0.5) * 3.0 + b * 0.7
-          startY = 3.2 + Math.random() * 1.4 + b * 0.5
-        } else {
-          // Right-middle edge zone
-          startX = (isMobile ? 2.5 : 4.6) + Math.random() * 1.8 + b * 0.6
-          startY = 0.6 + Math.random() * 2.2 + b * 0.7
         }
 
         inactive.x = startX
         inactive.y = startY
         inactive.z = 1.2 + (Math.random() - 0.5) * 0.8
 
-        // Trajectory angle variance
-        const angle = THREE.MathUtils.degToRad(25 + Math.random() * 16) // 25 to 41 degrees downward-left
+        const angle = THREE.MathUtils.degToRad(26 + Math.random() * 16)
         let speed: number, headW: number, len: number, lifeTime: number
 
         if (isRareLarge) {
-          // Rare Large Meteor
-          speed = (isMobile ? 2.1 : 2.5) + Math.random() * 0.3
-          headW = isMobile ? 0.030 : 0.044
-          len = 1.9 + Math.random() * 0.6
-          lifeTime = 4.8 + Math.random() * 0.6 // ~5s
-          flashRef.current = 0.55
+          speed = (isMobile ? 2.3 : 2.8) + Math.random() * 0.4
+          headW = isMobile ? 0.034 : 0.048
+          len = 2.2 + Math.random() * 0.8
+          lifeTime = 4.8 + Math.random() * 0.6
+          flashRef.current = Math.max(flashRef.current, 0.45)
         } else if (isMedium) {
-          // Medium Shooting Star
-          speed = (isMobile ? 1.9 : 2.2) + Math.random() * 0.3
-          headW = isMobile ? 0.015 : 0.022
-          len = 1.0 + Math.random() * 0.5
-          lifeTime = 3.8 + Math.random() * 1.0
-          flashRef.current = Math.max(flashRef.current, 0.1)
+          speed = (isMobile ? 2.0 : 2.4) + Math.random() * 0.3
+          headW = isMobile ? 0.018 : 0.026
+          len = 1.2 + Math.random() * 0.5
+          lifeTime = 3.6 + Math.random() * 1.0
+          flashRef.current = Math.max(flashRef.current, 0.12)
         } else {
-          // Small Stardust Meteor
-          speed = (isMobile ? 1.6 : 1.9) + Math.random() * 0.3
-          headW = isMobile ? 0.006 : 0.009
-          len = 0.45 + Math.random() * 0.35
+          speed = (isMobile ? 1.7 : 2.0) + Math.random() * 0.3
+          headW = isMobile ? 0.008 : 0.012
+          len = 0.55 + Math.random() * 0.4
           lifeTime = 2.8 + Math.random() * 1.2
-          flashRef.current = Math.max(flashRef.current, 0.04)
         }
 
         inactive.vx = -speed * Math.cos(angle)
         inactive.vy = -speed * Math.sin(angle)
         if (storming) {
-          inactive.vx *= 1.25
-          inactive.vy *= 1.25
+          inactive.vx *= 1.35
+          inactive.vy *= 1.35
         }
         inactive.vz = 0
 
@@ -638,15 +587,14 @@ function MeteorShower({
       }
     }
 
-    if (!meshRef.current || !headRef.current || !sparksRef.current) return
-    const ribbonPos = (meshRef.current.geometry.attributes.position as THREE.BufferAttribute).array as Float32Array
-    const ribbonCol = (meshRef.current.geometry.attributes.color as THREE.BufferAttribute).array as Float32Array
+    const ribbonPos = meshRef.current?.geometry.attributes.position.array as Float32Array | undefined
+    const ribbonCol = meshRef.current?.geometry.attributes.color.array as Float32Array | undefined
+    const headPos = headRef.current?.geometry.attributes.position.array as Float32Array | undefined
+    const headCol = headRef.current?.geometry.attributes.color.array as Float32Array | undefined
+    const sparkPos = sparksRef.current?.geometry.attributes.position.array as Float32Array | undefined
+    const sparkCol = sparksRef.current?.geometry.attributes.color.array as Float32Array | undefined
 
-    const headPos = (headRef.current.geometry.attributes.position as THREE.BufferAttribute).array as Float32Array
-    const headCol = (headRef.current.geometry.attributes.color as THREE.BufferAttribute).array as Float32Array
-
-    const sparkPos = (sparksRef.current.geometry.attributes.position as THREE.BufferAttribute).array as Float32Array
-    const sparkCol = (sparksRef.current.geometry.attributes.color as THREE.BufferAttribute).array as Float32Array
+    if (!ribbonPos || !ribbonCol || !headPos || !headCol || !sparkPos || !sparkCol) return
 
     const vertsPerMeteor = (RIBBON_SEGMENTS + 1) * 2
 
@@ -680,7 +628,6 @@ function MeteorShower({
       const normX = -dirY / perpLen
       const normY = dirX / perpLen
 
-      // Sustained brightness curve: quick fade-in, long visible flight, smooth fade-out
       const lifeProg = m.life / m.maxLife
       let meteorAlpha = 1.0
       if (lifeProg < 0.10) {
@@ -689,13 +636,10 @@ function MeteorShower({
         meteorAlpha = Math.max(0, (1.0 - lifeProg) / 0.14)
       }
 
-      // 4-Stage Progressive Atmospheric Mineral Combustion: C1 -> C2 -> C3 -> C4 -> Disappears
-      // 3 transitions across lifeProg [0.0 - 1.0]: stage 0, stage 1, stage 2, stage 3
-      const phase = lifeProg * 3.0 // 0.0 to 3.0
+      const phase = lifeProg * 3.0
       const stageIdx = Math.min(Math.floor(phase), 2)
       const nextStageIdx = stageIdx + 1
       const stageFrac = phase - stageIdx
-      // Hold each color clearly for most of the stage, then smoothly crossfade
       const stageT = THREE.MathUtils.smoothstep(stageFrac, 0.25, 0.75)
 
       const cA = m.colorStages[stageIdx]
@@ -713,12 +657,12 @@ function MeteorShower({
       headPos[headBase] = m.x
       headPos[headBase + 1] = m.y
       headPos[headBase + 2] = m.z
-      const headBright = (m.isLarge ? 2.2 : 1.8) * meteorAlpha
+      const headBright = (m.isLarge ? 2.4 : 1.9) * meteorAlpha
       headCol[headBase] = 1.0 * headBright
       headCol[headBase + 1] = 0.98 * headBright
       headCol[headBase + 2] = 1.0 * headBright
 
-      // 2. Burning Tapered Meteor Body with 4 Progressive Mineral Color Stages
+      // 2. Burning Tapered Meteor Body
       for (let s = 0; s <= RIBBON_SEGMENTS; s++) {
         const u = s / RIBBON_SEGMENTS
         const width = m.headWidth * Math.pow(1 - u, 1.4)
@@ -739,7 +683,6 @@ function MeteorShower({
         ribbonPos[rightIdx + 1] = cy - normY * halfW
         ribbonPos[rightIdx + 2] = cz
 
-        // Burning flame color: Incandescent White -> Current Stage Mineral Flame -> Deep Tail Stardust
         const fade = Math.pow(1 - u, 1.2) * meteorAlpha
         let r = 1, g = 1, b = 1
         if (u < 0.25) {
@@ -754,7 +697,7 @@ function MeteorShower({
           b = THREE.MathUtils.lerp(curBodyB, curTailB, t)
         }
 
-        const boost = (m.isLarge ? 2.0 : 1.6) * fade
+        const boost = (m.isLarge ? 2.2 : 1.7) * fade
         ribbonCol[leftIdx] = r * boost
         ribbonCol[leftIdx + 1] = g * boost
         ribbonCol[leftIdx + 2] = b * boost
@@ -764,7 +707,7 @@ function MeteorShower({
         ribbonCol[rightIdx + 2] = b * boost
       }
 
-      // 3. Slipstream Stardust Spark Embers
+      // 3. Stardust Spark Embers
       m.sparks.forEach((sp, sIdx) => {
         const spIdx = sparkBase + sIdx * 3
         if (sp.life >= sp.maxLife) {
@@ -793,17 +736,22 @@ function MeteorShower({
       })
     })
 
-    meshRef.current.geometry.attributes.position.needsUpdate = true
-    meshRef.current.geometry.attributes.color.needsUpdate = true
-    headRef.current.geometry.attributes.position.needsUpdate = true
-    headRef.current.geometry.attributes.color.needsUpdate = true
-    sparksRef.current.geometry.attributes.position.needsUpdate = true
-    sparksRef.current.geometry.attributes.color.needsUpdate = true
+    if (meshRef.current) {
+      meshRef.current.geometry.attributes.position.needsUpdate = true
+      meshRef.current.geometry.attributes.color.needsUpdate = true
+    }
+    if (headRef.current) {
+      headRef.current.geometry.attributes.position.needsUpdate = true
+      headRef.current.geometry.attributes.color.needsUpdate = true
+    }
+    if (sparksRef.current) {
+      sparksRef.current.geometry.attributes.position.needsUpdate = true
+      sparksRef.current.geometry.attributes.color.needsUpdate = true
+    }
   })
 
   return (
     <group>
-      {/* 3D Tapered Earth-Scale Meteor Ribbon Body */}
       <mesh ref={meshRef} geometry={ribbonGeom}>
         <meshBasicMaterial
           vertexColors
@@ -815,10 +763,9 @@ function MeteorShower({
         />
       </mesh>
 
-      {/* Burning Incandescent Head Spark */}
       <points ref={headRef} geometry={headGeom}>
         <pointsMaterial
-          size={isMobile ? 0.048 : 0.072}
+          size={isMobile ? 0.052 : 0.076}
           vertexColors
           transparent
           sizeAttenuation
@@ -828,10 +775,9 @@ function MeteorShower({
         />
       </points>
 
-      {/* Stardust Slipstream Embers */}
       <points ref={sparksRef} geometry={sparksGeom}>
         <pointsMaterial
-          size={isMobile ? 0.014 : 0.020}
+          size={isMobile ? 0.015 : 0.022}
           vertexColors
           transparent
           sizeAttenuation
@@ -844,57 +790,348 @@ function MeteorShower({
   )
 }
 
-/** The Smart Dynamic 3D Celestial Moon Guide */
-/**
- * A sphere sitting off the optical axis does not project to a circle — it
- * projects to an ellipse stretched along the radial direction by 1/cos θ. The
- * hero moon sits ~27° off axis, which measures out at 11.5% wider than tall:
- * the "skew". That is correct perspective, so we don't cancel it outright —
- * compressing the radial axis by this fraction of the error leaves the moon
- * reading round without flattening it into an orthographic cut-out.
- */
 const OFF_AXIS_CORRECTION = 0.6
+
+interface ChunkItem {
+  basePos: THREE.Vector3
+  blastVel: THREE.Vector3
+  rotAxis: THREE.Vector3
+  rotSpeed: number
+  geomIndex: number
+  scale: [number, number, number]
+}
+
+/**
+ * 3D Procedural Moon Shatter & Gravitational Reassembly System.
+ * 28 jagged, faceted rocky chunks explode in 3D with impact momentum,
+ * drift at zero-G apex, and are gravitationally accelerated back into a solid moon.
+ */
+function MoonShatterChunks({
+  isMobile,
+  moonTexture,
+  flashRef,
+  onShatterStateChange,
+}: {
+  isMobile: boolean
+  moonTexture: THREE.CanvasTexture
+  flashRef: React.MutableRefObject<number>
+  onShatterStateChange: (isShattered: boolean) => void
+}) {
+  const groupRef = useRef<THREE.Group>(null)
+  const dustRef = useRef<THREE.Points>(null)
+  const shatterStartRef = useRef<number | null>(null)
+  const impactDirRef = useRef<THREE.Vector3>(new THREE.Vector3(-0.8, -0.5, 0.1))
+  const wasShatteredRef = useRef(false)
+
+  const numChunks = isMobile ? 20 : 28
+
+  // 4 varied jagged rock chunk geometries
+  const geometries = useMemo(() => {
+    const g1 = new THREE.DodecahedronGeometry(0.26, 0)
+    const g2 = new THREE.IcosahedronGeometry(0.24, 0)
+    const g3 = new THREE.TetrahedronGeometry(0.30, 0)
+    const g4 = new THREE.OctahedronGeometry(0.27, 0)
+    return [g1, g2, g3, g4]
+  }, [])
+
+  const sharedMaterial = useMemo(() => {
+    return new THREE.MeshStandardMaterial({
+      map: moonTexture,
+      bumpMap: moonTexture,
+      bumpScale: 0.045,
+      roughness: 0.48,
+      metalness: 0.08,
+      emissive: new THREE.Color('#ff9933'),
+      emissiveIntensity: 2.5,
+    })
+  }, [moonTexture])
+
+  useEffect(() => {
+    return () => {
+      geometries.forEach((g) => g.dispose())
+      sharedMaterial.dispose()
+    }
+  }, [geometries, sharedMaterial])
+
+  // Pre-generate golden spiral spherical distribution
+  const chunks = useMemo<ChunkItem[]>(() => {
+    const list: ChunkItem[] = []
+    for (let i = 0; i < numChunks; i++) {
+      const theta = Math.acos(1 - (2 * (i + 0.5)) / numChunks)
+      const phi = Math.PI * (1 + Math.sqrt(5)) * i
+      const r = 0.35 + 0.55 * (0.4 + 0.6 * ((i * 37) % 100) / 100)
+
+      const x = r * Math.sin(theta) * Math.cos(phi)
+      const y = r * Math.sin(theta) * Math.sin(phi)
+      const z = r * Math.cos(theta)
+
+      const basePos = new THREE.Vector3(x, y, z)
+      const outward = basePos.clone().normalize()
+      const speed = 1.4 + ((i * 53) % 100) / 100 * 1.6
+      const blastVel = outward.clone().multiplyScalar(speed)
+
+      const rx = Math.sin(i * 1.7) || 0.5
+      const ry = Math.cos(i * 2.3) || 0.5
+      const rz = Math.sin(i * 3.1) || 0.5
+      const rotAxis = new THREE.Vector3(rx, ry, rz).normalize()
+      const rotSpeed = 2.4 + ((i * 41) % 100) / 100 * 3.8
+
+      const sx = 0.75 + ((i * 19) % 100) / 100 * 0.5
+      const sy = 0.75 + ((i * 29) % 100) / 100 * 0.5
+      const sz = 0.75 + ((i * 31) % 100) / 100 * 0.5
+
+      list.push({
+        basePos,
+        blastVel,
+        rotAxis,
+        rotSpeed,
+        geomIndex: i % 4,
+        scale: [sx, sy, sz],
+      })
+    }
+    return list
+  }, [numChunks])
+
+  // Spark dust nebula expanding & contracting around the shattered core
+  const numDust = isMobile ? 36 : 56
+  const { dustGeom, dustVel } = useMemo(() => {
+    const pos = new Float32Array(numDust * 3)
+    pos.fill(-999)
+    const col = new Float32Array(numDust * 3)
+    const g = new THREE.BufferGeometry()
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3))
+    g.setAttribute('color', new THREE.BufferAttribute(col, 3))
+
+    const vels = Array.from({ length: numDust }, () => {
+      const theta = Math.random() * Math.PI * 2
+      const phi = (Math.random() - 0.5) * Math.PI
+      const dir = new THREE.Vector3(
+        Math.cos(phi) * Math.cos(theta),
+        Math.cos(phi) * Math.sin(theta),
+        Math.sin(phi)
+      ).normalize()
+      return dir.multiplyScalar(2.0 + Math.random() * 2.2)
+    })
+
+    return { dustGeom: g, dustVel: vels }
+  }, [numDust])
+
+  useEffect(() => {
+    return () => {
+      dustGeom.dispose()
+    }
+  }, [dustGeom])
+
+  useEffect(() => {
+    const onShatter = (e: Event) => {
+      const custom = e as CustomEvent<{ dir?: THREE.Vector3 }>
+      if (custom.detail?.dir) {
+        impactDirRef.current.copy(custom.detail.dir).normalize()
+      }
+      shatterStartRef.current = performance.now()
+      wasShatteredRef.current = true
+      onShatterStateChange(true)
+
+      // Impart violent outward momentum biased along impact vector
+      const dir = impactDirRef.current
+      chunks.forEach((chunk) => {
+        const outward = chunk.basePos.clone().normalize()
+        chunk.blastVel
+          .copy(outward)
+          .multiplyScalar(1.5 + Math.random() * 1.5)
+          .addScaledVector(dir, 1.3 + Math.random() * 0.9)
+      })
+    }
+
+    window.addEventListener('shakil:moon-shatter', onShatter)
+    return () => window.removeEventListener('shakil:moon-shatter', onShatter)
+  }, [chunks, onShatterStateChange])
+
+  useFrame(() => {
+    const group = groupRef.current
+    if (!group) return
+
+    if (shatterStartRef.current === null) {
+      group.visible = false
+      return
+    }
+
+    const elapsed = performance.now() - shatterStartRef.current
+    const SHATTER_DURATION = 5000 // 5 seconds exact reassembly lifecycle
+    const t = elapsed / SHATTER_DURATION
+
+    if (t >= 1.0) {
+      // Re-fusion instant: Snap whole, flash scene, hide fragments
+      shatterStartRef.current = null
+      group.visible = false
+      if (wasShatteredRef.current) {
+        wasShatteredRef.current = false
+        onShatterStateChange(false)
+        flashRef.current = 1.35
+      }
+      return
+    }
+
+    group.visible = true
+
+    let disp = 0
+    let rotFactor = 0
+    let emissiveBright = 1.0
+    const emissiveCol = scratchColor
+
+    if (t < 0.52) {
+      // Phase 1: Explosive Outward Blast & Zero-G Drift (0s - 2.6s)
+      const p = t / 0.52
+      const ease = 1 - Math.pow(1 - p, 3.2) // Outward drag deceleration
+      disp = ease
+      rotFactor = t * 5.2
+
+      // Superheated molten fracture core -> glowing starlight cyan
+      if (t < 0.16) {
+        const heat = 1 - t / 0.16
+        emissiveCol.setRGB(1.0, 0.88 + heat * 0.12, 0.65 + heat * 0.35)
+        emissiveBright = 3.5 - (1 - heat) * 1.8
+      } else {
+        const cool = (t - 0.16) / 0.36
+        emissiveCol.setRGB(
+          THREE.MathUtils.lerp(1.0, 0.25, cool),
+          THREE.MathUtils.lerp(0.88, 0.75, cool),
+          THREE.MathUtils.lerp(0.65, 0.98, cool)
+        )
+        emissiveBright = 1.2
+      }
+    } else {
+      // Phase 2: Gravitational Vortex & Reassembly Acceleration (2.6s - 5.0s)
+      const g = (t - 0.52) / 0.48
+      const pull = Math.pow(g, 2.7) // Accelerating inward gravitational pull
+      disp = Math.max(0, 1 - pull)
+      rotFactor = (0.52 * 5.2) * (1 - pull) // Re-align precisely to original orientation
+
+      // Gravitational compression surge & magnetic re-fusion glow
+      const surge = Math.pow(g, 2.2)
+      emissiveCol.setRGB(
+        THREE.MathUtils.lerp(0.25, 0.95, surge),
+        THREE.MathUtils.lerp(0.75, 0.98, surge),
+        1.0
+      )
+      emissiveBright = 1.2 + surge * 2.2
+    }
+
+    sharedMaterial.emissive.copy(emissiveCol)
+    sharedMaterial.emissiveIntensity = emissiveBright
+
+    // Position and tumble each chunk
+    const children = group.children
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i]
+      const mesh = children[i] as THREE.Mesh | undefined
+      if (!mesh) continue
+
+      mesh.position.copy(chunk.basePos).addScaledVector(chunk.blastVel, disp * 2.15)
+      mesh.rotation.set(
+        chunk.rotAxis.x * rotFactor * chunk.rotSpeed,
+        chunk.rotAxis.y * rotFactor * chunk.rotSpeed,
+        chunk.rotAxis.z * rotFactor * chunk.rotSpeed
+      )
+    }
+
+    // Update glowing stardust debris points
+    const dustPos = dustGeom.attributes.position.array as Float32Array
+    const dustCol = dustGeom.attributes.color.array as Float32Array
+    for (let d = 0; d < numDust; d++) {
+      const idx = d * 3
+      const vel = dustVel[d]
+      dustPos[idx] = vel.x * disp * 1.5
+      dustPos[idx + 1] = vel.y * disp * 1.5
+      dustPos[idx + 2] = vel.z * disp * 1.5
+
+      dustCol[idx] = emissiveCol.r * (emissiveBright * 0.7)
+      dustCol[idx + 1] = emissiveCol.g * (emissiveBright * 0.7)
+      dustCol[idx + 2] = emissiveCol.b * (emissiveBright * 0.7)
+    }
+    dustGeom.attributes.position.needsUpdate = true
+    dustGeom.attributes.color.needsUpdate = true
+  })
+
+  return (
+    <group ref={groupRef} visible={false}>
+      {chunks.map((chunk, idx) => (
+        <mesh
+          key={idx}
+          geometry={geometries[chunk.geomIndex]}
+          material={sharedMaterial}
+          scale={chunk.scale}
+        />
+      ))}
+
+      <points ref={dustRef} geometry={dustGeom}>
+        <pointsMaterial
+          size={isMobile ? 0.038 : 0.055}
+          vertexColors
+          transparent
+          opacity={0.88}
+          sizeAttenuation
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </points>
+    </group>
+  )
+}
 
 function SmartCelestialMoon({
   isMobile,
   primaryColor,
   secondaryColor,
   emissiveColor,
+  moonPosRef,
+  flashRef,
 }: {
   isMobile: boolean
   primaryColor: THREE.Color
   secondaryColor: THREE.Color
   emissiveColor: THREE.Color
+  moonPosRef: React.MutableRefObject<THREE.Vector3>
+  flashRef: React.MutableRefObject<number>
 }) {
   const groupRef = useRef<THREE.Group>(null)
   const moonMeshRef = useRef<THREE.Mesh>(null)
-  /** Damped uniform scale, tracked apart from scale.x — see the aspect fix below. */
   const uniformScaleRef = useRef(1)
+  const blastStartRef = useRef<number | null>(null)
+  const [isShattered, setIsShattered] = useState(false)
+  const reconnectedAtRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    const onStorm = () => {
+      blastStartRef.current = performance.now()
+    }
+    window.addEventListener('shakil:meteor-storm', onStorm)
+    return () => window.removeEventListener('shakil:meteor-storm', onStorm)
+  }, [])
 
   const moonTexture = useMemo(() => createSmartAestheticMoonTexture(), [])
 
   useEffect(subscribeScroll, [])
   useEffect(() => () => moonTexture.dispose(), [moonTexture])
 
-  // Dynamic Section-Aware Sizing & Positioning based on content density and empty negative space
   const waypoints = useMemo(() => {
     if (isMobile) {
       return [
-        { p: 0.0, x: 0.92, y: 1.6, z: -1.0, s: 0.95 },  // Hero: Corner sky accent
-        { p: 0.2, x: -0.92, y: 0.65, z: -0.9, s: 0.75 }, // About: Compact margin
-        { p: 0.45, x: 0.92, y: 0.35, z: -0.9, s: 0.7 },  // Skills: Compact margin
-        { p: 0.68, x: -0.92, y: 0.05, z: -0.9, s: 0.8 },  // Projects: Medium margin
-        { p: 0.85, x: 0.92, y: -0.1, z: -0.9, s: 0.75 }, // Timeline: Compact margin
-        { p: 1.0, x: 0.0, y: 1.65, z: -0.9, s: 1.1 },   // Contact: Beacon overhead
+        { p: 0.0, x: 0.92, y: 1.6, z: -1.0, s: 0.95 },
+        { p: 0.2, x: -0.92, y: 0.65, z: -0.9, s: 0.75 },
+        { p: 0.45, x: 0.92, y: 0.35, z: -0.9, s: 0.7 },
+        { p: 0.68, x: -0.92, y: 0.05, z: -0.9, s: 0.8 },
+        { p: 0.85, x: 0.92, y: -0.1, z: -0.9, s: 0.75 },
+        { p: 1.0, x: 0.0, y: 1.65, z: -0.9, s: 1.1 },
       ]
     }
     return [
-      { p: 0.0, x: 2.75, y: 0.58, z: 0.0, s: 0.95 },   // Hero: upper-right, clear of the headline & tagline
-      { p: 0.2, x: -2.35, y: 0.35, z: 0.2, s: 1.25 }, // About: Compact margin, full room for stats
-      { p: 0.45, x: 2.4, y: 0.2, z: 0.1, s: 1.2 },    // Skills: Tucked in right margin
-      { p: 0.68, x: -2.35, y: -0.1, z: 0.3, s: 1.35 }, // Projects: Alongside project cards
-      { p: 0.85, x: 2.35, y: 0.05, z: 0.2, s: 1.25 },  // Timeline: Balances timeline tree
-      { p: 1.0, x: 0.0, y: 1.45, z: -0.2, s: 1.65 },   // Contact: Crown above contact portal
+      { p: 0.0, x: 2.75, y: 0.58, z: 0.0, s: 0.95 },
+      { p: 0.2, x: -2.35, y: 0.35, z: 0.2, s: 1.25 },
+      { p: 0.45, x: 2.4, y: 0.2, z: 0.1, s: 1.2 },
+      { p: 0.68, x: -2.35, y: -0.1, z: 0.3, s: 1.35 },
+      { p: 0.85, x: 2.35, y: 0.05, z: 0.2, s: 1.25 },
+      { p: 1.0, x: 0.0, y: 1.45, z: -0.2, s: 1.65 },
     ]
   }, [isMobile])
 
@@ -916,12 +1153,42 @@ function SmartCelestialMoon({
     return waypoints[waypoints.length - 1]
   }
 
+  const handleShatterStateChange = useCallback((shattered: boolean) => {
+    setIsShattered(shattered)
+    if (!shattered) {
+      reconnectedAtRef.current = performance.now()
+    }
+  }, [])
+
   useFrame((state, delta) => {
     const progress = getScrollProgress()
     const target = getTargetTransform(progress)
 
-    // Update dynamic theme colors smoothly
     getInterpolatedTheme(progress, primaryColor, secondaryColor, emissiveColor)
+
+    // Storm anticipation swell & spin
+    let blastSwell = 0
+    let blastFlash = 0
+    if (blastStartRef.current !== null) {
+      const t = (performance.now() - blastStartRef.current) / 1300
+      if (t >= 1 || t < 0) {
+        blastStartRef.current = null
+      } else {
+        blastSwell = Math.sin(t * Math.PI)
+        blastFlash = (1 - t) * (1 - t) * 2.6
+      }
+    }
+
+    // Elastic settling bounce when reassembled
+    let settleScale = 1
+    if (reconnectedAtRef.current !== null) {
+      const tRec = (performance.now() - reconnectedAtRef.current) / 1000
+      if (tRec >= 1) {
+        reconnectedAtRef.current = null
+      } else {
+        settleScale = 1 + 0.14 * Math.exp(-6 * tRec) * Math.sin(18 * tRec)
+      }
+    }
 
     if (groupRef.current) {
       groupRef.current.position.x = THREE.MathUtils.damp(
@@ -943,8 +1210,9 @@ function SmartCelestialMoon({
         delta
       )
 
-      // Damped on its own rather than off scale.x, which now also carries the
-      // aspect correction below and would otherwise feed back into itself.
+      // Broadcast world position to killer meteor
+      moonPosRef.current.copy(groupRef.current.position)
+
       uniformScaleRef.current = THREE.MathUtils.damp(uniformScaleRef.current, target.s, 4, delta)
       const s = uniformScaleRef.current
 
@@ -952,26 +1220,27 @@ function SmartCelestialMoon({
       const py = groupRef.current.position.y
       const radial = Math.hypot(px, py)
       const depth = Math.max(state.camera.position.z - groupRef.current.position.z, 0.001)
-      // cos θ between the view axis and the direction to the moon.
       const cosTheta = depth / Math.hypot(radial, depth)
       const squash = OFF_AXIS_CORRECTION * (1 - cosTheta)
-      // Split the correction across x and y by where the moon actually sits.
-      // Every waypoint lands within ~12° of an axis, so this diagonal form
-      // tracks the true radial squash closely without having to rotate the
-      // group — which would visibly roll the surface as the moon travels.
       const dx = radial > 1e-4 ? px / radial : 0
       const dy = radial > 1e-4 ? py / radial : 0
-      groupRef.current.scale.set(s * (1 - squash * dx * dx), s * (1 - squash * dy * dy), s)
+      const swell = (1 + blastSwell * 0.22) * settleScale
+
+      groupRef.current.scale.set(
+        s * (1 - squash * dx * dx) * swell,
+        s * (1 - squash * dy * dy) * swell,
+        s * swell
+      )
     }
 
     if (moonMeshRef.current) {
-      moonMeshRef.current.rotation.y += delta * 0.05 + progress * 0.015
+      moonMeshRef.current.rotation.y += delta * 0.05 + progress * 0.015 + blastSwell * delta * 2.5
       moonMeshRef.current.rotation.x = 0.08
 
-      // Update material emissive color dynamically
       const mat = moonMeshRef.current.material as THREE.MeshStandardMaterial
       if (mat) {
         mat.emissive.lerp(emissiveColor, delta * 3)
+        mat.emissiveIntensity = (isMobile ? 0.42 : 0.33) + blastFlash
       }
     }
   })
@@ -979,8 +1248,8 @@ function SmartCelestialMoon({
   return (
     <group ref={groupRef} position={[waypoints[0].x, waypoints[0].y, waypoints[0].z]}>
       <FloatGroup speed={1.6} rotationIntensity={0.25} floatIntensity={0.4}>
-        {/* The 3D Aesthetic Moon Sphere */}
-        <mesh ref={moonMeshRef}>
+        {/* Solid Pristine Moon Sphere (hidden while shattered) */}
+        <mesh ref={moonMeshRef} visible={!isShattered}>
           <sphereGeometry args={[1, 36, 36]} />
           <meshStandardMaterial
             map={moonTexture}
@@ -993,6 +1262,14 @@ function SmartCelestialMoon({
           />
         </mesh>
 
+        {/* 3D Shattered Rock Debris & Gravitational Reassembly System */}
+        <MoonShatterChunks
+          isMobile={isMobile}
+          moonTexture={moonTexture}
+          flashRef={flashRef}
+          onShatterStateChange={handleShatterStateChange}
+        />
+
         {/* Dynamic Color Shifting Star Dust */}
         <DynamicOrbitStars count={isMobile ? 20 : 35} primaryColor={primaryColor} secondaryColor={secondaryColor} />
       </FloatGroup>
@@ -1000,12 +1277,178 @@ function SmartCelestialMoon({
   )
 }
 
+const _killerDir = new THREE.Vector3()
+const _killerUp = new THREE.Vector3(0, 1, 0)
+const _killerEnd = new THREE.Vector3()
+
 /**
- * Key-light sweep, in scene units. At the top of the page the moon is lit from
- * the side so the terminator is visible (a waxing crescent); by the contact
- * section the light has swung frontal and the moon reads full — the phase
- * completes as the visitor completes the journey.
+ * Colossal Killer Impactor:
+ * Launched 4.15s into the storm, accelerating directly into the moon.
+ * Impacts at 5.0s, punches straight through, triggering scene flash and moon shatter.
  */
+function KillerMeteor({
+  moonPosRef,
+  flashRef,
+}: {
+  moonPosRef: React.MutableRefObject<THREE.Vector3>
+  flashRef: React.MutableRefObject<number>
+}) {
+  const groupRef = useRef<THREE.Group>(null)
+  const headRef = useRef<THREE.Points>(null)
+  const sparksRef = useRef<THREE.Points>(null)
+  const tailMeshRef = useRef<THREE.Mesh>(null)
+
+  const flightRef = useRef<{
+    start: number
+    from: THREE.Vector3
+    to: THREE.Vector3
+    dur: number
+    hitFired: boolean
+  } | null>(null)
+
+  useEffect(() => {
+    let timer: number | undefined
+    const onStorm = () => {
+      timer = window.setTimeout(() => {
+        const moon = moonPosRef.current
+        flightRef.current = {
+          start: performance.now(),
+          from: moon.clone().add(new THREE.Vector3(6.4, 4.0, -0.25)),
+          to: moon.clone(),
+          dur: 850, // Lands at 5000ms sharp
+          hitFired: false,
+        }
+      }, 4150)
+    }
+    window.addEventListener('shakil:meteor-storm', onStorm)
+    return () => {
+      window.removeEventListener('shakil:meteor-storm', onStorm)
+      if (timer !== undefined) clearTimeout(timer)
+    }
+  }, [moonPosRef])
+
+  const tailGeom = useMemo(() => {
+    const g = new THREE.CylinderGeometry(0.035, 0.16, 4.2, 8, 1, true)
+    g.translate(0, -2.1, 0)
+    return g
+  }, [])
+
+  const headGeom = useMemo(() => {
+    const g = new THREE.BufferGeometry()
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array([0, 0, 0]), 3))
+    return g
+  }, [])
+
+  const sparksGeom = useMemo(() => {
+    const count = 14
+    const pos = new Float32Array(count * 3)
+    const col = new Float32Array(count * 3)
+    for (let i = 0; i < count; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * 0.18
+      pos[i * 3 + 1] = -Math.random() * 2.8
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 0.18
+      col[i * 3] = 1.0; col[i * 3 + 1] = 0.65; col[i * 3 + 2] = 0.25
+    }
+    const g = new THREE.BufferGeometry()
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3))
+    g.setAttribute('color', new THREE.BufferAttribute(col, 3))
+    return g
+  }, [])
+
+  useEffect(
+    () => () => {
+      tailGeom.dispose()
+      headGeom.dispose()
+      sparksGeom.dispose()
+    },
+    [tailGeom, headGeom, sparksGeom],
+  )
+
+  useFrame(() => {
+    const group = groupRef.current
+    const head = headRef.current
+    const tail = tailMeshRef.current
+    if (!group || !head || !tail) return
+
+    const flight = flightRef.current
+    if (!flight) {
+      group.visible = false
+      return
+    }
+
+    const elapsed = performance.now() - flight.start
+    const t = elapsed / flight.dur
+
+    // Punch through exit: continues flying past moon for 250ms while fading
+    if (t >= 1.0 && !flight.hitFired) {
+      flight.hitFired = true
+      flashRef.current = 1.95 // Cataclysmic impact flash
+      _killerDir.copy(flight.to).sub(flight.from).normalize()
+      window.dispatchEvent(
+        new CustomEvent('shakil:moon-shatter', { detail: { dir: _killerDir.clone() } }),
+      )
+    }
+
+    if (t >= 1.32) {
+      flightRef.current = null
+      group.visible = false
+      return
+    }
+
+    group.visible = true
+    _killerDir.copy(flight.to).sub(flight.from).normalize()
+
+    // Calculate position: from -> to -> punch-through overshoot
+    _killerEnd.copy(flight.to).addScaledVector(_killerDir, 3.5)
+    if (t < 1.0) {
+      group.position.lerpVectors(flight.from, flight.to, t)
+    } else {
+      const exitT = (t - 1.0) / 0.32
+      group.position.lerpVectors(flight.to, _killerEnd, exitT)
+      const fade = Math.max(0, 1 - exitT)
+      const mat = tail.material as THREE.MeshBasicMaterial
+      if (mat) mat.opacity = 0.9 * fade
+    }
+
+    group.quaternion.setFromUnitVectors(_killerUp, _killerDir)
+  })
+
+  return (
+    <group ref={groupRef} visible={false}>
+      <mesh ref={tailMeshRef} geometry={tailGeom}>
+        <meshBasicMaterial
+          color="#ffa73b"
+          transparent
+          opacity={0.92}
+          side={THREE.DoubleSide}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </mesh>
+      <points ref={headRef} geometry={headGeom}>
+        <pointsMaterial
+          size={0.34}
+          color="#ffffff"
+          transparent
+          sizeAttenuation
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </points>
+      <points ref={sparksRef} geometry={sparksGeom}>
+        <pointsMaterial
+          size={0.048}
+          vertexColors
+          transparent
+          sizeAttenuation
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </points>
+    </group>
+  )
+}
+
 const KEY_LIGHT_CRESCENT = new THREE.Vector3(6.2, 3.4, 1.2)
 const KEY_LIGHT_FULL = new THREE.Vector3(2.0, 3.0, 6.0)
 
@@ -1035,15 +1478,14 @@ function DynamicSceneLighting({
       fillLightRef.current.color.lerp(primaryColor, delta * 3)
     }
 
-    // Decay meteor fireball flash back to base level
     if (flashRef.current > 0.001) {
-      flashRef.current = THREE.MathUtils.lerp(flashRef.current, 0, delta * 3.5)
+      flashRef.current = THREE.MathUtils.lerp(flashRef.current, 0, delta * 3.2)
     } else {
       flashRef.current = 0
     }
 
     if (ambientRef.current) {
-      ambientRef.current.intensity = baseAmbient + flashRef.current * 0.45
+      ambientRef.current.intensity = baseAmbient + flashRef.current * 0.65
     }
   })
 
@@ -1054,8 +1496,6 @@ function DynamicSceneLighting({
         ref={keyLightRef}
         position={[KEY_LIGHT_CRESCENT.x, KEY_LIGHT_CRESCENT.y, KEY_LIGHT_CRESCENT.z]}
         intensity={isMobile ? 3.3 : 2.8}
-        // Faintly amber rather than pure white — a warm lit limb against the
-        // cool blue fill is what gives the moon its blue/amber duality.
         color="#ffeccb"
       />
       <directionalLight ref={fillLightRef} position={[-4, -3, 2]} intensity={isMobile ? 1.32 : 1.1} color="#4f8bf5" />
@@ -1068,6 +1508,7 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
   const secondaryColor = useMemo(() => new THREE.Color('#818cf8'), [])
   const emissiveColor = useMemo(() => new THREE.Color('#0c192e'), [])
   const flashRef = useRef(0)
+  const moonPosRef = useRef(new THREE.Vector3(2.75, 0.58, 0))
 
   return (
     <Canvas
@@ -1078,24 +1519,29 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
       gl={{
         antialias: !isMobile,
         alpha: true,
-        // 'high-performance' asks for the discrete GPU — a battery tax on phones.
         powerPreference: isMobile ? 'default' : 'high-performance',
       }}
       style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
     >
       <DynamicSceneLighting primaryColor={primaryColor} isMobile={isMobile} flashRef={flashRef} />
 
-      {/* Dynamic Multi-Depth Parallax Starfield (Breathing unison drift) */}
+      {/* Dynamic Multi-Depth Parallax Starfield */}
       <DepthParallaxStarfield count={isMobile ? 280 : 600} />
 
-      {/* Dynamic Meteor Shower with periodic shooting stars & glowing large fireballs */}
+      {/* Torrential Meteor Shower (10-20+ streaming active meteors during storm) */}
       <MeteorShower isMobile={isMobile} flashRef={flashRef} />
 
+      {/* Colossal Killer Impactor */}
+      <KillerMeteor moonPosRef={moonPosRef} flashRef={flashRef} />
+
+      {/* The 3D Celestial Moon with Shatter & Gravitational Reassembly */}
       <SmartCelestialMoon
         isMobile={isMobile}
         primaryColor={primaryColor}
         secondaryColor={secondaryColor}
         emissiveColor={emissiveColor}
+        moonPosRef={moonPosRef}
+        flashRef={flashRef}
       />
     </Canvas>
   )

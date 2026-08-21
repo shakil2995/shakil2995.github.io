@@ -66,48 +66,6 @@ function KineticWord({ delay, children }: { delay: number; children: ReactNode }
   )
 }
 
-/**
- * Soft, calm ambient background lighting for the hero.
- *
- * Rendered by <App> rather than inside <Hero> on purpose. The hero lives inside
- * `<main className="relative z-10">`, which is its own stacking context sitting
- * above the fixed z-0 3D canvas — so any blob declared in here would paint a
- * haze *over* the moon no matter how low its z-index went. These are meant to
- * be clouds behind the moon, so they have to escape <main> entirely.
- *
- * `absolute top-0 h-screen` (no positioned ancestor) resolves against the
- * initial containing block: a viewport-sized box pinned to the document origin.
- * That reproduces the old behaviour exactly — the blobs cover the first screen
- * and scroll away with it.
- */
-/**
- * Soft ambient background lighting for the hero — the original round glow
- * sprites, three of them: a big one centre, a small one left, and a small one
- * parked exactly behind the moon's resting spot so the moon conceals it at
- * the top of the page and scrolling away reveals it.
- *
- * Rendered by <App> rather than inside <Hero> on purpose. The hero lives inside
- * `<main className="relative z-10">`, which is its own stacking context sitting
- * above the fixed z-0 3D canvas — so any blob declared in here would paint a
- * haze *over* the moon no matter how low its z-index went. These are meant to
- * be clouds behind the moon, so they have to escape <main> entirely.
- */
-export function HeroAmbience() {
-  return (
-    <div
-      aria-hidden
-      className="pointer-events-none absolute inset-x-0 top-0 z-0 h-screen overflow-hidden"
-    >
-      {/* Big centre cloud */}
-      <div className="glow-blob left-[calc(50%-6.5rem)] top-[calc(55%-6.5rem)] h-52 w-52 bg-violet-600/10 md:left-[calc(50%-13rem)] md:top-[calc(52%-13rem)] md:h-[26rem] md:w-[26rem]" />
-      {/* Small left cloud */}
-      <div className="glow-blob -left-6 top-[68%] h-32 w-32 bg-cyan-500/8 md:left-[5%] md:top-[60%] md:h-44 md:w-44" />
-      {/* Concealed behind the moon until scroll carries the moon away */}
-      <div className="glow-blob left-[calc(74%-3.5rem)] top-[calc(21%-3.5rem)] h-28 w-28 bg-fuchsia-500/[0.09] md:left-[calc(81%-7rem)] md:top-[calc(38%-7rem)] md:h-56 md:w-56" />
-    </div>
-  )
-}
-
 export default function Hero({ entranceDelay = 0 }: { entranceDelay?: number }) {
   const d = entranceDelay
 
