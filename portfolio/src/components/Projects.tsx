@@ -169,7 +169,7 @@ export default function Projects() {
       <SectionHeading
         index="03"
         title="Featured work"
-        kicker="Products I've founded, enterprise systems I've architected, and mobile apps I've shipped."
+        kicker="Products, client platforms, and tools built from the ground up."
       />
 
       {/* Animated Category Filter Chips */}

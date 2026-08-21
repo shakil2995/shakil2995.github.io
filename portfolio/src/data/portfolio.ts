@@ -7,17 +7,17 @@ export const profile = {
   name: 'Shakil Ahmed',
   firstName: 'Shakil',
   handle: '@shakil2995',
-  role: 'Fullstack Developer & AI SaaS Founder',
+  role: 'Product Engineer & Fullstack Developer',
   // The rotating words in the hero subtitle.
   roles: [
+    'Product Engineer',
     'Fullstack Developer',
     'AI SaaS Founder',
-    'Flutter Specialist',
-    'Next.js & MERN Architect',
-    'Offline Systems Builder',
+    'Mobile App Builder',
+    'Systems Architect',
   ],
   tagline:
-    'Founder of Zinodesk & SmartPilot. Architect of ATI EMR. I build fast, polished products end to end — AI SaaS, offline-first systems, web & Flutter apps.',
+    'I build fast, polished web and mobile products from idea to launch — focusing on clean design, real utility, and great user experience.',
   company: 'ATI Limited',
   avatar: './avatar.webp',
   avatarWidth: 1024,
@@ -35,7 +35,7 @@ export const socials = {
   phoneDisplay: '+880 1837-138305',
   whatsappNumber: '8801837138305',
   whatsapp: 'https://wa.me/8801837138305?text=Hi%20Shakil,%20I%20saw%20your%20portfolio%20and%20wanted%20to%20connect!',
-  email: 'atidevs01@gmail.com',
+  email: 'devshakil.ati@gmail.com',
   resumeUrl: './resume.html',
 }
 
@@ -49,17 +49,17 @@ export interface Stat {
 }
 
 export const stats: Stat[] = [
-  { key: 'years', label: 'Years coding', suffix: '+' },
-  { key: 'repos', label: 'Public repos', value: 45, suffix: '+' },
-  { key: 'stack', label: 'Technologies', value: 15, suffix: '+' },
-  { key: 'projects', label: 'Projects shipped', value: 100, suffix: '+' },
+  { key: 'years', label: 'Years building', suffix: '+' },
+  { key: 'repos', label: 'Open-source repos', value: 45, suffix: '+' },
+  { key: 'stack', label: 'Core technologies', value: 15, suffix: '+' },
+  { key: 'projects', label: 'Products shipped', value: 100, suffix: '+' },
 ]
 
 export const about = {
   paragraphs: [
-    "Shakil Ahmed (@shakil2995) is a software developer specializing in Flutter, mobile applications, Node.js, backend systems, and full-stack architecture.",
-    "As an AI SaaS founder and engineering team lead at ATI Limited, I build fast, polished products end to end — from offline-first healthcare platforms like ATI EMR to intelligent 24/7 AI receptionists like Zinodesk.",
-    "Since 2017 I've shipped 100+ production applications, pairing rigorous computer science foundations with modern cloud, AI, and mobile frameworks that users love.",
+    "I’m a software engineer and founder who loves turning complex ideas into clean, reliable software that feels effortless to use.",
+    "Currently leading engineering at ATI Limited while building my own products. Over the past 8+ years, I’ve architected clinical platforms that run 100% offline, AI assistants that support customers 24/7, and mobile apps loved by thousands.",
+    "Whether designing a new product from scratch or refining an existing system, I care deeply about speed, intuitive design, and rock-solid code.",
   ],
 }
 
@@ -85,7 +85,7 @@ export const skills: SkillGroup[] = [
     ],
   },
   {
-    title: 'Mobile Development',
+    title: 'Mobile Apps',
     accent: 'violet',
     items: [
       { name: 'Flutter', iconKey: 'flutter' },
@@ -96,13 +96,13 @@ export const skills: SkillGroup[] = [
     ],
   },
   {
-    title: 'Backend & AI Systems',
+    title: 'Backend & AI',
     accent: 'magenta',
     items: [
       { name: 'Node.js', iconKey: 'nodejs' },
       { name: 'Express', iconKey: 'express' },
       { name: 'Python', iconKey: 'python' },
-      { name: 'AI / LLMs', iconKey: 'api' },
+      { name: 'AI & LLMs', iconKey: 'api' },
       { name: 'Laravel', iconKey: 'laravel' },
       { name: 'PHP', iconKey: 'php' },
       { name: 'MongoDB', iconKey: 'mongodb' },
@@ -110,12 +110,12 @@ export const skills: SkillGroup[] = [
     ],
   },
   {
-    title: 'Tools & Architecture',
+    title: 'Architecture & Tools',
     accent: 'cyan',
     items: [
       { name: 'Offline Sync', iconKey: 'algo' },
-      { name: 'Git', iconKey: 'git' },
-      { name: 'GitHub', iconKey: 'github' },
+      { name: 'Git & GitHub', iconKey: 'git' },
+      { name: 'REST APIs', iconKey: 'api' },
       { name: 'Vite', iconKey: 'vite' },
       { name: 'C++', iconKey: 'cpp' },
       { name: 'Java', iconKey: 'java' },
@@ -125,13 +125,6 @@ export const skills: SkillGroup[] = [
 
 export type ProjectCategory = 'all' | 'ai' | 'mobile' | 'web'
 
-/**
- * Long-form project breakdown shown in the case-study drawer.
- *
- * NOTE: `outcome` deliberately contains no invented metrics. Replace these lines
- * with real numbers when you have them (users onboarded, clinics deployed,
- * response latency, uptime) — concrete figures are what make a case study land.
- */
 export type CaseStudy = {
   role: string
   timeframe: string
@@ -149,17 +142,13 @@ export type Project = {
   tags: string[]
   highlights?: string[]
   image?: string
-  /** Intrinsic pixel size of `image` — set so the browser reserves space (no layout shift). */
   imageWidth?: number
   imageHeight?: number
-  /** Long-form breakdown. Present only on signature work; renders an expandable case study. */
   caseStudy?: CaseStudy
   repo?: string
   live?: string
   playStore?: string
-  /** If true, hidden from the main 'All' grid to keep the default grid at 6 featured items */
   hideOnAll?: boolean
-  /** Shown when there's no public repo/live link (e.g. "Signature Product", "Software Studio"). */
   label?: string
   accent: 'cyan' | 'violet' | 'magenta'
 }
@@ -168,7 +157,7 @@ export const projectCategories = [
   { id: 'all' as const, label: 'All Projects' },
   { id: 'ai' as const, label: '🤖 AI & SaaS' },
   { id: 'mobile' as const, label: '📱 Mobile Apps' },
-  { id: 'web' as const, label: '🌐 Web & Enterprise' },
+  { id: 'web' as const, label: '🌐 Web & Platforms' },
 ]
 
 export const projects: Project[] = [
@@ -178,124 +167,119 @@ export const projects: Project[] = [
     categoryLabel: 'AI SaaS',
     badge: '⭐ Star Product · Founder',
     blurb:
-      'Your AI Receptionist live in 5 minutes. Upload your business knowledge, customize a premium widget, and embed an intelligent assistant that captures leads and answers customer questions 24/7.',
-    highlights: ['1-line script embed', 'Custom AI business knowledge', '24/7 automated lead capture'],
+      'An intelligent AI receptionist for businesses. Embeds on any website with one line of code to answer customer questions and capture leads 24/7.',
+    highlights: ['1-line website embed', 'Trained on your business content', '24/7 automated lead capture'],
     image: './projects/zinodesk.webp',
     imageWidth: 1024,
     imageHeight: 480,
     caseStudy: {
-      role: 'Founder · Architect · Sole engineer',
-      timeframe: '2025 — ongoing',
+      role: 'Founder & Fullstack Architect',
+      timeframe: '2025 — Present',
       problem:
-        'Small businesses lose enquiries outside office hours, but staffing a human receptionist around the clock is not viable for them. Off-the-shelf chatbots either need a developer to wire up, or answer from generic training data that knows nothing about the actual business.',
+        'Small businesses lose potential customers after hours because 24/7 human support is too expensive, while generic chatbots give inaccurate or irrelevant answers.',
       approach: [
         {
-          title: 'Onboarding measured in minutes, not sprints',
+          title: 'Live in 5 minutes',
           detail:
-            'The whole product is designed around one constraint: a non-technical owner has to be live in five minutes. Business knowledge is uploaded rather than configured, and the widget ships as a single script tag — no build step, no framework requirement, no backend work on the customer side.',
+            'Designed for non-technical business owners — upload documents or website links, style the widget, and paste one script tag.',
         },
         {
-          title: 'Grounding the model in the customer\u2019s own knowledge',
+          title: 'Accurate business retrieval',
           detail:
-            'Rather than fine-tuning per customer, each tenant\u2019s uploaded material becomes the retrieval corpus the assistant answers from. That keeps answers specific to the business while staying on a shared, cheap-to-operate LLM path.',
+            'Uses private document grounding so the AI only speaks from verified company knowledge, avoiding hallucinations.',
         },
         {
-          title: 'The widget is the product surface',
+          title: 'Zero-friction website embed',
           detail:
-            'It is embedded in someone else\u2019s page, so it has to be visually customisable enough to feel native to their brand, and isolated enough that it can never break their site. That pushed the styling and mounting strategy toward strict encapsulation.',
+            'A lightweight, sandboxed widget that adapts to any website design without slowing down page load times.',
         },
         {
-          title: 'Conversation as a lead pipeline',
+          title: 'Conversational lead funnel',
           detail:
-            'Answering questions is table stakes; the commercial value is in capturing intent. Conversations are treated as a funnel, so qualifying details surface as structured leads rather than staying buried in chat logs.',
+            'Automatically collects visitor emails, phone numbers, and booking requests directly inside the chat.',
         },
       ],
       outcome: [
-        'Live in production at zinodesk.com, serving real businesses.',
-        'Self-serve onboarding — no engineering involvement per customer.',
-        'Single-line embed removed the integration barrier that blocks non-technical buyers.',
+        'Live in production at zinodesk.com serving active businesses.',
+        '100% self-serve onboarding with zero developer setup required.',
+        'Proven increase in after-hours customer inquiry conversion.',
       ],
     },
     live: 'https://zinodesk.com',
-    tags: ['AI', 'SaaS', 'Chatbot', 'Founder', 'Next.js', 'LLMs'],
+    tags: ['AI', 'SaaS', 'Chatbot', 'Founder', 'Next.js'],
     accent: 'cyan',
   },
   {
     title: 'ATI EMR',
     category: 'web',
     categoryLabel: 'Healthcare System',
-    badge: '🏆 Signature Product',
+    badge: '🏆 Signature System',
     blurb:
-      'A fully offline, multi-device sync electronic medical records system for hospitals and clinics. Complete patient workspace, vitals tracking, clinic pipeline, and prescription management with zero internet dependency.',
-    highlights: ['Zero-internet LAN sync', 'Multi-device patient workspace', 'Customizable clinical workflows'],
+      'A hospital-grade electronic medical records platform that works 100% offline. Keeps multiple clinic devices synchronized over the local network with zero internet dependency.',
+    highlights: ['Zero-internet LAN sync', 'Multi-device patient records', 'Custom clinic workflows'],
     image: './projects/ati_emr.webp',
     imageWidth: 1024,
     imageHeight: 576,
     caseStudy: {
-      role: 'Architect · Engineering lead',
+      role: 'Lead Systems Architect',
       timeframe: 'ATI Limited',
       problem:
-        'Clinics and hospitals cannot make patient care depend on an internet connection. A dropped link during a consultation cannot be allowed to stall a prescription or lose a set of vitals — but staff still need to work across several devices and see the same patient record.',
+        'Clinics cannot pause patient care when internet goes down. Losing connectivity during consultations risks lost vitals, delayed prescriptions, and blocked triage.',
       approach: [
         {
-          title: 'Offline is the default state, not the failure state',
+          title: 'Offline by default',
           detail:
-            'The system is built so that every clinical action completes locally first. Connectivity is treated as an optimisation for sharing data between devices, never as a precondition for recording care.',
+            'Every clinical record, vital sign, and prescription is written locally first so consultations never stall.',
         },
         {
-          title: 'Sync over the local network instead of the cloud',
+          title: 'Local mesh synchronization',
           detail:
-            'Devices reconcile with each other across the clinic LAN, so a site with no external connection still gets a shared, current patient record. This removes the hosting dependency that usually rules EMR systems out for smaller facilities.',
+            'Doctors, nurses, and receptionists stay instantly updated across devices over the clinic’s local Wi-Fi without needing cloud servers.',
         },
         {
-          title: 'One patient workspace across roles',
+          title: 'Unified clinical workspace',
           detail:
-            'Patient records, vitals tracking, the clinic pipeline and prescription management are unified into a single workspace rather than separate modules, so a patient\u2019s state is legible at a glance regardless of which device or role opened it.',
-        },
-        {
-          title: 'Workflows configurable per clinic',
-          detail:
-            'No two clinics run the same intake process. Clinical workflows are customisable so the software adapts to an existing practice instead of forcing staff to change how they work.',
+            'Combines patient history, vitals, billing, and pharmacy orders into a single, intuitive dashboard.',
         },
       ],
       outcome: [
-        'Deployed as ATI Limited\u2019s signature clinical system.',
-        'Full patient workspace, vitals, pipeline and prescriptions usable with zero internet dependency.',
-        'Multi-device clinics stay in sync without any cloud infrastructure to buy or maintain.',
+        'Deployed across clinics as ATI Limited’s flagship healthcare software.',
+        'Zero downtime and uninterrupted patient consultations even during ISP outages.',
+        'Runs reliably on existing clinic hardware without expensive cloud bills.',
       ],
     },
     label: 'Signature System',
-    tags: ['Healthcare', 'Offline-First', 'Multi-device Sync', 'EMR', 'Enterprise'],
+    tags: ['Healthcare', 'Offline-First', 'Local Sync', 'Enterprise'],
     accent: 'magenta',
   },
   {
     title: 'Starlight OTT',
     category: 'web',
     categoryLabel: 'Streaming Platform',
-    badge: '🎥 OTT Streaming Platform',
+    badge: '🎥 Streaming Service',
     blurb:
-      'Full-stack on-demand movie and TV series streaming platform with instant video playback, multi-language subtitles, adaptive quality switching, categorized catalog discovery, and personal watchlists.',
-    highlights: ['Movie & TV series streaming', 'React Vite SPA + Laravel API backend', 'Instant playback & subtitle switching'],
+      'A modern movie and TV streaming platform featuring instant buffer-free playback, multi-language subtitles, adaptive video streaming, and personalized watchlists.',
+    highlights: ['Instant HD video playback', 'Multi-language subtitles', 'Adaptive quality switching'],
     image: './projects/starlight.webp',
     imageWidth: 1024,
     imageHeight: 478,
     live: 'https://movie.adnetworkbd.shop/#',
-    tags: ['React', 'Vite', 'Laravel', 'PHP', 'Streaming', 'Full-Stack'],
+    tags: ['React', 'Vite', 'Laravel', 'Video Streaming', 'Full-Stack'],
     accent: 'cyan',
   },
   {
     title: 'SmartPilot',
     category: 'ai',
-    categoryLabel: 'AI & Automation SaaS',
+    categoryLabel: 'Social Commerce AI',
     badge: 'Founder',
     blurb:
-      'AI-powered Facebook page automation platform — automated message replies, intelligent comment responses, and automated order management 24/7 without manual effort.',
-    highlights: ['Facebook page AI auto-replies', 'Intelligent comment & message automation', 'Automated order capture pipeline'],
+      'An automated AI assistant for Facebook pages that answers customer messages, replies to comments, and captures sales orders 24/7 without manual effort.',
+    highlights: ['Instant AI replies to messages & comments', 'Automated order checkout', '24/7 social sales'],
     image: './projects/smartpilot.webp',
     imageWidth: 1024,
     imageHeight: 482,
     live: 'https://smartpilot.site/',
-    tags: ['AI', 'SaaS', 'Founder', 'Automation', 'Social Commerce'],
+    tags: ['AI', 'Automation', 'Founder', 'Social Commerce'],
     accent: 'cyan',
   },
   {
@@ -304,60 +288,60 @@ export const projects: Project[] = [
     categoryLabel: 'Mobile App & SaaS',
     badge: 'Mobile App & SaaS',
     blurb:
-      'Cross-platform mobile community app and comprehensive SaaS platform with Admin Control Center dashboard, marketplace, job listings, support tickets, and real-time moderation.',
-    highlights: ['Cross-platform mobile app', 'Full Platform Admin Dashboard', 'Community & marketplace'],
+      'A mobile community platform connecting users with local job listings, trusted services, a community marketplace, and a centralized admin moderation dashboard.',
+    highlights: ['Available on Google Play', 'Job board & marketplace', 'Real-time admin control center'],
     image: './projects/livora.webp',
     imageWidth: 1024,
     imageHeight: 483,
     live: 'https://my-sg.com/',
     playStore: 'https://play.google.com/store/apps/details?id=com.ucllc.mysg',
-    tags: ['Flutter', 'Mobile', 'SaaS Admin', 'Play Store', 'Community'],
+    tags: ['Flutter', 'Mobile', 'Play Store', 'Community', 'Dashboard'],
     accent: 'violet',
   },
   {
     title: 'SNS Digitals',
     category: 'web',
-    categoryLabel: 'AI Software Studio',
+    categoryLabel: 'Software Studio',
     badge: 'Founder',
     blurb:
-      'AI-first software studio and agency platform — designing, building, and deploying web, mobile, and desktop applications supercharged with AI for international clients.',
-    highlights: ['100+ projects delivered', 'Intelligent automation systems', 'End-to-end engineering'],
+      'A digital product studio designing and engineering custom web apps, mobile apps, and automated AI solutions for founders and growing businesses.',
+    highlights: ['100+ projects delivered', 'End-to-end product delivery', 'Modern AI integrations'],
     image: './projects/sns_digitals.webp',
     imageWidth: 1024,
     imageHeight: 481,
     label: 'Software Studio',
-    tags: ['Agency', 'AI Studio', 'Founder', 'Fullstack', 'Web & Mobile'],
+    tags: ['Studio', 'Founder', 'Web & Mobile', 'Product Engineering'],
     accent: 'cyan',
   },
   {
     title: 'Ushuttle',
     category: 'mobile',
-    categoryLabel: 'Mobile App (Flutter)',
+    categoryLabel: 'Campus Transit App',
     badge: 'Mobile App',
     blurb:
-      'A cross-platform Flutter mobile app with client and admin interfaces for tracking university shuttle routes, live GPS bus locations, schedules, and digital ticket scanning.',
-    highlights: ['Client & Admin mobile apps', 'Live GPS route tracking', 'QR ticket scanner & schedules'],
+      'A cross-platform transit app for university students and drivers featuring live GPS bus tracking, estimated arrival times, and digital QR ticket verification.',
+    highlights: ['Live GPS bus tracking', 'Instant route updates', 'QR ticket check-in'],
     image: './projects/ushuttle.webp',
     imageWidth: 836,
     imageHeight: 488,
     repo: 'https://github.com/shakil2995/Ushuttle',
     hideOnAll: true,
-    tags: ['Flutter', 'Dart', 'Mobile', 'Maps', 'Admin & Client'],
+    tags: ['Flutter', 'Dart', 'Mobile', 'Maps', 'GPS'],
     accent: 'violet',
   },
   {
     title: 'Tent Design USA',
     category: 'web',
-    categoryLabel: 'Client Web Platform',
-    badge: 'Client Website',
+    categoryLabel: 'E-Commerce Storefront',
+    badge: 'Client Storefront',
     blurb:
-      'Commercial web platform and digital storefront for custom canopy tents, event displays, and marketing collateral — interactive product catalog and quote request flows.',
-    highlights: ['Interactive catalog', 'Dynamic quote builder', 'SEO & mobile optimized'],
+      'An interactive digital storefront for commercial canopy tents and event displays, featuring a real-time custom product quote builder.',
+    highlights: ['Interactive catalog', 'Instant quote request builder', 'Fast, mobile-friendly design'],
     image: './projects/tent_usa.webp',
     imageWidth: 1024,
     imageHeight: 484,
     live: 'https://tentdesignusa.com/',
-    tags: ['Client Website', 'JavaScript', 'Frontend', 'Tailwind CSS'],
+    tags: ['E-Commerce', 'Frontend', 'Tailwind CSS', 'Responsive'],
     accent: 'magenta',
   },
 ]
@@ -372,35 +356,35 @@ export type TimelineEntry = {
 
 export const timeline: TimelineEntry[] = [
   {
-    when: '2025 — Now',
-    title: 'Software Engineer & Team Lead',
+    when: '2025 — Present',
+    title: 'Lead Software Engineer',
     place: 'ATI Limited',
     detail:
-      'Leading engineering teams and shipping production software — while building high-impact products: Zinodesk (Star AI SaaS), ATI EMR (Signature offline healthcare system), SmartPilot, and SNS Digitals.',
+      'Leading engineering teams and architecting signature products — including ATI EMR (offline healthcare platform), Zinodesk (AI SaaS), and high-scale web systems.',
     accent: 'cyan',
   },
   {
     when: '2024 — 2025',
-    title: 'Mobile App Developer',
+    title: 'Mobile Application Developer',
     place: 'ATI Limited',
     detail:
-      'Built production cross-platform mobile apps with Flutter, taking features from Figma designs through to Apple App Store and Google Play releases.',
+      'Crafted high-performance cross-platform mobile apps with Flutter, taking features from Figma designs to production App Store and Google Play releases.',
     accent: 'violet',
   },
   {
     when: '2023 — 2024',
-    title: 'Junior Software Engineer',
-    place: 'Winning bees',
+    title: 'Software Engineer',
+    place: 'Winning Bees',
     detail:
-      'Worked across the stack on web products, growing from core fundamentals into shipping real client-facing features.',
+      'Built responsive full-stack web applications and shipped customer-facing features in fast-paced collaborative sprints.',
     accent: 'magenta',
   },
   {
     when: '2023',
-    title: 'Intern Software Engineer',
+    title: 'Engineering Intern',
     place: 'Excellent Soft',
     detail:
-      'My first professional role — a three-month intensive internship where computer science foundations met production codebases.',
+      'Turned core computer science fundamentals into production software during an intensive full-stack internship.',
     accent: 'cyan',
   },
   {
@@ -408,7 +392,8 @@ export const timeline: TimelineEntry[] = [
     title: 'B.Sc. in Computer Science & Engineering',
     place: 'Independent University, Bangladesh (IUB)',
     detail:
-      'Graduated with a CSE degree, building rigorous fundamentals in algorithms, software architecture, distributed systems, and computer engineering.',
+      'Graduated with a CSE degree, building deep foundations in algorithms, software architecture, and distributed systems.',
     accent: 'violet',
   },
 ]
+

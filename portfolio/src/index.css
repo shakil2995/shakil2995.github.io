@@ -197,24 +197,29 @@ h4 {
 }
 
 /* ---------------------------------------------------------------------------
-   Custom celestial cursor — glowing star-dot (fine pointers only)
+   Interactive elements cursor behavior — clean, crisp pointer hand
 --------------------------------------------------------------------------- */
-@media (pointer: fine) {
+a,
+button,
+[role='button'],
+input[type='button'],
+input[type='submit'],
+input[type='reset'],
+input[type='checkbox'],
+input[type='radio'],
+select,
+summary,
+label[for],
+.cursor-pointer,
+.glass-button,
+.btn {
+  cursor: pointer !important;
+}
 
-  body {
-    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3CradialGradient id='g'%3E%3Cstop offset='0' stop-color='%23eafcff'/%3E%3Cstop offset='.35' stop-color='%2367e8f9' stop-opacity='.55'/%3E%3Cstop offset='1' stop-color='%2367e8f9' stop-opacity='0'/%3E%3C/radialGradient%3E%3Ccircle cx='12' cy='12' r='11' fill='url(%23g)'/%3E%3Ccircle cx='12' cy='12' r='2.6' fill='%23ffffff'/%3E%3C/svg%3E") 12 12, auto;
-  }
-
-  a,
-  button,
-  [role='button'],
-  input,
-  textarea,
-  select,
-  label,
-  summary {
-    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3CradialGradient id='p'%3E%3Cstop offset='0' stop-color='%23f5f0ff'/%3E%3Cstop offset='.35' stop-color='%23c4b5fd' stop-opacity='.6'/%3E%3Cstop offset='1' stop-color='%23c4b5fd' stop-opacity='0'/%3E%3C/radialGradient%3E%3Ccircle cx='13' cy='13' r='12' fill='url(%23p)'/%3E%3Ccircle cx='13' cy='13' r='2.8' fill='%23ffffff'/%3E%3C/svg%3E") 13 13, pointer;
-  }
+button:disabled,
+[role='button'][aria-disabled='true'],
+input:disabled {
+  cursor: not-allowed !important;
 }
 
 /* Base Opaque Frosted Glass Suite */

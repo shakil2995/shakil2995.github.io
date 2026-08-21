@@ -28,7 +28,7 @@ export default function Skills() {
         <SectionHeading
           index="02"
           title="Skills & stack"
-          kicker="The proven frameworks, languages, and tools I reach for daily across web, mobile, and backend."
+          kicker="The core technologies and frameworks I use to bring ideas to life."
         />
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">

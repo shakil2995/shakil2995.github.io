@@ -81,7 +81,7 @@ export default function Hero({ entranceDelay = 0 }: { entranceDelay?: number }) 
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
               </span>
-              <span>Available for new opportunities</span>
+              <span>Open for projects &amp; engineering roles</span>
             </span>
           </Rise>
 
@@ -118,7 +118,7 @@ export default function Hero({ entranceDelay = 0 }: { entranceDelay?: number }) 
                 href="#work"
                 className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-violet-500 px-6 py-3.5 text-sm font-semibold text-[#05060c] shadow-lg shadow-cyan-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_32px_-10px_rgba(139,92,246,0.6)]"
               >
-                <span>Explore Projects</span>
+                <span>View My Work</span>
                 <ArrowUpRight className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </a>
 
@@ -126,7 +126,7 @@ export default function Hero({ entranceDelay = 0 }: { entranceDelay?: number }) 
                 href="#contact"
                 className="glass-button glow inline-flex items-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold text-[color:var(--color-ink)] transition-all duration-300 hover:-translate-y-0.5"
               >
-                <span>Get in touch</span>
+                <span>Let&apos;s talk</span>
               </a>
 
               {socials.resumeUrl && (

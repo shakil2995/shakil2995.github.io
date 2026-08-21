@@ -36,7 +36,7 @@ export default function Timeline() {
       <SectionHeading
         index="04"
         title="My journey"
-        kicker="From first commit to full-time fullstack."
+        kicker="The experiences and milestones that shaped my engineering craft."
       />
 
       <div ref={ref} className="relative ml-2 max-w-3xl sm:ml-4">

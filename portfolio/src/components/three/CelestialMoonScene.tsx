@@ -398,12 +398,12 @@ function MeteorShower({
   flashRef,
 }: {
   isMobile: boolean
-  flashRef: React.MutableRefObject<number>
+  flashRef: React.RefObject<number>
 }) {
   const meshRef = useRef<THREE.Mesh>(null)
   const headRef = useRef<THREE.Points>(null)
   const sparksRef = useRef<THREE.Points>(null)
-  const MAX_METEORS = 10
+  const MAX_METEORS = 12
 
   const meteors = useRef<MeteorItem[]>(
     Array.from({ length: MAX_METEORS }, () => ({
@@ -441,7 +441,7 @@ function MeteorShower({
     const onStorm = () => {
       stormStart.current = performance.now()
       spawnTimer.current = 999
-      flashRef.current = 0.6
+      flashRef.current = 0.65
     }
     window.addEventListener('shakil:meteor-storm', onStorm)
     return () => window.removeEventListener('shakil:meteor-storm', onStorm)
@@ -519,11 +519,11 @@ function MeteorShower({
     if (spawnTimer.current > nextSpawnInterval.current) {
       spawnTimer.current = 0
       nextSpawnInterval.current = isStormSpawning
-        ? (0.24 + Math.random() * 0.16)
+        ? (0.12 + Math.random() * 0.08)
         : isMobile ? (2.2 + Math.random() * 2.2) : (1.4 + Math.random() * 2.0)
 
       const burstCount = isStormSpawning
-        ? (isMobile ? 2 : (Math.random() < 0.5 ? 2 : 3))
+        ? (isMobile ? 3 : (Math.random() < 0.6 ? 3 : 4))
         : (isMobile ? (Math.random() < 0.8 ? 1 : 2) : (Math.random() < 0.68 ? 1 : Math.random() < 0.88 ? 2 : 3))
 
       for (let b = 0; b < burstCount; b++) {

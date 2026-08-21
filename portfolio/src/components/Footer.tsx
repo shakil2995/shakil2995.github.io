@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className="border-t border-white/10">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 py-8 sm:flex-row sm:px-8">
         <p className="text-sm text-[color:var(--color-faint)]">
-          © {year} Shakil Ahmed (@shakil2995). Built with React, Three.js &amp; Tailwind.
+          © {year} Shakil Ahmed (@shakil2995) · Crafted with precision, React &amp; Three.js.
         </p>
         <div className="flex items-center gap-3">
           <a

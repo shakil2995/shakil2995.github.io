@@ -5,16 +5,16 @@ import { ArrowUpRight, CheckIcon, CopyIcon, GitHubIcon, LinkedInIcon, MailIcon, 
 
 const QUICK_TOPICS = [
   {
-    label: '🚀 Build a project',
-    message: 'Hi Shakil! I have an exciting project and would love to collaborate with you.',
+    label: '🚀 Start a project',
+    message: 'Hi Shakil! I have an idea for a project and would love to collaborate.',
   },
   {
-    label: '💼 Discuss an opportunity',
-    message: 'Hi Shakil! I saw your portfolio and wanted to discuss a software engineering role.',
+    label: '💼 Engineering role',
+    message: 'Hi Shakil! I saw your portfolio and would like to discuss an engineering opportunity.',
   },
   {
-    label: '⚡ Quick inquiry',
-    message: 'Hi Shakil! Reaching out from your portfolio for a quick inquiry.',
+    label: '👋 Say hello',
+    message: 'Hi Shakil! Loved your work and just wanted to say hello.',
   },
 ]
 
@@ -51,7 +51,7 @@ export default function Contact() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
             </span>
-            Available for new projects &amp; roles
+            Open for new projects &amp; roles
           </span>
 
           <h2 className="mt-7 text-4xl font-bold leading-[1.08] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] sm:text-5xl lg:text-6xl">
@@ -61,8 +61,7 @@ export default function Contact() {
           </h2>
 
           <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-slate-200 drop-shadow-[0_1px_6px_rgba(0,0,0,0.85)] sm:text-lg">
-            A product to launch, a role to fill, or just a quick chat — email me, message me on
-            WhatsApp, or give me a call anytime.
+            Whether you&apos;re launching a new product, hiring for a key engineering role, or just want to chat — my inbox and WhatsApp are always open.
           </p>
 
           {/* Interactive Phone / WhatsApp number — click to copy */}
