@@ -472,6 +472,17 @@ function MeteorShower({
 
   const spawnTimer = useRef(999) // Instant spawn on initial load
   const nextSpawnInterval = useRef(1.4)
+  const stormUntil = useRef(0)
+
+  useEffect(() => {
+    const onStorm = () => {
+      stormUntil.current = performance.now() + 4000
+      spawnTimer.current = 999
+      flashRef.current = 0.9
+    }
+    window.addEventListener('shakil:meteor-storm', onStorm)
+    return () => window.removeEventListener('shakil:meteor-storm', onStorm)
+  }, [flashRef])
 
   const { ribbonGeom, headGeom, sparksGeom } = useMemo(() => {
     const vertsPerMeteor = (RIBBON_SEGMENTS + 1) * 2
@@ -519,24 +530,31 @@ function MeteorShower({
 
   useFrame((_, delta) => {
     spawnTimer.current += delta
+    const storming = performance.now() < stormUntil.current
 
     // Randomized spawn cadence
     if (spawnTimer.current > nextSpawnInterval.current) {
       spawnTimer.current = 0
-      nextSpawnInterval.current = isMobile ? (2.2 + Math.random() * 2.2) : (1.4 + Math.random() * 2.0)
+      nextSpawnInterval.current = storming
+        ? 0.11
+        : isMobile ? (2.2 + Math.random() * 2.2) : (1.4 + Math.random() * 2.0)
 
-      // Burst count: 70% single, 20% double, 10% triple meteor cluster
+      // Burst count: 70% single, 20% double, 10% triple meteor cluster —
+      // or every available slot at once while a storm is running.
       const burstRoll = Math.random()
-      const burstCount = isMobile ? (burstRoll < 0.8 ? 1 : 2) : (burstRoll < 0.68 ? 1 : burstRoll < 0.88 ? 2 : 3)
+      const burstCount = storming
+        ? MAX_METEORS
+        : isMobile ? (burstRoll < 0.8 ? 1 : 2) : (burstRoll < 0.68 ? 1 : burstRoll < 0.88 ? 2 : 3)
 
       for (let b = 0; b < burstCount; b++) {
         const inactive = meteors.current.find((m) => !m.active)
         if (!inactive) break
 
-        // Size variance: 12% rare large, 38% medium, 50% small fine stardust
+        // Size variance: storms skew bright — 40% rare large, 40% medium,
+        // 20% small; calm skies keep the original 12/38/50 mix.
         const sizeRoll = Math.random()
-        const isRareLarge = sizeRoll < 0.12
-        const isMedium = sizeRoll >= 0.12 && sizeRoll < 0.50
+        const isRareLarge = sizeRoll < (storming ? 0.4 : 0.12)
+        const isMedium = sizeRoll >= (storming ? 0.4 : 0.12) && sizeRoll < 0.5
 
         // Build a randomized 4-stage mineral color sequence: C1 -> C2 -> C3 -> C4
         const startIndex = Math.floor(Math.random() * METEOR_THEMES.length)
@@ -549,10 +567,14 @@ function MeteorShower({
         inactive.isLarge = isRareLarge
         inactive.colorStages = [stage0, stage1, stage2, stage3]
 
-        // Random starting zone across upper and right sky
+        // Random starting zone. Calm skies favour the upper-right; a storm
+        // barrages the entire top of the sky in a directed sweep.
         const originType = Math.random()
         let startX: number, startY: number
-        if (originType < 0.5) {
+        if (storming) {
+          startX = (Math.random() - 0.5) * (isMobile ? 4.2 : 7.5)
+          startY = 2.9 + Math.random() * 1.4
+        } else if (originType < 0.5) {
           // Top-right zone
           startX = (isMobile ? 1.8 : 3.5) + Math.random() * 2.5 + b * 0.8
           startY = 2.8 + Math.random() * 1.5 + b * 0.6
@@ -599,6 +621,10 @@ function MeteorShower({
 
         inactive.vx = -speed * Math.cos(angle)
         inactive.vy = -speed * Math.sin(angle)
+        if (storming) {
+          inactive.vx *= 1.25
+          inactive.vy *= 1.25
+        }
         inactive.vz = 0
 
         inactive.headWidth = headW

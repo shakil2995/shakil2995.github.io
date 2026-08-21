@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { projectCategories, projects, type Project, type ProjectCategory } from '../data/portfolio'
 import { SectionHeading } from './ui/SectionHeading'
 import CaseStudyDialog from './CaseStudyDialog'
+import SpotlightCard from './ui/SpotlightCard'
 import { ArrowUpRight, ExternalLink, GitHubIcon, LockIcon, PlayStoreIcon, SparkIcon } from './ui/icons'
 
 const BAR: Record<Project['accent'], string> = {
@@ -37,7 +38,7 @@ function ProjectCard({
       transition={{ delay: (index % 3) * 0.05, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       className="h-full"
     >
-      <div className="glass-card group flex h-full flex-col rounded-2xl p-5 sm:p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-white/[0.09]">
+      <SpotlightCard className="glass-card group flex h-full flex-col rounded-2xl p-5 sm:p-6 shadow-lg transition-all duration-300 hover:border-white/30 hover:bg-white/[0.09]">
 
         {/* Card Header: Accent bar & Badge */}
         <div className="mb-4 flex items-center justify-between gap-2">
@@ -150,7 +151,7 @@ function ProjectCard({
             </span>
           )}
         </div>
-      </div>
+      </SpotlightCard>
     </motion.div>
   )
 }

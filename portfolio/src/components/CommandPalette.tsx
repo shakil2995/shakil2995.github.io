@@ -112,6 +112,14 @@ export default function CommandPalette() {
           void navigator.clipboard?.writeText(socials.phoneInternational)
         },
       },
+      {
+        id: 'meteor-storm',
+        label: 'Summon a meteor shower',
+        hint: '✨ Press M',
+        run: () => {
+          window.dispatchEvent(new CustomEvent('shakil:meteor-summon'))
+        },
+      },
     ]
 
     return [...jumps, ...actions]

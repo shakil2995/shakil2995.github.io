@@ -36,7 +36,7 @@ export default function Contact() {
 
   return (
     <section id="contact" className="relative overflow-hidden py-24 sm:py-32">
-      <div className="glow-blob left-1/2 top-1/2 h-[26rem] w-[26rem] -translate-x-1/2 -translate-y-1/2 bg-emerald-600/20" />
+      <div className="glow-blob left-1/2 top-1/2 h-[26rem] w-[26rem] -translate-x-1/2 -translate-y-1/2 bg-emerald-600/12" />
 
       <div className="relative mx-auto max-w-3xl px-5 sm:px-8">
         <motion.div
