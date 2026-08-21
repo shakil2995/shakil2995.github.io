@@ -60,8 +60,8 @@ export default function App() {
     if (countdown === null) return
     if (countdown === 0) {
       window.dispatchEvent(new CustomEvent('shakil:meteor-storm'))
-      const t = setTimeout(() => setCountdown(null), 1400)
-      return () => clearTimeout(t)
+      setCountdown(null)
+      return
     }
     const t = setTimeout(() => setCountdown((c) => (c === null ? null : c - 1)), 1000)
     return () => clearTimeout(t)
@@ -79,7 +79,7 @@ export default function App() {
       {reduced ? (
         <StaticStarfield />
       ) : (
-        <div className="fixed inset-0 z-0 pointer-events-none w-full h-full">
+        <div className="fixed inset-0 z-0 w-full h-full">
           <SceneBoundary fallback={<StaticStarfield />}>
             <Suspense fallback={null}>
               <CelestialMoonScene isMobile={isMobile} />

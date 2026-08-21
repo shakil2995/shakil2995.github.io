@@ -403,7 +403,7 @@ function MeteorShower({
   const meshRef = useRef<THREE.Mesh>(null)
   const headRef = useRef<THREE.Points>(null)
   const sparksRef = useRef<THREE.Points>(null)
-  const MAX_METEORS = isMobile ? 18 : 34
+  const MAX_METEORS = 10
 
   const meteors = useRef<MeteorItem[]>(
     Array.from({ length: MAX_METEORS }, () => ({
@@ -435,13 +435,13 @@ function MeteorShower({
 
   const spawnTimer = useRef(999)
   const nextSpawnInterval = useRef(1.4)
-  const stormUntil = useRef(0)
+  const stormStart = useRef<number | null>(null)
 
   useEffect(() => {
     const onStorm = () => {
-      stormUntil.current = performance.now() + 5000
+      stormStart.current = performance.now()
       spawnTimer.current = 999
-      flashRef.current = 0.95
+      flashRef.current = 0.6
     }
     window.addEventListener('shakil:meteor-storm', onStorm)
     return () => window.removeEventListener('shakil:meteor-storm', onStorm)
@@ -501,27 +501,38 @@ function MeteorShower({
 
   useFrame((_, delta) => {
     spawnTimer.current += delta
-    const storming = performance.now() < stormUntil.current
+    let isStormSpawning = false
+
+    if (stormStart.current !== null) {
+      const stormElapsed = performance.now() - stormStart.current
+      // 5-second meteor shower action
+      if (stormElapsed < 4800) {
+        isStormSpawning = true
+      } else {
+        isStormSpawning = false
+      }
+      if (stormElapsed >= 5200) {
+        stormStart.current = null
+      }
+    }
 
     if (spawnTimer.current > nextSpawnInterval.current) {
       spawnTimer.current = 0
-      // Continuous torrential stream during storm mode (10-20+ active meteors concurrently)
-      nextSpawnInterval.current = storming
-        ? 0.055
+      nextSpawnInterval.current = isStormSpawning
+        ? (0.24 + Math.random() * 0.16)
         : isMobile ? (2.2 + Math.random() * 2.2) : (1.4 + Math.random() * 2.0)
 
-      const burstRoll = Math.random()
-      const burstCount = storming
-        ? (isMobile ? 4 : 7)
-        : isMobile ? (burstRoll < 0.8 ? 1 : 2) : (burstRoll < 0.68 ? 1 : burstRoll < 0.88 ? 2 : 3)
+      const burstCount = isStormSpawning
+        ? (isMobile ? 2 : (Math.random() < 0.5 ? 2 : 3))
+        : (isMobile ? (Math.random() < 0.8 ? 1 : 2) : (Math.random() < 0.68 ? 1 : Math.random() < 0.88 ? 2 : 3))
 
       for (let b = 0; b < burstCount; b++) {
         const inactive = meteors.current.find((m) => !m.active)
         if (!inactive) break
 
         const sizeRoll = Math.random()
-        const isRareLarge = sizeRoll < (storming ? 0.45 : 0.12)
-        const isMedium = sizeRoll >= (storming ? 0.45 : 0.12) && sizeRoll < 0.8
+        const isRareLarge = sizeRoll < (isStormSpawning ? 0.35 : 0.12)
+        const isMedium = sizeRoll >= (isStormSpawning ? 0.35 : 0.12) && sizeRoll < 0.65
 
         const startIndex = Math.floor(Math.random() * METEOR_THEMES.length)
         const stage0 = METEOR_THEMES[startIndex]
@@ -533,49 +544,57 @@ function MeteorShower({
         inactive.isLarge = isRareLarge
         inactive.colorStages = [stage0, stage1, stage2, stage3]
 
+        // Natural organic random origins (exact same zones as regular meteors)
+        const originType = Math.random()
         let startX: number, startY: number
-        if (storming) {
-          startX = (Math.random() - 0.4) * (isMobile ? 5.5 : 9.5)
-          startY = 3.2 + Math.random() * 1.8
+
+        if (originType < 0.5) {
+          // Top-right zone
+          startX = (isMobile ? 1.8 : 3.5) + Math.random() * 2.5 + b * 0.6
+          startY = 2.8 + Math.random() * 1.5 + b * 0.4
+        } else if (originType < 0.8) {
+          // Top-center zone
+          startX = (Math.random() - 0.5) * 3.2 + b * 0.5
+          startY = 3.2 + Math.random() * 1.4 + b * 0.4
         } else {
-          startX = (isMobile ? 1.8 : 3.5) + Math.random() * 2.5 + b * 0.8
-          startY = 2.8 + Math.random() * 1.5 + b * 0.6
+          // Right-middle edge zone
+          startX = (isMobile ? 2.5 : 4.6) + Math.random() * 1.8 + b * 0.5
+          startY = 0.6 + Math.random() * 2.2 + b * 0.5
         }
 
         inactive.x = startX
         inactive.y = startY
         inactive.z = 1.2 + (Math.random() - 0.5) * 0.8
 
-        const angle = THREE.MathUtils.degToRad(26 + Math.random() * 16)
+        const angle = THREE.MathUtils.degToRad(25 + Math.random() * 16)
         let speed: number, headW: number, len: number, lifeTime: number
 
         if (isRareLarge) {
-          speed = (isMobile ? 2.3 : 2.8) + Math.random() * 0.4
-          headW = isMobile ? 0.034 : 0.048
-          len = 2.2 + Math.random() * 0.8
-          lifeTime = 4.8 + Math.random() * 0.6
-          flashRef.current = Math.max(flashRef.current, 0.45)
+          speed = (isMobile ? 2.2 : 2.6) + Math.random() * 0.4
+          headW = isMobile ? 0.030 : 0.044
+          len = 2.0 + Math.random() * 0.7
+          lifeTime = 3.8 + Math.random() * 0.6
+          flashRef.current = Math.max(flashRef.current, 0.35)
         } else if (isMedium) {
-          speed = (isMobile ? 2.0 : 2.4) + Math.random() * 0.3
-          headW = isMobile ? 0.018 : 0.026
-          len = 1.2 + Math.random() * 0.5
-          lifeTime = 3.6 + Math.random() * 1.0
-          flashRef.current = Math.max(flashRef.current, 0.12)
+          speed = (isMobile ? 1.9 : 2.3) + Math.random() * 0.3
+          headW = isMobile ? 0.016 : 0.024
+          len = 1.1 + Math.random() * 0.5
+          lifeTime = 3.4 + Math.random() * 0.8
+          flashRef.current = Math.max(flashRef.current, 0.1)
         } else {
-          speed = (isMobile ? 1.7 : 2.0) + Math.random() * 0.3
-          headW = isMobile ? 0.008 : 0.012
-          len = 0.55 + Math.random() * 0.4
-          lifeTime = 2.8 + Math.random() * 1.2
+          speed = (isMobile ? 1.6 : 1.9) + Math.random() * 0.3
+          headW = isMobile ? 0.007 : 0.010
+          len = 0.5 + Math.random() * 0.35
+          lifeTime = 2.8 + Math.random() * 0.8
         }
 
         inactive.vx = -speed * Math.cos(angle)
         inactive.vy = -speed * Math.sin(angle)
-        if (storming) {
-          inactive.vx *= 1.35
-          inactive.vy *= 1.35
+        if (isStormSpawning) {
+          inactive.vx *= 1.2
+          inactive.vy *= 1.2
         }
         inactive.vz = 0
-
         inactive.headWidth = headW
         inactive.length = len
         inactive.life = 0
@@ -1160,22 +1179,63 @@ function SmartCelestialMoon({
     }
   }, [])
 
+  const _projVec = useMemo(() => new THREE.Vector3(), [])
+  const moonScreenBounds = useRef({ x: -999, y: -999, r: 50 })
+
+  useEffect(() => {
+    const isInteractive = (el: EventTarget | null) => {
+      if (!el || !(el instanceof HTMLElement)) return false
+      const tag = el.tagName.toLowerCase()
+      if (['button', 'a', 'input', 'textarea', 'select'].includes(tag)) return true
+      if (el.closest('button, a, input, textarea, select, [role="button"], .nav-link')) return true
+      return false
+    }
+
+    const onPointerMove = (e: MouseEvent) => {
+      const b = moonScreenBounds.current
+      const dist = Math.hypot(e.clientX - b.x, e.clientY - b.y)
+      if (dist <= b.r && !isInteractive(e.target)) {
+        document.body.style.cursor = 'pointer'
+      } else if (document.body.style.cursor === 'pointer') {
+        document.body.style.cursor = 'auto'
+      }
+    }
+
+    const onClick = (e: MouseEvent) => {
+      const b = moonScreenBounds.current
+      const dist = Math.hypot(e.clientX - b.x, e.clientY - b.y)
+      if (dist <= b.r && !isInteractive(e.target)) {
+        window.dispatchEvent(new CustomEvent('shakil:meteor-summon'))
+      }
+    }
+
+    window.addEventListener('pointermove', onPointerMove, { passive: true })
+    window.addEventListener('click', onClick)
+    return () => {
+      window.removeEventListener('pointermove', onPointerMove)
+      window.removeEventListener('click', onClick)
+      document.body.style.cursor = 'auto'
+    }
+  }, [])
+
   useFrame((state, delta) => {
     const progress = getScrollProgress()
     const target = getTargetTransform(progress)
 
     getInterpolatedTheme(progress, primaryColor, secondaryColor, emissiveColor)
 
-    // Storm anticipation swell & spin
-    let blastSwell = 0
-    let blastFlash = 0
+    // Storm spin acceleration from very slow to fast (0.0s to 5.0s)
+    let spinBoost = 0
+    let spinGlow = 0
     if (blastStartRef.current !== null) {
-      const t = (performance.now() - blastStartRef.current) / 1300
-      if (t >= 1 || t < 0) {
+      const elapsed = performance.now() - blastStartRef.current
+      const t = Math.min(Math.max(elapsed / 5000, 0), 1)
+      if (elapsed >= 5000) {
         blastStartRef.current = null
       } else {
-        blastSwell = Math.sin(t * Math.PI)
-        blastFlash = (1 - t) * (1 - t) * 2.6
+        // Starts very slow and accelerates exponentially to ~20 rad/s before impact
+        spinBoost = Math.pow(t, 2.4) * 20.0
+        spinGlow = Math.pow(t, 2.0) * 1.6
       }
     }
 
@@ -1224,23 +1284,36 @@ function SmartCelestialMoon({
       const squash = OFF_AXIS_CORRECTION * (1 - cosTheta)
       const dx = radial > 1e-4 ? px / radial : 0
       const dy = radial > 1e-4 ? py / radial : 0
-      const swell = (1 + blastSwell * 0.22) * settleScale
+      const scaleMultiplier = settleScale
 
       groupRef.current.scale.set(
-        s * (1 - squash * dx * dx) * swell,
-        s * (1 - squash * dy * dy) * swell,
-        s * swell
+        s * (1 - squash * dx * dx) * scaleMultiplier,
+        s * (1 - squash * dy * dy) * scaleMultiplier,
+        s * scaleMultiplier
       )
+
+      // Calculate 2D screen-space coordinates of the moon for 100% reliable clicks
+      groupRef.current.updateWorldMatrix(true, false)
+      _projVec.setFromMatrixPosition(groupRef.current.matrixWorld)
+      _projVec.project(state.camera)
+      const screenX = ((_projVec.x + 1) * state.size.width) / 2
+      const screenY = ((-_projVec.y + 1) * state.size.height) / 2
+      const fovRad = THREE.MathUtils.degToRad((state.camera as THREE.PerspectiveCamera).fov || 50)
+      const distZ = Math.max(state.camera.position.z - groupRef.current.position.z, 1.0)
+      const radiusPx = (s * state.size.height) / (2 * Math.tan(fovRad / 2) * distZ)
+      moonScreenBounds.current.x = screenX
+      moonScreenBounds.current.y = screenY
+      moonScreenBounds.current.r = Math.max(radiusPx * 1.15, 45)
     }
 
     if (moonMeshRef.current) {
-      moonMeshRef.current.rotation.y += delta * 0.05 + progress * 0.015 + blastSwell * delta * 2.5
+      moonMeshRef.current.rotation.y += delta * 0.05 + progress * 0.015 + spinBoost * delta
       moonMeshRef.current.rotation.x = 0.08
 
       const mat = moonMeshRef.current.material as THREE.MeshStandardMaterial
       if (mat) {
         mat.emissive.lerp(emissiveColor, delta * 3)
-        mat.emissiveIntensity = (isMobile ? 0.42 : 0.33) + blastFlash
+        mat.emissiveIntensity = (isMobile ? 0.42 : 0.33) + spinGlow
       }
     }
   })
@@ -1248,8 +1321,25 @@ function SmartCelestialMoon({
   return (
     <group ref={groupRef} position={[waypoints[0].x, waypoints[0].y, waypoints[0].z]}>
       <FloatGroup speed={1.6} rotationIntensity={0.25} floatIntensity={0.4}>
-        {/* Solid Pristine Moon Sphere (hidden while shattered) */}
-        <mesh ref={moonMeshRef} visible={!isShattered}>
+        {/* Solid Pristine Moon Sphere (hidden while shattered, interactive on click) */}
+        <mesh
+          ref={moonMeshRef}
+          visible={!isShattered}
+          onClick={(e) => {
+            e.stopPropagation()
+            window.dispatchEvent(new CustomEvent('shakil:meteor-summon'))
+          }}
+          onPointerDown={(e) => {
+            e.stopPropagation()
+          }}
+          onPointerOver={(e) => {
+            e.stopPropagation()
+            document.body.style.cursor = 'pointer'
+          }}
+          onPointerOut={() => {
+            document.body.style.cursor = 'auto'
+          }}
+        >
           <sphereGeometry args={[1, 36, 36]} />
           <meshStandardMaterial
             map={moonTexture}
@@ -1521,7 +1611,7 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
         alpha: true,
         powerPreference: isMobile ? 'default' : 'high-performance',
       }}
-      style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
+      style={{ width: '100%', height: '100%' }}
     >
       <DynamicSceneLighting primaryColor={primaryColor} isMobile={isMobile} flashRef={flashRef} />
 
