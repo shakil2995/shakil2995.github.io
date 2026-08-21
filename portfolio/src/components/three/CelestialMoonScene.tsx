@@ -1220,6 +1220,7 @@ function SmartCelestialMoon({
   }, [])
 
   useFrame((state, delta) => {
+    const safeDelta = Math.min(delta, 0.033)
     const progress = getScrollProgress()
     const target = getTargetTransform(progress)
 
@@ -1254,27 +1255,27 @@ function SmartCelestialMoon({
     if (groupRef.current) {
       groupRef.current.position.x = THREE.MathUtils.damp(
         groupRef.current.position.x,
-        target.x + state.pointer.x * 0.12,
-        4,
-        delta
+        target.x + (isMobile ? 0 : state.pointer.x * 0.12),
+        4.5,
+        safeDelta
       )
       groupRef.current.position.y = THREE.MathUtils.damp(
         groupRef.current.position.y,
-        target.y + state.pointer.y * 0.12,
-        4,
-        delta
+        target.y + (isMobile ? 0 : state.pointer.y * 0.12),
+        4.5,
+        safeDelta
       )
       groupRef.current.position.z = THREE.MathUtils.damp(
         groupRef.current.position.z,
         target.z,
-        4,
-        delta
+        4.5,
+        safeDelta
       )
 
       // Broadcast world position to killer meteor
       moonPosRef.current.copy(groupRef.current.position)
 
-      uniformScaleRef.current = THREE.MathUtils.damp(uniformScaleRef.current, target.s, 4, delta)
+      uniformScaleRef.current = THREE.MathUtils.damp(uniformScaleRef.current, target.s, 4.5, safeDelta)
       const s = uniformScaleRef.current
 
       const px = groupRef.current.position.x
@@ -1308,12 +1309,12 @@ function SmartCelestialMoon({
     }
 
     if (moonMeshRef.current) {
-      moonMeshRef.current.rotation.y += delta * 0.05 + progress * 0.015 + spinBoost * delta
+      moonMeshRef.current.rotation.y += safeDelta * 0.05 + progress * 0.015 + spinBoost * safeDelta
       moonMeshRef.current.rotation.x = 0.08
 
       const mat = moonMeshRef.current.material as THREE.MeshStandardMaterial
       if (mat) {
-        mat.emissive.lerp(emissiveColor, delta * 3)
+        mat.emissive.lerp(emissiveColor, safeDelta * 3)
         mat.emissiveIntensity = (isMobile ? 0.42 : 0.33) + spinGlow
       }
     }
@@ -1594,6 +1595,42 @@ function DynamicSceneLighting({
   )
 }
 
+/**
+ * Adaptive Dynamic Resolution Scaling (DRS)
+ * Automatically optimizes DPR to 1.0 during active touch/scroll motion,
+ * and seamlessly ramps back to full crisp native DPR once scroll settles.
+ */
+function AdaptiveDprController({ isMobile }: { isMobile: boolean }) {
+  const setDpr = useThree((state) => state.setDpr)
+  const isScrolling = useRef(false)
+  const timeoutId = useRef<number | null>(null)
+
+  useEffect(() => {
+    const baseDpr = isMobile ? 1.25 : 1.5
+    const onScroll = () => {
+      if (!isScrolling.current) {
+        isScrolling.current = true
+        setDpr(1.0)
+      }
+      if (timeoutId.current !== null) {
+        window.clearTimeout(timeoutId.current)
+      }
+      timeoutId.current = window.setTimeout(() => {
+        isScrolling.current = false
+        setDpr(baseDpr)
+      }, 140)
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      if (timeoutId.current !== null) window.clearTimeout(timeoutId.current)
+    }
+  }, [isMobile, setDpr])
+
+  return null
+}
+
 export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) {
   const primaryColor = useMemo(() => new THREE.Color('#4f8bf5'), [])
   const secondaryColor = useMemo(() => new THREE.Color('#818cf8'), [])
@@ -1616,6 +1653,7 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
       }}
       style={{ width: '100%', height: '100%' }}
     >
+      <AdaptiveDprController isMobile={isMobile} />
       <DynamicSceneLighting primaryColor={primaryColor} isMobile={isMobile} flashRef={flashRef} />
 
       {/* Dynamic Multi-Depth Parallax Starfield */}
