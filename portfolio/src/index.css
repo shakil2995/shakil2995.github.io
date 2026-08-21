@@ -33,12 +33,23 @@
 --------------------------------------------------------------------------- */
 html {
   scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
+}
+
+/* Off-screen section rendering optimization for high mobile scroll performance */
+#about,
+#skills,
+#projects,
+#timeline,
+#contact {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 750px;
 }
 
 body {

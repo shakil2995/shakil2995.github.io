@@ -402,9 +402,9 @@ function MeteorShower({
   const meshRef = useRef<THREE.Mesh>(null)
   const headRef = useRef<THREE.Points>(null)
   const sparksRef = useRef<THREE.Points>(null)
-  const MAX_METEORS = isMobile ? 6 : 20
-  const RIBBON_SEGMENTS = isMobile ? 8 : 16
-  const SPARKS_PER_METEOR = isMobile ? 3 : 6
+  const MAX_METEORS = 20
+  const RIBBON_SEGMENTS = 16
+  const SPARKS_PER_METEOR = 6
 
   const meteors = useRef<MeteorItem[]>(
     Array.from({ length: MAX_METEORS }, () => ({
@@ -843,7 +843,7 @@ function MoonShatterChunks({
   const impactDirRef = useRef<THREE.Vector3>(new THREE.Vector3(-0.8, -0.5, 0.1))
   const wasShatteredRef = useRef(false)
 
-  const numChunks = isMobile ? 12 : 28
+  const numChunks = 28
 
   // 4 varied jagged rock chunk geometries
   const geometries = useMemo(() => {
@@ -913,7 +913,7 @@ function MoonShatterChunks({
   }, [numChunks])
 
   // Spark dust nebula expanding & contracting around the shattered core
-  const numDust = isMobile ? 16 : 56
+  const numDust = 56
   const { dustGeom, dustVel } = useMemo(() => {
     const pos = new Float32Array(numDust * 3)
     pos.fill(-999)
@@ -1341,7 +1341,7 @@ function SmartCelestialMoon({
             document.body.style.cursor = 'auto'
           }}
         >
-          <sphereGeometry args={[1, isMobile ? 24 : 48, isMobile ? 24 : 48]} />
+          <sphereGeometry args={[1, 48, 48]} />
           <meshStandardMaterial
             map={moonTexture}
             bumpMap={moonTexture}
@@ -1362,7 +1362,7 @@ function SmartCelestialMoon({
         />
 
         {/* Dynamic Color Shifting Star Dust */}
-        <DynamicOrbitStars count={isMobile ? 10 : 35} primaryColor={primaryColor} secondaryColor={secondaryColor} />
+        <DynamicOrbitStars count={35} primaryColor={primaryColor} secondaryColor={secondaryColor} />
       </FloatGroup>
     </group>
   )
@@ -1605,7 +1605,7 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
     <Canvas
       frameloop="always"
       className="w-full h-full"
-      dpr={isMobile ? 1 : [1, 1.5]}
+      dpr={isMobile ? [1, 1.25] : [1, 1.5]}
       camera={{ position: [0, 0, 5.5], fov: isMobile ? 54 : 46 }}
       gl={{
         antialias: !isMobile,
@@ -1619,7 +1619,7 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
       <DynamicSceneLighting primaryColor={primaryColor} isMobile={isMobile} flashRef={flashRef} />
 
       {/* Dynamic Multi-Depth Parallax Starfield */}
-      <DepthParallaxStarfield isMobile={isMobile} count={isMobile ? 130 : 600} />
+      <DepthParallaxStarfield isMobile={isMobile} count={isMobile ? 380 : 600} />
 
       {/* Torrential Meteor Shower (10-20+ streaming active meteors during storm) */}
       <MeteorShower isMobile={isMobile} flashRef={flashRef} />
