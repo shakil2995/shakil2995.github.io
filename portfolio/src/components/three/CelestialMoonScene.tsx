@@ -275,19 +275,20 @@ const starFragmentShader = /* glsl */ `
   }
 `
 
-function DepthParallaxStarfield({ count = 600 }: { count?: number }) {
+function DepthParallaxStarfield({ isMobile, count }: { isMobile?: boolean; count?: number }) {
   const matRef = useRef<THREE.ShaderMaterial>(null)
   const size = useThree((state) => state.size)
+  const actualCount = count ?? (isMobile ? 140 : 600)
 
   useEffect(subscribeScroll, [])
 
   const geometry = useMemo(() => {
-    const pos = new Float32Array(count * 3)
-    const spd = new Float32Array(count)
-    const phase = new Float32Array(count)
-    const col = new Float32Array(count * 3)
+    const pos = new Float32Array(actualCount * 3)
+    const spd = new Float32Array(actualCount)
+    const phase = new Float32Array(actualCount)
+    const col = new Float32Array(actualCount * 3)
 
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < actualCount; i++) {
       const x = (Math.random() - 0.5) * STAR_FIELD_SIZE
       const y = (Math.random() - 0.5) * STAR_FIELD_SIZE
       const z = -90 + Math.random() * 60
@@ -316,17 +317,17 @@ function DepthParallaxStarfield({ count = 600 }: { count?: number }) {
     g.setAttribute('aPhase', new THREE.BufferAttribute(phase, 1))
     g.setAttribute('aColor', new THREE.BufferAttribute(col, 3))
     return g
-  }, [count])
+  }, [actualCount])
 
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
       uScroll: { value: 0 },
       uMouse: { value: new THREE.Vector2() },
-      uSize: { value: 0.042 },
-      uScale: { value: 300 },
+      uSize: { value: isMobile ? 0.048 : 0.042 },
+      uScale: { value: size.height * (isMobile ? 1.0 : 1.5) * 0.5 },
     }),
-    [],
+    [isMobile, size.height],
   )
 
   useEffect(() => () => geometry.dispose(), [geometry])
@@ -336,8 +337,9 @@ function DepthParallaxStarfield({ count = 600 }: { count?: number }) {
     if (!u) return
     u.uTime.value = state.clock.elapsedTime
     u.uScroll.value = getScrollProgress()
-    u.uMouse.value.set(state.pointer.x * 2, state.pointer.y * 2)
-    u.uScale.value = size.height * state.gl.getPixelRatio() * 0.5
+    if (!isMobile) {
+      u.uMouse.value.set(state.pointer.x * 2, state.pointer.y * 2)
+    }
   })
 
   return (
@@ -389,9 +391,6 @@ interface MeteorItem {
   sparks: Array<{ x: number; y: number; z: number; vx: number; vy: number; vz: number; life: number; maxLife: number }>
 }
 
-const RIBBON_SEGMENTS = 16
-const SPARKS_PER_METEOR = 6
-
 /** High-intensity Meteor Shower with atmospheric ionization stages */
 function MeteorShower({
   isMobile,
@@ -403,7 +402,9 @@ function MeteorShower({
   const meshRef = useRef<THREE.Mesh>(null)
   const headRef = useRef<THREE.Points>(null)
   const sparksRef = useRef<THREE.Points>(null)
-  const MAX_METEORS = 12
+  const MAX_METEORS = isMobile ? 6 : 20
+  const RIBBON_SEGMENTS = isMobile ? 8 : 16
+  const SPARKS_PER_METEOR = isMobile ? 3 : 6
 
   const meteors = useRef<MeteorItem[]>(
     Array.from({ length: MAX_METEORS }, () => ({
@@ -489,7 +490,7 @@ function MeteorShower({
     sG.setAttribute('color', new THREE.BufferAttribute(sparkCol, 3))
 
     return { ribbonGeom: rG, headGeom: hG, sparksGeom: sG }
-  }, [MAX_METEORS])
+  }, [MAX_METEORS, RIBBON_SEGMENTS, SPARKS_PER_METEOR])
 
   useEffect(() => {
     return () => {
@@ -842,7 +843,7 @@ function MoonShatterChunks({
   const impactDirRef = useRef<THREE.Vector3>(new THREE.Vector3(-0.8, -0.5, 0.1))
   const wasShatteredRef = useRef(false)
 
-  const numChunks = isMobile ? 20 : 28
+  const numChunks = isMobile ? 12 : 28
 
   // 4 varied jagged rock chunk geometries
   const geometries = useMemo(() => {
@@ -912,7 +913,7 @@ function MoonShatterChunks({
   }, [numChunks])
 
   // Spark dust nebula expanding & contracting around the shattered core
-  const numDust = isMobile ? 36 : 56
+  const numDust = isMobile ? 16 : 56
   const { dustGeom, dustVel } = useMemo(() => {
     const pos = new Float32Array(numDust * 3)
     pos.fill(-999)
@@ -1340,7 +1341,7 @@ function SmartCelestialMoon({
             document.body.style.cursor = 'auto'
           }}
         >
-          <sphereGeometry args={[1, 36, 36]} />
+          <sphereGeometry args={[1, isMobile ? 24 : 48, isMobile ? 24 : 48]} />
           <meshStandardMaterial
             map={moonTexture}
             bumpMap={moonTexture}
@@ -1361,7 +1362,7 @@ function SmartCelestialMoon({
         />
 
         {/* Dynamic Color Shifting Star Dust */}
-        <DynamicOrbitStars count={isMobile ? 20 : 35} primaryColor={primaryColor} secondaryColor={secondaryColor} />
+        <DynamicOrbitStars count={isMobile ? 10 : 35} primaryColor={primaryColor} secondaryColor={secondaryColor} />
       </FloatGroup>
     </group>
   )
@@ -1604,19 +1605,21 @@ export default function CelestialMoonScene({ isMobile }: { isMobile: boolean }) 
     <Canvas
       frameloop="always"
       className="w-full h-full"
-      dpr={[1, isMobile ? 1.25 : 1.5]}
+      dpr={isMobile ? 1 : [1, 1.5]}
       camera={{ position: [0, 0, 5.5], fov: isMobile ? 54 : 46 }}
       gl={{
         antialias: !isMobile,
         alpha: true,
         powerPreference: isMobile ? 'default' : 'high-performance',
+        stencil: false,
+        depth: true,
       }}
       style={{ width: '100%', height: '100%' }}
     >
       <DynamicSceneLighting primaryColor={primaryColor} isMobile={isMobile} flashRef={flashRef} />
 
       {/* Dynamic Multi-Depth Parallax Starfield */}
-      <DepthParallaxStarfield count={isMobile ? 280 : 600} />
+      <DepthParallaxStarfield isMobile={isMobile} count={isMobile ? 130 : 600} />
 
       {/* Torrential Meteor Shower (10-20+ streaming active meteors during storm) */}
       <MeteorShower isMobile={isMobile} flashRef={flashRef} />

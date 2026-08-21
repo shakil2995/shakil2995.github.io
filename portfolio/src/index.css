@@ -528,3 +528,37 @@ input:disabled {
     animation: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Mobile-specific fluid rendering & performance optimizations
+--------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  /* Replace heavy multi-pass backdrop-blur with opaque dark glass on scrolling items */
+  .glass,
+  .glass-card,
+  .glass-pill,
+  .glass-chip,
+  .spotlight-card {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(11, 15, 29, 0.94) !important;
+  }
+
+  /* Keep single-layer lightweight blur strictly on fixed navigation & menus */
+  .glass-nav {
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    background: rgba(8, 11, 22, 0.95) !important;
+  }
+
+  .glass-menu {
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    background: rgba(7, 9, 20, 0.98) !important;
+  }
+
+  /* Disable hover spotlight sheen on mobile to avoid repaint overhead */
+  .spotlight-card::after {
+    display: none !important;
+  }
+}
